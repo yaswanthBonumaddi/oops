@@ -1,6 +1,8 @@
 # HLD (High-Level Design / System Design) - పూర్తి తెలుగు గైడ్ (SDE2 & SSE)
 
-> ఈ document చదివిన తర్వాత System Design మళ్ళీ మర్చిపోలేవు. ప్రతి concept కి real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, trade-offs, diagram, మరియు interview దృష్టి ఉంటాయి. ఇది `OOPS_Telugu.md` (OOP) + `LLD_Telugu.md` (Low-Level Design) కి కొనసాగింపు - **OOP → LLD → HLD** అనే ప్రయాణంలో చివరి, అతి పెద్ద మెట్టు. \***\*లక్ష్యం:** SDE2 (mid-level) మరియు SSE (Senior Software Engineer) system design rounds ని confident గా clear చేయడం.
+> ఈ document చదివిన తర్వాత System Design మళ్ళీ మర్చిపోలేవు. ప్రతి concept కి real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, trade-offs, diagram, మరియు interview దృష్టి ఉంటాయి. ఇది `OOPS_Telugu.md` (OOP) + `LLD_Telugu.md` (Low-Level Design) కి కొనసాగింపు - **OOP → LLD → HLD** అనే ప్రయాణంలో చివరి, అతి పెద్ద మెట్టు.
+>
+> **లక్ష్యం:** SDE2 (mid-level) మరియు SSE (Senior Software Engineer) system design rounds ని confident గా clear చేయడం.
 
 ---
 
@@ -13,49 +15,21 @@
 3. Back-of-the-envelope Estimation (Capacity Planning)
 4. Non-Functional Requirements (Scalability, Availability, ...)
 
-**Part 2 — Core Building Blocks**5. DNS, Client-Server, Networking basics\
-6. Load Balancing\
-7. Caching (patterns, eviction, invalidation)\
-8. CDN (Content Delivery Network)\
-9. SQL vs NoSQL\
-10. Database Replication\
-11. Sharding & Partitioning\
-12. Indexing
+**Part 2 — Core Building Blocks** 5. DNS, Client-Server, Networking basics 6. Load Balancing 7. Caching (patterns, eviction, invalidation) 8. CDN (Content Delivery Network) 9. SQL vs NoSQL 10. Database Replication 11. Sharding & Partitioning 12. Indexing
 
-**Part 3 — Distributed Systems**13. CAP Theorem + PACELC\
-14. Consistency Models\
-15. Consistent Hashing\
-16. Replication Strategies + Quorum\
-17. Message Queues & Kafka\
-18. Idempotency\
-19. Distributed Transactions (2PC, Saga)\
-20. Consensus & Leader Election (Raft) + Distributed Locks
+**Part 3 — Distributed Systems** 13. CAP Theorem + PACELC 14. Consistency Models 15. Consistent Hashing 16. Replication Strategies + Quorum 17. Message Queues & Kafka 18. Idempotency 19. Distributed Transactions (2PC, Saga) 20. Consensus & Leader Election (Raft) + Distributed Locks
 
-**Part 4 — Architecture & APIs**21. Monolith vs Microservices\
-22. API Gateway + Service Discovery\
-23. API Design (REST vs gRPC vs GraphQL)\
-24. Realtime (WebSockets, SSE, Long Polling)\
-25. Event-Driven Architecture (CQRS, Event Sourcing)\
-26. Resilience (Circuit Breaker, Retry, Bulkhead, Rate Limiting)\
-27. Search (Inverted Index) + Bloom Filters
+**Part 4 — Architecture & APIs** 21. Monolith vs Microservices 22. API Gateway + Service Discovery 23. API Design (REST vs gRPC vs GraphQL) 24. Realtime (WebSockets, SSE, Long Polling) 25. Event-Driven Architecture (CQRS, Event Sourcing) 26. Resilience (Circuit Breaker, Retry, Bulkhead, Rate Limiting) 27. Search (Inverted Index) + Bloom Filters
 
-**Part 5 — Reliability & Operations**28. Availability (9s), SLA / SLO / SLI\
-29. Observability (Metrics, Logs, Traces)\
-30. Deployment (Blue-Green, Canary, Rolling)\
-31. Failover & Disaster Recovery
+**Part 5 — Reliability & Operations** 28. Availability (9s), SLA / SLO / SLI 29. Observability (Metrics, Logs, Traces) 30. Deployment (Blue-Green, Canary, Rolling) 31. Failover & Disaster Recovery
 
-**Part 6 — Case Studies (System Design**)32. URL Shortener (TinyURL)\
-33. Distributed Rate Limiter\
-34. News Feed (Twitter / Instagram)\
-35. Chat System (WhatsApp)\
-36. Video Streaming (YouTube / Netflix)\
-37. Notification System\
-38. Uber / Ride-sharing (Geo)
+**Part 6 — Case Studies (System Design)** 32. URL Shortener (TinyURL) 33. Distributed Rate Limiter 34. News Feed (Twitter / Instagram) 35. Chat System (WhatsApp) 36. Video Streaming (YouTube / Netflix) 37. Notification System 38. Uber / Ride-sharing (Geo)
 
-**Part 7 — Interview & Reference**39. SDE2 vs SSE - ఏం expect చేస్తారు\
-40. HLD Interview Framework (Step-by-step)\
-41. Numbers & Latency Cheat Sheet\
-42. Memory Tips + Common Mistakes
+**Part 7 — SSE Deep Dives** 39. Storage Internals (LSM-tree vs B-tree) 40. Isolation Levels & Consistency Depth 41. Stream Processing (Batch vs Stream) 42. Multi-Region & CRDTs 43. Security in System Design 44. Cost, Load Shedding & Graceful Degradation
+
+**Part 8 — Advanced Case Studies** 45. Payment System / Ledger 46. Collaborative Editing (Google Docs) 47. Typeahead / Autocomplete 48. Distributed Job Scheduler (Cron at Scale)
+
+**Part 9 — Interview & Reference** 49. SDE2 vs SSE - ఏం expect చేస్తారు 50. HLD Interview Framework (Step-by-step) 51. Numbers & Latency Cheat Sheet 52. Memory Tips + Common Mistakes
 
 ---
 
@@ -152,14 +126,14 @@ Design decisions ని **numbers** తో justify చేయాలి. "ఒక s
 
 ### గుర్తుంచుకోవాల్సిన Numbers
 
-| అంశం                      | విలువ (గుర్తుంచుకో)                             |
-| ------------------------- | ----------------------------------------------- |
-| 1 day                     | \~86,400 సెకన్లు (\~10^5)                       |
-| 1 million writes/day      | \~12 writes/sec                                 |
-| 1 char                    | 1 byte (ASCII), 2-4 (Unicode)                   |
-| KB → MB → GB → TB         | ప్రతిదీ ×1000                                   |
-| 1 million users, 1KB each | 1 GB                                            |
-| SSD read                  | \~100 μs; Network round-trip (same DC) \~0.5 ms |
+| అంశం                      | విలువ (గుర్తుంచుకో)                           |
+| ------------------------- | --------------------------------------------- |
+| 1 day                     | ~86,400 సెకన్లు (~10^5)                       |
+| 1 million writes/day      | ~12 writes/sec                                |
+| 1 char                    | 1 byte (ASCII), 2-4 (Unicode)                 |
+| KB → MB → GB → TB         | ప్రతిదీ ×1000                                 |
+| 1 million users, 1KB each | 1 GB                                          |
+| SSD read                  | ~100 μs; Network round-trip (same DC) ~0.5 ms |
 
 ### Estimation Steps (ఒక క్రమం)
 
@@ -236,7 +210,7 @@ console.log(`Storage/year:   ~${storagePerYearGB.toLocaleString()} GB`); // ~21,
 |            | **Vertical** (scale up)                 | **Horizontal** (scale out)       |
 | ---------- | --------------------------------------- | -------------------------------- |
 | ఏం చేస్తాం | ఒకే machine ని పెద్దది చేయడం (RAM, CPU) | ఎక్కువ machines జోడించడం         |
-| Limit      | Hardware limit ఉంది                     | \~Unlimited                      |
+| Limit      | Hardware limit ఉంది                     | ~Unlimited                       |
 | Complexity | సులభం                                   | Load balancer, distributed state |
 | Failure    | Single point of failure                 | Fault tolerant                   |
 | ఉదా        | DB server ని upgrade                    | 10 app servers behind LB         |
@@ -250,14 +224,14 @@ console.log(`Storage/year:   ~${storagePerYearGB.toLocaleString()} GB`); // ~21,
 ### Latency vs Throughput
 
 > - **Latency** = ఒక్క car ఒక చోటికి చేరే సమయం.
-> - **Throughput** = గంటకి highway మీద ఎన్ని cars వెళ్తాయి.\
+> - **Throughput** = గంటకి highway మీద ఎన్ని cars వెళ్తాయి.
 >   రెండూ వేరు - lanes పెంచితే (throughput↑) కానీ ఒక్క car వేగం (latency) అలాగే ఉండవచ్చు.
 
 ### Key Points
 
 - Functional "ఏం" చెప్తుంది; NFR "ఎంత బాగా" - HLD లో NFRs మీదే focus
 - Everything is a trade-off: consistency ↔ availability, latency ↔ durability
-- SSE level: ప్రతి NFR ని numbers తో target చేయి ("p99 &lt; 200ms, 99.99% uptime")
+- SSE level: ప్రతి NFR ని numbers తో target చేయి ("p99 < 200ms, 99.99% uptime")
 
 ---
 
@@ -303,7 +277,7 @@ Browser లో `youtube.com` type చేస్తే ఏం జరుగుత�
 ### Key Points
 
 - HLD diagram లో ఎప్పుడూ client → DNS → LB → services flow ఉంటుంది
-- Same-datacenter round-trip \~0.5ms; cross-continent \~150ms (light speed limit!)
+- Same-datacenter round-trip ~0.5ms; cross-continent ~150ms (light speed limit!)
 - Latency తగ్గించడానికి: user కి దగ్గరగా (CDN, edge, multi-region)
 
 ---
@@ -797,7 +771,9 @@ Leaderless systems (Cassandra, Dynamo) లో data ని N nodes లో replica
 
 ### Quorum సూత్రం
 
-> N = replicas సంఖ్య, W = write కి confirm కావలసిన nodes, R = read కి చదవాల్సిన nodes. \***\*W + R &gt; N** అయితే → strong consistency (read ఎప్పుడూ latest write ని చూస్తుంది, overlap ఉంటుంది).
+> N = replicas సంఖ్య, W = write కి confirm కావలసిన nodes, R = read కి చదవాల్సిన nodes.
+>
+> **W + R > N** అయితే → strong consistency (read ఎప్పుడూ latest write ని చూస్తుంది, overlap ఉంటుంది).
 
 ### Code
 
@@ -831,7 +807,7 @@ console.log(quorumCheck(3, 3, 1)); // W+R=4 > 3 → Strong (write-slow, read-fas
 
 ### Key Points
 
-- W+R &gt; N = strong consistency; W+R ≤ N = eventual (fast కానీ risky)
+- W+R > N = strong consistency; W+R ≤ N = eventual (fast కానీ risky)
 - W, R ని tune చేసి read/write speed vs consistency balance చేయవచ్చు
 - Leaderless (Cassandra) systems దీని మీద నడుస్తాయి
 - Conflict resolution: last-write-wins (timestamp) లేదా vector clocks
@@ -1429,20 +1405,20 @@ console.log(bloom.mightContain("newuser")); // false (దాదాపు ఎప�
 
 | Availability | Downtime/year | పేరు          |
 | ------------ | ------------- | ------------- |
-| 99%          | \~3.65 రోజులు | "two nines"   |
-| 99.9%        | \~8.75 గంటలు  | "three nines" |
-| 99.99%       | \~52 నిమిషాలు | "four nines"  |
-| 99.999%      | \~5 నిమిషాలు  | "five nines"  |
+| 99%          | ~3.65 రోజులు  | "two nines"   |
+| 99.9%        | ~8.75 గంటలు   | "three nines" |
+| 99.99%       | ~52 నిమిషాలు  | "four nines"  |
+| 99.999%      | ~5 నిమిషాలు   | "five nines"  |
 
 > ఒక్కో "nine" జోడించడం **ఖరీదు గణనీయంగా పెరుగుతుంది** (redundancy, multi-region). 99.99% చాలా systems కి సరిపోతుంది.
 
 ### SLA vs SLO vs SLI
 
-| పదం                 | అర్థం                                | ఉదా                            |
-| ------------------- | ------------------------------------ | ------------------------------ |
-| **SLI** (Indicator) | ఏం కొలుస్తాం (metric)                | p99 latency, error rate        |
-| **SLO** (Objective) | మన లక్ష్యం (internal)                | "p99 &lt; 200ms, 99.9% uptime" |
-| **SLA** (Agreement) | customer తో ఒప్పందం (legal, penalty) | "99.9% లేకపోతే refund"         |
+| పదం                 | అర్థం                                | ఉదా                         |
+| ------------------- | ------------------------------------ | --------------------------- |
+| **SLI** (Indicator) | ఏం కొలుస్తాం (metric)                | p99 latency, error rate     |
+| **SLO** (Objective) | మన లక్ష్యం (internal)                | "p99 < 200ms, 99.9% uptime" |
+| **SLA** (Agreement) | customer తో ఒప్పందం (legal, penalty) | "99.9% లేకపోతే refund"      |
 
 > **సంబంధం:** SLI కొలుస్తాం → SLO లక్ష్యంగా పెట్టుకుంటాం → SLA customer కి promise చేస్తాం. SLO ఎప్పుడూ SLA కంటే కఠినంగా ఉంచుతారు (buffer).
 
@@ -1485,7 +1461,7 @@ console.log(bloom.mightContain("newuser")); // false (దాదాపు ఎప�
 
 ### Alerting
 
-- Metrics మీద thresholds → alerts ("error rate &gt; 5% → page on-call")
+- Metrics మీద thresholds → alerts ("error rate > 5% → page on-call")
 - **Alert fatigue** జాగ్రత్త - అతిగా alerts = ముఖ్యమైనవి miss
 
 ### Key Points
@@ -1586,9 +1562,9 @@ Problem? → వెంటనే Blue కి తిరిగి switch (rollback)
 
 ### 2. Estimation
 
-- 100M new URLs/day → \~1,160 writes/sec
-- Read:Write = 100:1 → \~116,000 reads/sec
-- 5 years storage: 100M × 365 × 5 ≈ 182B URLs → 62^7 (\~3.5 trillion) short codes సరిపోతాయి
+- 100M new URLs/day → ~1,160 writes/sec
+- Read:Write = 100:1 → ~116,000 reads/sec
+- 5 years storage: 100M × 365 × 5 ≈ 182B URLs → 62^7 (~3.5 trillion) short codes సరిపోతాయి
 
 ### 3. API
 
@@ -1656,7 +1632,7 @@ Write: counter service (unique ID) → Base62 → store
 
 ### 7. Deep Dive / Bottlenecks
 
-- **Read-heavy** → aggressive caching (hot URLs). Cache hit \~95%+
+- **Read-heavy** → aggressive caching (hot URLs). Cache hit ~95%+
 - **Redirect** = 301 (permanent, browser caches) vs 302 (temporary, analytics కి)
 - **Counter bottleneck** → range-based allocation (ఒక్కో server కి 1000 IDs block ఇవ్వడం)
 - **Analytics** → async (Kafka event → separate analytics DB), redirect ని slow చేయకుండా
@@ -1686,8 +1662,8 @@ Write: counter service (unique ID) → Base62 → store
 
 ### 3. Distributed ఎలా?
 
-> **సమస్య:** 10 app servers, ఒక్కోటి local counter → user 10× limit దాటవచ్చు!\
-> \***\*పరిష్కారం:** **Redis** (centralized) లో counter. అన్ని servers Redis ని atomic గా increment చేస్తాయి (`INCR`). ఒకే source of truth.
+> **సమస్య:** 10 app servers, ఒక్కోటి local counter → user 10× limit దాటవచ్చు!
+> **పరిష్కారం:** **Redis** (centralized) లో counter. అన్ని servers Redis ని atomic గా increment చేస్తాయి (`INCR`). ఒకే source of truth.
 
 ```
 Request → App Server → Redis (atomic INCR user:123)
@@ -1754,7 +1730,7 @@ Feed Cache (Redis): userId → [postId, postId, ...] (precomputed, recent N)
 ### 6. Deep Dive / Bottlenecks
 
 - **Celebrity fan-out** → hybrid (celebrities ని push చేయకుండా read time లో merge)
-- **Feed storage** → Redis లో recent \~1000 posts మాత్రమే (పాతవి DB నుండి)
+- **Feed storage** → Redis లో recent ~1000 posts మాత్రమే (పాతవి DB నుండి)
 - **Ranking** → time-order simple; ML ranking (engagement) complex
 - **Read QPS** → feed precomputed + cached (fan-out on write వల్ల read fast)
 
@@ -1809,7 +1785,7 @@ Sessions (Redis): userId → connectionServerId (ఎవరు ఏ server లో)
 ### 1. Requirements
 
 - Video upload, encode, stream (adaptive quality); massive scale, low buffering
-- Read-heavy (views &gt;&gt; uploads)
+- Read-heavy (views >> uploads)
 
 ### 2. Core: Upload → Encode → Serve
 
@@ -1930,11 +1906,646 @@ Trips (DB): tripId | riderId | driverId | status | route
 
 ---
 
-# Part 7 — Interview & Reference
+# Part 7 — SSE Deep Dives
+
+> SSE interview లో ఒక్కో topic మీద interviewer **లోతుగా** తవ్వుతాడు - "అది లోపల ఎలా పనిచేస్తుంది?", "ఇది fail అయితే?". ఈ part అదే లోతు - storage internals, isolation, stream processing, multi-region, security, cost. ఇవి SDE2 ని SSE నుండి వేరు చేస్తాయి.
 
 ---
 
-## 39. SDE2 vs SSE - ఏం Expect చేస్తారు
+## 39. Storage Internals (LSM-tree vs B-tree)
+
+### వివరణ
+
+"NoSQL fast writes, SQL fast reads" అని ఎందుకు? లోపల **storage engine** వేరు. B-tree (reads కి) vs LSM-tree (writes కి) - ఈ తేడా తెలిస్తే DB ఎంపిక justify చేయవచ్చు.
+
+### B-Tree (SQL - MySQL, Postgres)
+
+> Data ని sorted tree లో **in-place** update చేస్తుంది. Read వేగం (O(log n), direct seek). కానీ write = random disk seek (నెమ్మది).
+
+### LSM-Tree (NoSQL - Cassandra, RocksDB, LevelDB)
+
+> Writes ని ముందు in-memory **memtable** లో (sequential, fast). నిండాక disk కి immutable **SSTable** గా flush. Read = memtable + SSTables వెతకడం (bloom filter సహాయం). Writes చాలా fast, reads కొంత నెమ్మది.
+
+### Code - LSM ఆలోచన (simplified)
+
+```javascript
+class LSMStore {
+  #memtable = new Map(); // in-memory (fast, sequential writes)
+  #sstables = []; // disk segments (immutable, sorted) - newest first
+  #threshold;
+  constructor(threshold = 3) {
+    this.#threshold = threshold;
+  }
+
+  put(key, value) {
+    this.#memtable.set(key, value); // write ఎప్పుడూ memory కి (fast)
+    if (this.#memtable.size >= this.#threshold) this.#flush();
+  }
+  #flush() {
+    // memtable → sorted immutable SSTable, disk కి (newest ముందు)
+    this.#sstables.unshift(new Map([...this.#memtable].sort()));
+    console.log(
+      `  📥 Flushed ${this.#memtable.size} keys to SSTable #${this.#sstables.length}`,
+    );
+    this.#memtable = new Map();
+  }
+  get(key) {
+    if (this.#memtable.has(key)) return this.#memtable.get(key); // memory ముందు
+    for (const sst of this.#sstables) if (sst.has(key)) return sst.get(key); // newest → oldest
+    return null;
+  }
+}
+
+const db = new LSMStore(3);
+db.put("a", 1);
+db.put("b", 2);
+db.put("c", 3); // 3 keys → flush
+db.put("a", 10); // కొత్త value memtable లో (పాత "a"=1 పాత SSTable లో ఉన్నా)
+console.log("get a:", db.get("a")); // 10 (memtable newest wins)
+console.log("get b:", db.get("b")); // 2 (SSTable నుండి)
+```
+
+### ముఖ్య Concepts
+
+| Concept                   | వివరణ                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| **WAL** (Write-Ahead Log) | Memtable కి రాసేముందు append-only log కి (crash recovery)          |
+| **Compaction**            | పాత SSTables ని merge చేసి duplicates/deletes తీసేయడం (background) |
+| **Write Amplification**   | ఒక write, compaction వల్ల అనేకసార్లు disk కి రాయబడటం               |
+| **Tombstone**             | Delete = మార్క్ (immediate కాదు); compaction లో నిజంగా తీసేస్తారు  |
+
+### B-Tree vs LSM-Tree
+
+|                     | **B-Tree** (SQL)           | **LSM-Tree** (NoSQL)                 |
+| ------------------- | -------------------------- | ------------------------------------ |
+| Writes              | నెమ్మది (random, in-place) | వేగం (sequential, append)            |
+| Reads               | వేగం (direct)              | కొంత నెమ్మది (అనేక SSTables + bloom) |
+| Write amplification | తక్కువ                     | ఎక్కువ (compaction)                  |
+| ఉదా                 | MySQL InnoDB, Postgres     | Cassandra, RocksDB, HBase            |
+
+> **SSE insight:** "Cassandra write-heavy కి మంచిది" అంటే సరిపోదు - "**LSM-tree** వల్ల writes sequential (append), అందుకే write-heavy కి. కానీ reads కి అనేక SSTables వెతకాలి - bloom filters సహాయం" అని _ఎందుకో_ చెప్పు.
+
+---
+
+## 40. Isolation Levels & Consistency Depth
+
+### వివరణ
+
+Topic 14 లో consistency models చూశాం. SSE level లో **database isolation levels** (ACID లో "I") మరియు **serializability vs linearizability** తేడా అడుగుతారు.
+
+### Isolation Levels (weak → strong)
+
+| Level                | ఏం అనుమతిస్తుంది (anomaly)                             |
+| -------------------- | ------------------------------------------------------ |
+| **Read Uncommitted** | Dirty reads (commit కాని data చదవడం)                   |
+| **Read Committed**   | Committed data మాత్రమే; కానీ non-repeatable reads      |
+| **Repeatable Read**  | ఒకే row మళ్ళీ చదివితే same; కానీ phantom reads         |
+| **Serializable**     | పూర్తి isolation (transactions serial గా run అయినట్టు) |
+
+### Concurrency Anomalies
+
+| Anomaly                 | అర్థం                                      |
+| ----------------------- | ------------------------------------------ |
+| **Dirty Read**          | మరో transaction commit కాని change చదవడం   |
+| **Non-repeatable Read** | ఒకే query రెండుసార్లు వేర్వేరు results     |
+| **Phantom Read**        | Range query కి కొత్త rows మధ్యలో వచ్చాయి   |
+| **Write Skew**          | ఇద్దరూ చదివి, ఇద్దరూ రాసి, invariant break |
+
+### Serializability vs Linearizability (SSE favourite)
+
+|              | **Serializability**                            | **Linearizability**                         |
+| ------------ | ---------------------------------------------- | ------------------------------------------- |
+| దేని గురించి | **Transactions** (అనేక ops)                    | **ఒక్క object** (single op)                 |
+| Guarantee    | Transactions ఏదో ఒక serial order లో జరిగినట్టు | Ops real-time order లో, ఒక్కసారే జరిగినట్టు |
+| Layer        | Database isolation                             | Distributed register/consensus              |
+| కలిపి        | **Strict Serializability** = రెండూ (Spanner)   |
+
+> **సులభంగా:** Serializability = "results ఏదో ఒక వరుసకి సరిపోతాయి" (real-time order కాదు). Linearizability = "ప్రతి op అది జరిగిన క్షణంలోనే అందరికీ కనిపిస్తుంది" (real-time). Google Spanner = strict serializability (రెండూ) - TrueTime వాడి.
+
+### Snapshot Isolation (MVCC)
+
+> చాలా DBs (Postgres, Oracle) **MVCC** (Multi-Version Concurrency Control) వాడతాయి - ప్రతి transaction ఒక consistent snapshot చూస్తుంది. Readers writers ని block చేయరు (versions వల్ల). వేగం + isolation. కానీ **write skew** అనుమతిస్తుంది.
+
+### Key Points
+
+- Isolation level = concurrency anomalies vs performance trade-off (serializable = safe కానీ slow)
+- Serializability = transactions; Linearizability = single-object real-time
+- MVCC (snapshot isolation) = readers/writers block చేయకుండా isolation (కానీ write skew)
+- Money/inventory → serializable లేదా careful locking; reads → snapshot isolation సరిపోతుంది
+
+---
+
+## 41. Stream Processing (Batch vs Stream)
+
+### వివరణ
+
+పెద్ద data ని process చేయడానికి 2 మార్గాలు: **Batch** (పోగుపడ్డ data ని periodically) vs **Stream** (వచ్చిన కొద్దీ realtime). SSE level analytics, real-time features కి stream processing కీలకం.
+
+### Batch vs Stream
+
+|         | **Batch**               | **Stream**                            |
+| ------- | ----------------------- | ------------------------------------- |
+| Data    | Bounded (finite chunk)  | Unbounded (continuous)                |
+| Latency | ఎక్కువ (గంటలు/రోజులు)   | తక్కువ (seconds)                      |
+| ఉదా     | Daily reports, ETL      | Real-time dashboards, fraud detection |
+| Tools   | Spark, Hadoop MapReduce | Flink, Kafka Streams, Spark Streaming |
+
+### Windowing (streams లో సమయాన్ని విభజించడం)
+
+> Unbounded stream ని process చేయాలంటే **windows** గా విభజించాలి ("గత 5 నిమిషాల్లో ఎన్ని clicks?").
+
+| Window రకం   | వివరణ                                         |
+| ------------ | --------------------------------------------- |
+| **Tumbling** | Fixed, non-overlapping (0-5, 5-10, 10-15 min) |
+| **Sliding**  | Overlapping (0-5, 1-6, 2-7 min)               |
+| **Session**  | Activity gap బట్టి (user idle అయ్యేదాకా)      |
+
+### Event Time vs Processing Time + Watermarks
+
+> **సమస్య:** Event 10:00కి జరిగింది కానీ network delay వల్ల 10:05కి వచ్చింది (late/out-of-order). ఏ time వాడాలి?
+>
+> - **Event time** = నిజంగా జరిగిన సమయం (correct కానీ late data handle చేయాలి)
+> - **Processing time** = system కి వచ్చిన సమయం (simple కానీ inaccurate)
+> - **Watermark** = "ఈ timestamp కంటే పాత events ఇక రావు" అనే signal → window ని ఎప్పుడు close చేయాలో నిర్ణయిస్తుంది
+
+### Exactly-Once in Streams
+
+> Stream processor crash అయి restart అయితే - events double process అవ్వకుండా. **Checkpointing** (state snapshot) + **idempotent sinks** + transactional writes (Kafka + Flink) → exactly-once.
+
+### Lambda vs Kappa Architecture
+
+|            | **Lambda**                        | **Kappa**                              |
+| ---------- | --------------------------------- | -------------------------------------- |
+| ఏం         | Batch layer + Speed layer (రెండూ) | Stream మాత్రమే (batch = stream replay) |
+| Complexity | ఎక్కువ (2 codebases)              | తక్కువ (ఒకటే)                          |
+
+### Key Points
+
+- Batch = high-latency, high-throughput; Stream = low-latency, continuous
+- Windowing (tumbling/sliding/session) = unbounded stream ని process చేయడానికి
+- Event time + watermarks = late/out-of-order data ని correct గా handle చేయడం
+- Exactly-once = checkpointing + idempotent sinks (Flink, Kafka Streams)
+
+---
+
+## 42. Multi-Region & CRDTs
+
+### వివరణ
+
+Global scale కి **multi-region** deployment (latency తగ్గించడం, disaster tolerance). కానీ regions మధ్య data ని ఎలా consistent గా ఉంచాలి? **Active-active** writes → conflicts → **CRDTs** పరిష్కారం.
+
+### Multi-Region Strategies
+
+| Strategy           | వివరణ                                 | Trade-off                                 |
+| ------------------ | ------------------------------------- | ----------------------------------------- |
+| **Active-Passive** | ఒక region writes, మిగతా read replicas | Simple కానీ failover latency              |
+| **Active-Active**  | అన్ని regions writes accept           | 0 downtime కానీ conflict resolution అవసరం |
+
+### Conflict Resolution
+
+> రెండు regions ఒకే data ని ఏకకాలంలో మార్చితే - conflict. పరిష్కారాలు:
+>
+> - **Last-Write-Wins (LWW)** - timestamp ఎక్కువ ఉన్నది గెలుస్తుంది (simple కానీ data loss)
+> - **Vector Clocks** - causality track చేసి conflicts detect
+> - **CRDTs** - గణితపరంగా conflict-free (auto-merge)
+
+### CRDT (Conflict-free Replicated Data Type)
+
+> **CRDT** = ఏ order లో merge చేసినా ఒకే ఫలితం వచ్చే data structures (commutative, associative, idempotent). Regions విడిగా update అయినా, merge అయ్యాక అందరూ **converge** అవుతారు - conflict లేకుండా.
+
+### Code - G-Counter + LWW-Register CRDT
+
+```javascript
+// G-Counter (Grow-only Counter) - ప్రతి node కి విడి count, merge = per-node max
+class GCounter {
+  constructor(nodeId) {
+    this.nodeId = nodeId;
+    this.counts = {};
+  }
+  increment(n = 1) {
+    this.counts[this.nodeId] = (this.counts[this.nodeId] || 0) + n;
+  }
+  value() {
+    return Object.values(this.counts).reduce((a, b) => a + b, 0);
+  }
+  merge(other) {
+    const merged = new GCounter(this.nodeId);
+    const nodes = new Set([
+      ...Object.keys(this.counts),
+      ...Object.keys(other.counts),
+    ]);
+    for (const n of nodes)
+      merged.counts[n] = Math.max(this.counts[n] || 0, other.counts[n] || 0);
+    return merged;
+  }
+}
+
+// రెండు regions network partition లో విడిగా increment
+const usa = new GCounter("usa");
+const india = new GCounter("india");
+usa.increment(3); // USA: 3 likes
+india.increment(5); // India: 5 likes (ఒకరికొకరు తెలియదు)
+console.log("USA sees:", usa.value(), "| India sees:", india.value()); // 3 | 5
+
+// Partition heal → merge (ఏ order లో అయినా ఒకటే ఫలితం - converge)
+console.log("Merged:", usa.merge(india).value()); // 8 (conflict లేదు!)
+
+// LWW-Register - timestamp ఎక్కువ ఉన్న write గెలుస్తుంది
+class LWWRegister {
+  constructor() {
+    this.value = null;
+    this.ts = 0;
+  }
+  set(value, ts) {
+    if (ts > this.ts) {
+      this.value = value;
+      this.ts = ts;
+    }
+  }
+  merge(other) {
+    if (other.ts > this.ts) {
+      this.value = other.value;
+      this.ts = other.ts;
+    }
+  }
+}
+const r1 = new LWWRegister(),
+  r2 = new LWWRegister();
+r1.set("blue", 100);
+r2.set("red", 105);
+r1.merge(r2);
+console.log("LWW winner:", r1.value); // red (higher timestamp గెలిచింది)
+```
+
+### CRDT ఎక్కడ
+
+- Collaborative editing (Google Docs, Figma), shopping carts (Amazon), likes/counters, presence
+- Redis, Riak, Automerge, Yjs - CRDT support
+
+### Key Points
+
+- Multi-region = latency↓ + DR; కానీ active-active → conflicts
+- LWW (simple, data loss) < Vector clocks (detect) < CRDTs (auto-resolve)
+- CRDT = commutative + associative + idempotent → ఏ order merge అయినా converge
+- Data locality: user data ని వాళ్ళ region లో (GDPR + latency)
+
+---
+
+## 43. Security in System Design
+
+### వివరణ
+
+SSE level లో security ని design లో భాగంగా చూపించాలి - authentication, authorization, encryption, secrets, attacks నివారణ.
+
+### Authentication vs Authorization
+
+|        | **Authentication** (AuthN) | **Authorization** (AuthZ) |
+| ------ | -------------------------- | ------------------------- |
+| ప్రశ్న | "నువ్వు ఎవరు?"             | "నీకు అనుమతి ఉందా?"       |
+| ఉదా    | Login (password, OTP)      | "ఈ file delete చేయగలవా?"  |
+| పద్ధతి | Session, JWT, OAuth        | RBAC, ABAC, ACL           |
+
+### Tokens: Session vs JWT
+
+|        | **Session** (server state) | **JWT** (stateless)          |
+| ------ | -------------------------- | ---------------------------- |
+| State  | Server లో session store    | Token లోనే (self-contained)  |
+| Scale  | Session store lookup       | Stateless (verify signature) |
+| Revoke | సులభం (delete session)     | కష్టం (expiry దాకా valid)    |
+
+> **JWT** = signed token (header.payload.signature). Server signature verify చేస్తే చాలు - DB lookup అక్కర్లేదు (stateless, scalable). కానీ revoke కష్టం → short expiry + refresh token.
+
+### OAuth 2.0 (delegation)
+
+> "Google తో login" - నీ Google password ని 3rd party కి ఇవ్వకుండా, Google ఒక **token** ఇస్తుంది. OAuth = access delegation (password share చేయకుండా).
+
+### Encryption
+
+| రకం            | ఎప్పుడు                                                  |
+| -------------- | -------------------------------------------------------- |
+| **In Transit** | TLS/HTTPS (network మీద data)                             |
+| **At Rest**    | DB/disk encryption (stored data)                         |
+| **End-to-End** | Sender-receiver మాత్రమే (WhatsApp - server కూడా చదవలేదు) |
+
+### ముఖ్య Security Concerns
+
+| Attack/Concern    | నివారణ                                                 |
+| ----------------- | ------------------------------------------------------ |
+| **DDoS**          | Rate limiting, CDN, WAF                                |
+| **SQL Injection** | Parameterized queries                                  |
+| **Secrets**       | Vault/KMS (code లో hardcode వద్దు!)                    |
+| **Data privacy**  | GDPR (data residency, right to delete), PII encryption |
+
+### Key Points
+
+- AuthN (ఎవరు) vs AuthZ (అనుమతి) - రెండూ వేరు
+- JWT = stateless/scalable కానీ revoke కష్టం; Session = revoke సులభం కానీ stateful
+- Encrypt in-transit (TLS) + at-rest; sensitive → end-to-end
+- Secrets ఎప్పుడూ Vault/KMS లో (code/config లో కాదు); rate limit + WAF for DDoS
+
+---
+
+## 44. Cost, Load Shedding & Graceful Degradation
+
+### వివరణ
+
+SSE = system పనిచేస్తేనే కాదు, **cost-effective** గా, **overload లో కూడా** పనిచేయాలి. Infinite resources లేవు - trade-offs.
+
+### Load Shedding
+
+> **Overload వచ్చినప్పుడు అన్నీ fail అవ్వకుండా, తక్కువ ప్రాధాన్య requests ని ఉద్దేశపూర్వకంగా drop చేయడం.** Hospital triage లాంటిది - అందరినీ కాపాడలేకపోతే, ముఖ్యమైన వాళ్ళను ముందు.
+
+- Priority బట్టి drop (paid users > free; critical > analytics)
+- 503 Service Unavailable + Retry-After
+
+### Graceful Degradation
+
+> Overload/failure లో **పూర్తిగా down కాకుండా, తక్కువ features తో** పనిచేయడం.
+
+> **ఉదా - Amazon:** Recommendation service down అయితే, page crash కాదు - recommendations లేకుండా (లేదా generic) చూపిస్తుంది. Core (buy) పనిచేస్తుంది.
+
+### Backpressure
+
+> Downstream slow అయితే, upstream ని "నెమ్మదించు" అని signal (లేకపోతే queue పేలుతుంది, OOM). Reactive systems, streaming లో కీలకం.
+
+### Cost Optimization
+
+| Technique          | ఎలా ఆదా                                              |
+| ------------------ | ---------------------------------------------------- |
+| **Tiered storage** | Hot (SSD, ఖరీదు) vs Cold (S3 Glacier, చౌక)           |
+| **Auto-scaling**   | Traffic బట్టి servers up/down (idle ఖర్చు తగ్గించడం) |
+| **Caching**        | DB/compute calls తగ్గించడం (cache చౌక)               |
+| **Spot instances** | Batch jobs కి cheap interruptible compute            |
+| **Data retention** | పాత data delete/archive (storage cost)               |
+
+### Key Points
+
+- Load shedding = overload లో low-priority requests drop (అన్నీ fail కాకుండా)
+- Graceful degradation = core features నిలబెట్టి, non-essential తగ్గించడం
+- Backpressure = downstream slow అయితే upstream ని slow చేయడం (queue explosion నివారణ)
+- Cost = tiered storage + auto-scaling + caching; SSE trade-offs లో cost కూడా భాగం
+
+---
+
+# Part 8 — Advanced Case Studies
+
+> SSE interviews లో అడిగే కష్టమైన, nuanced systems. వీటిలో correctness (money), realtime collaboration, latency (typeahead), reliability (scheduler) - deep trade-offs ఉంటాయి.
+
+---
+
+## 45. Payment System / Ledger
+
+### 1. Requirements
+
+- Money transfer (A → B); **exactly-once** (double-charge కూడదు); strong consistency; full audit trail
+- **NFR:** Correctness > availability (డబ్బు తప్పు కూడదు) → CP system
+
+### 2. Core: Double-Entry Ledger
+
+> ప్రతి transaction = ఒక **debit** + ఒక **credit** (sum ఎప్పుడూ 0). Money create/destroy కాదు, కేవలం move. Ledger **append-only** (immutable) - audit + correctness.
+
+### Code
+
+```javascript
+class Ledger {
+  #entries = []; // append-only (immutable audit trail)
+  #processed = new Set(); // idempotency keys
+
+  transfer(idempotencyKey, from, to, amount) {
+    // Idempotency - retry/duplicate అయినా ఒక్కసారే (Topic 18)
+    if (this.#processed.has(idempotencyKey)) {
+      console.log(`⏭️ Duplicate ${idempotencyKey} - skip`);
+      return;
+    }
+    if (amount <= 0) throw new Error("Invalid amount");
+    // Double-entry: from debit, to credit (atomic pair)
+    this.#entries.push({ key: idempotencyKey, account: from, delta: -amount });
+    this.#entries.push({ key: idempotencyKey, account: to, delta: +amount });
+    this.#processed.add(idempotencyKey);
+    console.log(`💸 ${from} → ${to}: ${amount}`);
+  }
+
+  balance(account) {
+    return this.#entries
+      .filter((e) => e.account === account)
+      .reduce((s, e) => s + e.delta, 0);
+  }
+  totalDelta() {
+    return this.#entries.reduce((s, e) => s + e.delta, 0);
+  } // invariant: 0
+}
+
+const ledger = new Ledger();
+ledger.transfer("seed", "world", "alice", 1000); // alice కి 1000 seed
+ledger.transfer("txn1", "alice", "bob", 300);
+ledger.transfer("txn1", "alice", "bob", 300); // retry - idempotent (double-charge కాదు)
+
+console.log("Alice:", ledger.balance("alice")); // 700
+console.log("Bob:", ledger.balance("bob")); // 300
+console.log("Total delta (must be 0):", ledger.totalDelta()); // 0 (money conserved)
+```
+
+### 3. Design Points
+
+| అంశం               | పరిష్కారం                                                            |
+| ------------------ | -------------------------------------------------------------------- |
+| **Exactly-once**   | Idempotency key (Topic 18) - duplicate skip                          |
+| **Consistency**    | Strong (ACID transaction, serializable isolation)                    |
+| **Audit**          | Append-only ledger (immutable, event sourcing - Topic 25)            |
+| **Cross-service**  | Saga (Topic 19) - payment → inventory → shipping, compensate on fail |
+| **Reconciliation** | Periodic - ledger balances match actual?                             |
+
+### 4. Deep Dive
+
+- **CP over AP** - partition లో unavailable మేలు (wrong balance కంటే)
+- **2-phase**: authorize (hold) → capture (charge) - card payments
+- **Idempotency + audit + strong consistency** = payment core
+- **External gateway** (Stripe) - webhook + idempotency + retry
+
+> **SSE insight:** Payments = correctness మొదటిది. "Eventual consistency ఇక్కడ వద్దు - double spend కూడదు. Idempotency key + ACID + append-only ledger + reconciliation" అని _ఎందుకో_ justify చేయి.
+
+---
+
+## 46. Collaborative Editing (Google Docs)
+
+### 1. Requirements
+
+- అనేక users ఒకే document ని ఏకకాలంలో edit; realtime sync; conflict-free; offline support
+- Low latency (keystroke వెంటనే కనిపించాలి)
+
+### 2. Core సమస్య: Concurrent Edits
+
+> User A "cat" లో index 0కి "s" చేర్చాడు → "scat". అదే క్షణం User B index 3కి "!" చేర్చాడు → "cat!". రెండూ merge అయితే? Indices shift అవుతాయి → conflict. పరిష్కారం: **OT** లేదా **CRDT**.
+
+### OT vs CRDT
+
+|            | **OT** (Operational Transform)                      | **CRDT**                                |
+| ---------- | --------------------------------------------------- | --------------------------------------- |
+| ఎలా        | Operations ని ఒకదాని బట్టి transform (index adjust) | Characters కి unique IDs, order గణితంగా |
+| Server     | Central server అవసరం (transform coordinate)         | Peer-to-peer possible (server optional) |
+| Complexity | Transform logic కష్టం                               | Metadata ఎక్కువ (ప్రతి char కి ID)      |
+| ఉదా        | Google Docs (classic)                               | Figma, Yjs, Automerge                   |
+
+> **OT ఆలోచన:** Op B ని, ఇప్పటికే apply అయిన Op A బట్టి **transform** చేస్తారు (B యొక్క index ని adjust). అందరూ same final state కి converge.
+>
+> **CRDT ఆలోచన:** ప్రతి character కి unique, ordered ID (fractional index). Insert = రెండు IDs మధ్య కొత్త ID. Order గణితంగా నిర్ణయమవుతుంది → conflict లేదు (Topic 42).
+
+### 3. Architecture
+
+```
+User A ─┐
+        ├─ WebSocket ─→ Collab Server (OT transform / CRDT merge) ─→ persist (DB)
+User B ─┘                      ↓ broadcast merged ops కి అందరికీ
+Offline edits → reconnect → sync (CRDT auto-merge)
+```
+
+### 4. Deep Dive
+
+- **Realtime** → WebSocket (Topic 24), ops broadcast
+- **Conflict-free** → OT (server-coordinated) లేదా CRDT (Topic 42, offline-friendly)
+- **Cursor presence** → ఇతరుల cursors చూపించడం (ephemeral, CRDT-like)
+- **History/undo** → ops log (event sourcing - Topic 25)
+- **Persistence** → periodic snapshots + op log (పూర్తి replay ఖరీదు)
+
+> **SSE insight:** "Last-write-wins వద్దు - keystrokes పోతాయి. OT లేదా CRDT" అని చెప్పి, offline support కావాలంటే CRDT (Topic 42) ఎందుకు మంచిదో explain చేయి.
+
+---
+
+## 47. Typeahead / Autocomplete
+
+### 1. Requirements
+
+- User type చేస్తుంటే top suggestions (prefix match); **cực fast** (<100ms, ప్రతి keystroke); popularity ranked
+- Massive scale (Google search box)
+
+### 2. Core: Trie (Prefix Tree)
+
+> **Trie** = prefix ఆధారంగా వేగవంతమైన lookup. ప్రతి node ఒక character; root నుండి path = ఒక word. Prefix కి navigate చేసి, ఆ subtree లోని words = suggestions.
+
+### Code
+
+```javascript
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEnd = false;
+    this.freq = 0;
+  }
+}
+class Autocomplete {
+  #root = new TrieNode();
+  insert(word, freq = 1) {
+    let node = this.#root;
+    for (const ch of word) {
+      if (!node.children[ch]) node.children[ch] = new TrieNode();
+      node = node.children[ch];
+    }
+    node.isEnd = true;
+    node.freq = freq;
+  }
+  // prefix తో మొదలయ్యే top words (popularity క్రమంలో)
+  suggest(prefix, limit = 5) {
+    let node = this.#root;
+    for (const ch of prefix) {
+      if (!node.children[ch]) return []; // prefix లేదు
+      node = node.children[ch];
+    }
+    const results = [];
+    const dfs = (n, path) => {
+      if (n.isEnd) results.push({ word: prefix + path, freq: n.freq });
+      for (const ch in n.children) dfs(n.children[ch], path + ch);
+    };
+    dfs(node, "");
+    return results
+      .sort((a, b) => b.freq - a.freq)
+      .slice(0, limit)
+      .map((r) => r.word);
+  }
+}
+
+const ac = new Autocomplete();
+[
+  ["telugu", 100],
+  ["telegram", 80],
+  ["telephone", 60],
+  ["television", 90],
+  ["system", 50],
+].forEach(([w, f]) => ac.insert(w, f));
+
+console.log(ac.suggest("tel")); // [telugu, television, telegram, telephone] (freq order)
+console.log(ac.suggest("sys")); // [ 'system' ]
+console.log(ac.suggest("xyz")); // [] (match లేదు)
+```
+
+### 3. Scale కి Design Points
+
+| అంశం                | పరిష్కారం                                              |
+| ------------------- | ------------------------------------------------------ |
+| **Latency**         | Trie in-memory; edge/CDN దగ్గర cache                   |
+| **Popularity**      | ప్రతి node లో top-K precomputed (DFS ప్రతిసారి ఖరీదు)  |
+| **Scale**           | Trie ని shard (prefix బట్టి), replicate                |
+| **Updates**         | Search logs → batch job → Trie rebuild (realtime కాదు) |
+| **Personalization** | User history + global blend                            |
+
+### 4. Deep Dive
+
+- **Precompute top-K per node** → runtime DFS లేకుండా O(prefix length)
+- **Debounce** client-side (ప్రతి keystroke కి కాదు)
+- **Batch update** - popularity ని offline లెక్కించి Trie rebuild
+- **Fuzzy match** (typos) → edit distance (ఖరీదు, optional)
+
+> **SSE insight:** "Trie వేగం, కానీ ప్రతి node కి **top-K precompute** చేస్తే runtime DFS అవసరం లేదు - <10ms. Updates realtime కాదు, batch (search logs → rebuild)" - latency vs freshness trade-off చూపించు.
+
+---
+
+## 48. Distributed Job Scheduler (Cron at Scale)
+
+### 1. Requirements
+
+- Millions scheduled jobs (once / recurring); reliable (miss కూడదు); at-least-once execution; scale
+- ఉదా: reminders, report generation, retries
+
+### 2. Core: ఎవరు, ఎప్పుడు run చేయాలి?
+
+> Jobs ని time-ordered store చేసి, "ఇప్పుడు due అయినవి" pick చేసి workers కి పంచడం. Single scheduler = SPOF + bottleneck → distributed.
+
+### 3. Architecture
+
+```
+Job Submit → DB (jobs, nextRunTime indexed)
+Scheduler (leader-elected) → due jobs poll → Queue (Kafka) → Worker pool → execute
+                                                              ↓ fail → retry (backoff) → DLQ
+Leader election (Topic 20: Zookeeper/etcd) → ఒక్క scheduler active (duplicate కాకుండా)
+```
+
+### 4. Design Points
+
+| అంశం              | పరిష్కారం                                                     |
+| ----------------- | ------------------------------------------------------------- |
+| **Reliability**   | Job DB persist; worker crash → queue లో ఉంటుంది, retry        |
+| **No duplicate**  | Leader election (ఒక్క scheduler) + idempotent jobs (Topic 18) |
+| **Scale**         | Jobs ని shard (time buckets); workers horizontal              |
+| **Precision**     | Poll interval trade-off (వేగం vs DB load); time-wheel         |
+| **Recurring**     | Run అయ్యాక nextRunTime update (reschedule)                    |
+| **At-least-once** | Retry + idempotency (exactly-once ఖరీదు)                      |
+
+### 5. Deep Dive
+
+- **Leader election** (Topic 20) → duplicate scheduling నివారణ
+- **Time-based sharding** → ఒక్కో scheduler ఒక్కో time-bucket
+- **Hot shard** (ఒకే second కి million jobs) → jitter/spread
+- **Missed jobs** (scheduler down) → recovery on restart (past-due jobs scan)
+- **Idempotency** → job double-run అయినా safe (at-least-once accept)
+
+> **SSE insight:** "Single cron = SPOF. Leader election (duplicate నివారణ) + queue (reliability) + idempotent workers (at-least-once safe) + time-sharding (scale)" - reliability + scale రెండూ address చేయి.
+
+---
+
+# Part 9 — Interview & Reference
+
+---
+
+## 49. SDE2 vs SSE - ఏం Expect చేస్తారు
 
 ### వివరణ
 
@@ -1966,7 +2577,7 @@ Trips (DB): tripId | riderId | driverId | status | route
 
 ---
 
-## 40. HLD Interview Framework (Step-by-step)
+## 50. HLD Interview Framework (Step-by-step)
 
 ### వివరణ
 
@@ -2016,39 +2627,39 @@ Topic 2 లో చూసిన framework ని ఒక reference checklist గ�
 
 ---
 
-## 41. Numbers & Latency Cheat Sheet
+## 51. Numbers & Latency Cheat Sheet
 
 ### Latency Numbers (గుర్తుంచుకో)
 
-| Operation                            | Time (approx)     |
-| ------------------------------------ | ----------------- |
-| L1 cache reference                   | \~1 ns            |
-| Main memory (RAM) reference          | \~100 ns          |
-| SSD random read                      | \~100 μs (0.1 ms) |
-| Network round-trip (same datacenter) | \~0.5 ms          |
-| HDD seek                             | \~10 ms           |
-| Network round-trip (cross-continent) | \~150 ms          |
+| Operation                            | Time (approx)    |
+| ------------------------------------ | ---------------- |
+| L1 cache reference                   | ~1 ns            |
+| Main memory (RAM) reference          | ~100 ns          |
+| SSD random read                      | ~100 μs (0.1 ms) |
+| Network round-trip (same datacenter) | ~0.5 ms          |
+| HDD seek                             | ~10 ms           |
+| Network round-trip (cross-continent) | ~150 ms          |
 
 > **ముఖ్య పాఠం:** RAM ≫ SSD ≫ Disk ≫ Network(cross-region). అందుకే **cache (RAM)** వేగం; cross-region calls ఖరీదు.
 
 ### Capacity Numbers
 
-| అంశం                | విలువ             |
-| ------------------- | ----------------- |
-| సెకన్లు/రోజు        | \~86,400 (\~10^5) |
-| 1M requests/day     | \~12 QPS          |
-| 1B requests/day     | \~11,600 QPS      |
-| Char (ASCII)        | 1 byte            |
-| Powers: KB→MB→GB→TB | ×1000 ఒక్కోటి     |
+| అంశం                | విలువ           |
+| ------------------- | --------------- |
+| సెకన్లు/రోజు        | ~86,400 (~10^5) |
+| 1M requests/day     | ~12 QPS         |
+| 1B requests/day     | ~11,600 QPS     |
+| Char (ASCII)        | 1 byte          |
+| Powers: KB→MB→GB→TB | ×1000 ఒక్కోటి   |
 
 ### Powers of Two (storage)
 
-| Power | Value        | పేరు |
-| ----- | ------------ | ---- |
-| 2^10  | \~1,000      | KB   |
-| 2^20  | \~1 million  | MB   |
-| 2^30  | \~1 billion  | GB   |
-| 2^40  | \~1 trillion | TB   |
+| Power | Value       | పేరు |
+| ----- | ----------- | ---- |
+| 2^10  | ~1,000      | KB   |
+| 2^20  | ~1 million  | MB   |
+| 2^30  | ~1 billion  | GB   |
+| 2^40  | ~1 trillion | TB   |
 
 ### Availability Downtime
 
@@ -2061,7 +2672,7 @@ Topic 2 లో చూసిన framework ని ఒక reference checklist గ�
 
 ---
 
-## 42. Memory Tips + Common Mistakes
+## 52. Memory Tips + Common Mistakes
 
 ### Building Blocks (గుర్తుంచుకునే analogy)
 
@@ -2079,6 +2690,21 @@ Topic 2 లో చూసిన framework ని ఒక reference checklist గ�
 | **Bloom Filter**       | "ఖచ్చితంగా లేదు" లేదా "బహుశా ఉంది"              |
 | **Idempotency**        | Lift button (ఎన్నిసార్లు నొక్కినా ఒక్కటే)       |
 | **Saga**               | Compensating steps (వెనక్కి undo)               |
+
+### SSE Deep Dives (గుర్తుంచుకునే analogy)
+
+| Concept                  | గుర్తుంచుకోవడానికి                                   |
+| ------------------------ | ---------------------------------------------------- |
+| **LSM-tree**             | Memtable (memory) → SSTable (disk flush); write-fast |
+| **B-tree**               | In-place sorted; read-fast (SQL)                     |
+| **Serializability**      | Transactions ఏదో ఒక serial order                     |
+| **Linearizability**      | Single object, real-time order                       |
+| **CRDT**                 | ఏ order merge అయినా converge (conflict-free)         |
+| **Watermark**            | "ఈ time కంటే పాత events ఇక రావు"                     |
+| **Load Shedding**        | Hospital triage (ముఖ్యమైనవి ముందు)                   |
+| **Graceful Degradation** | Recommendations పోయినా "buy" పనిచేస్తుంది            |
+| **Double-entry Ledger**  | ప్రతి debit కి credit (sum = 0)                      |
+| **Trie**                 | Prefix tree (typeahead autocomplete)                 |
 
 ### Common Mistakes (వీటిని చేయకు)
 
@@ -2122,4 +2748,5 @@ Topic 2 లో చూసిన framework ని ఒక reference checklist గ�
 
 ---
 
-_JavaScript/System Design HLD - Complete Telugu Guide (SDE2 & SSE)Runnable code snippets Node.js లో run చేసి verify చేయబడ్డాయి ✅_
+_JavaScript/System Design HLD - Complete Telugu Guide (SDE2 & SSE)_
+_Runnable code snippets Node.js లో run చేసి verify చేయబడ్డాయి ✅_

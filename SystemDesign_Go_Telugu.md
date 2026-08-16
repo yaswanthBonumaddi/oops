@@ -32,11 +32,15 @@
 13. Distributed Key-Value Store - consistent hashing, replication, quorum (R/W), gossip
 14. Distributed Cache (memcached-style) - sharding, LRU eviction, cache-aside
 15. Payment/Ledger System - idempotency, double-entry, exactly-once, saga
+16. Collaborative Editing (Google Docs) - OT vs CRDT, real-time sync, presence/cursors, versioning
+17. Web Crawler - URL frontier, bloom-filter dedup, politeness/robots.txt, worker pool, BFS vs DFS
+18. Distributed Message Queue (Kafka) - topics/partitions, offsets, consumer groups, ISR replication
+19. Distributed File Storage (Dropbox/S3) - chunking, content-addressed dedup, metadata, delta sync
 
 **Part 3 — Reference**
 
-16. Common patterns across designs (idempotency, dedup, backpressure, sharding, caching) recap
-17. System-design-in-Go interview checklist + Memory Tips + Common Mistakes + numbers/latency cheat sheet
+20. Common patterns across designs (idempotency, dedup, backpressure, sharding, caching) recap
+21. System-design-in-Go interview checklist + Memory Tips + Common Mistakes + numbers/latency cheat sheet
 
 ---
 
@@ -3421,13 +3425,1184 @@ func (s *Service) storeResult(ctx context.Context, tx *sql.Tx, key string, r Tra
 - Correctness > throughput (payment; feed/cache లా eventual కాదు).
 - Go: `database/sql` transactions, `defer Rollback`, `context` deadlines.
 
+## 16. Collaborative Editing (Google Docs / Real-time Editor)
+
+> **Real-life Analogy:** **ఒకే whiteboard మీద చాలామంది ఒకేసారి రాయడం.** ఇద్దరు ఒకే చోట రాస్తే అక్షరాలు కలగలిసిపోతాయి - ఎవరి అక్షరం ఎక్కడ వెళ్ళాలో "rules" కావాలి. **OT** = ఇద్దరి మధ్య నిల్చున్న translator, ప్రతి move ని మిగతావాళ్ళ moves కి తగ్గట్టు re-adjust చేస్తాడు. **CRDT** = ప్రతి అక్షరానికి ఒక unique, మారని position ID ఇవ్వడం ⇒ ఏ order లో వచ్చినా final text అందరికీ ఒక్కటే. "Merge conflict" అనేదే లేకుండా అందరూ converge అవుతారు.
+
+### Requirements (Functional + Non-functional)
+
+**Functional:**
+
+- ఒకే document ని అనేక users **ఏకకాలంలో** edit చేయగలగాలి
+- మార్పులు **real-time** గా (<100ms) అందరికీ కనిపించాలి
+- ఇతరుల **cursors / selections (presence)** కనిపించాలి
+- **Offline edit** → online అయ్యాక auto-merge (conflict లేకుండా)
+- **Version history + undo/redo**
+
+**Non-functional:**
+
+- **Convergence** (strong eventual consistency) - అన్ని replicas చివరికి ఒకే state
+- **Low latency** real-time sync; **high availability**
+- Per-doc concurrency సాధారణంగా చిన్నది (~10-100 active) కానీ total docs billions
+- **Intention preservation** - user ఏం అనుకున్నాడో అదే జరగాలి (edits ఒకదాన్ని ఒకటి పాడుచేయకూడదు)
+
+### Estimation (QPS, storage)
+
+```
+100M DAU, active editing లో ~5 keystrokes/sec/user
+ఒక్కో op ~50-100 bytes (insert char + position id)
+Peak concurrent editors: ~1M → ~5M ops/sec (batch/debounce తో తగ్గించొచ్చు)
+
+Doc storage: snapshot + op log (compaction తో). ఒక doc ~10-100 KB.
+CRDT metadata overhead: tombstones + position ids ⇒ raw text కంటే 2-5× (GC అవసరం)
+Presence: ephemeral (persist చేయం), WebSocket మీద మాత్రమే
+```
+
+### API Design
+
+```
+WebSocket (per-doc room, real-time bidirectional):
+  → JOIN   {docId, sinceVersion}     (reconnect: missed ops పంపు)
+  → OP     {docId, op}               (insert/delete op broadcast)
+  → CURSOR {docId, userId, pos}      (presence, ephemeral)
+  ← OP     {op, fromUser}            (ఇతరుల ops)
+  ← ACK    {opId}                    (server received)
+
+REST (snapshot + history):
+  GET  /docs/{id}          → {content, version}   (join ముందు baseline)
+  GET  /docs/{id}/history  → [versions]           (time-travel / undo)
+  POST /docs               → {docId}
+```
+
+### Data Model
+
+```
+Document = ordered sequence of characters (each char = CRDT element).
+
+CRDT element (fractional-index / RGA style):
+  { Position, Value rune, Deleted bool(tombstone) }
+  Position = dense, totally-ordered key ⇒ రెండు positions మధ్య ఎప్పుడూ కొత్తది.
+
+OT alternative:
+  op log: [{type: ins/del, pos, char, version}] + central server ordering.
+
+Storage:
+  - Op log (append-only) + periodic snapshot (compaction).
+  - Presence: in-memory only (Redis pub/sub for cross-server fan-out).
+```
+
+### High-level Architecture
+
+```
+  User A ─┐   WebSocket   ┌──────────────┐   ops    ┌───────────┐
+          ├───────────────┤  Sync Hub    ├──────────┤ Op Log DB │
+  User B ─┤   (per-doc)   │ (per-doc     │ snapshot │ +Snapshot │
+          │               │  goroutine)  ├──────────┤           │
+  User C ─┘               └──────┬───────┘          └───────────┘
+                                 │ Redis pub/sub (cross-server fan-out)
+                          ┌──────┴───────┐
+                          │ other servers│  (same doc, different region)
+                          └──────────────┘
+  Client-side CRDT ⇒ offline edit; reconnect అయితే ops exchange → converge.
+```
+
+### Deep Dive — OT vs CRDT (conflict resolution యొక్క గుండె)
+
+రెండు users ఒకే position లో ఏకకాలంలో type చేస్తే ఏం జరుగుతుంది? ఇదే core problem.
+
+| అంశం | **OT (Operational Transformation)** | **CRDT (Conflict-free Replicated Data Type)** |
+| ---- | ----------------------------------- | --------------------------------------------- |
+| ఆలోచన | Op ని concurrent op కి తగ్గట్టు **transform** (index shift) | ప్రతి char కి **unique immutable position** ⇒ merge automatic |
+| Server పాత్ర | సాధారణంగా **central server** ordering ఇవ్వాలి | Server optional (P2P కూడా పని చేస్తుంది) |
+| Complexity | Transform functions prove చేయడం **కష్టం** (TP1/TP2) | Data structure లోనే correctness; transform అవసరం లేదు |
+| Metadata | తక్కువ (op = pos+char) | ఎక్కువ (position ids + tombstones) |
+| ఎవరు వాడతారు | **Google Docs** (Jupiter/Wave), Etherpad | Figma, Yjs, Automerge, Riak |
+
+**OT ఎలా:** User A op `insert("X", pos=5)`, అదే సమయంలో User B op `insert("Y", pos=2)`. B op ముందు apply అయితే, A op ఇప్పుడు pos=5 కాదు, pos=6 (B ఒక char ముందు చేర్చాడు). Transform function `T(opA, opB)` ఈ shift adjust చేస్తుంది. అన్ని clients ఒకే transformed sequence apply చేస్తే converge. కానీ n-way transform + offline = combinatorial explosion ⇒ central server తో linearize చేస్తారు.
+
+**CRDT ఎలా (నేను దీన్ని ఎంచుకుంటా):** ప్రతి char కి **fractional position** (దట్టమైన key) ఇస్తాం. రెండు adjacent chars మధ్య insert = వాటి positions మధ్య కొత్త position generate చేయడం. రెండు concurrent inserts అదే చోట జరిగినా వేర్వేరు positions (site-id tie-break), అందరూ **sort by position** చేస్తే ఒకే order. `insert` commutative + idempotent ⇒ ఏ order/ఎన్నిసార్లు apply చేసినా converge. **Delete = tombstone** (లేదా fractional-index లో నేరుగా remove - neighbor ని ID తో reference చేయం కాబట్టి safe).
+
+**ఎందుకు CRDT:** central server లేకుండా offline-first + convergence proof data structure లోనే ⇒ senior systems favorite. Trade-off: metadata/tombstone growth (⇒ GC).
+
+**Presence (cursors):** ఇది CRDT కాదు - ephemeral. ప్రతి user cursor = **LWW** (last-write-wins), WebSocket మీద broadcast, disconnect అయితే expire. Document data తో కలపం.
+
+### Go Implementation — fractional-index sequence CRDT + sync hub
+
+`between(lo, hi)` రెండు position keys మధ్య కొత్త dense key ఇస్తుంది - ఇదే CRDT గుండె. `integrate` sorted insert (commutative + idempotent). Central ordering అవసరం లేదు.
+
+```go
+package crdt
+
+import (
+	"bytes"
+	"sort"
+	"strings"
+)
+
+// Position = dense, totally-ordered key. రెండు positions మధ్య ఎప్పుడూ కొత్తది
+// generate చేయొచ్చు (fractional indexing). Site = concurrent-insert tie-break.
+type Position struct {
+	Path []byte // base-256 "fraction"; lexicographic compare
+	Site uint64
+}
+
+func (a Position) Less(b Position) bool {
+	if c := bytes.Compare(a.Path, b.Path); c != 0 {
+		return c < 0
+	}
+	return a.Site < b.Site // సమాన path ⇒ deterministic tie-break ⇒ convergence
+}
+
+func samePos(a, b Position) bool {
+	return a.Site == b.Site && bytes.Equal(a.Path, b.Path)
+}
+
+// between — lo, hi paths మధ్య ఒక path (strictly between). lo=nil ⇒ start, hi=nil ⇒ end.
+// రెండు distinct positions కి పని చేస్తుంది (common case). ఒకే gap లో concurrent
+// inserts → Site tie-break; production LSEQ/Logoot site ని path లో embed చేస్తుంది.
+func between(lo, hi []byte) []byte {
+	var out []byte
+	for i := 0; ; i++ {
+		var l byte = 0
+		if i < len(lo) {
+			l = lo[i]
+		}
+		var h byte = 255
+		if i < len(hi) {
+			h = hi[i]
+		}
+		if l+1 < h { // మధ్యలో room ఉంది
+			out = append(out, l+(h-l)/2)
+			return out
+		}
+		out = append(out, l) // room లేదు → లోపలికి descend (denser)
+	}
+}
+
+// Char = ఒక్క character. Position absolute key (neighbor reference కాదు) ⇒
+// concurrent delete జరిగినా మన insert position valid.
+type Char struct {
+	Pos   Position
+	Value rune
+}
+
+type OpType int
+
+const (
+	Insert OpType = iota
+	Delete
+)
+
+type Op struct {
+	Type OpType
+	Char Char
+}
+
+// Doc = Position ప్రకారం sorted characters. Replica-per-user.
+type Doc struct {
+	site  uint64
+	chars []Char
+}
+
+func NewDoc(site uint64) *Doc { return &Doc{site: site} }
+
+// LocalInsert — visual index i వద్ద rune insert; broadcast చేయాల్సిన Op return.
+func (d *Doc) LocalInsert(i int, v rune) Op {
+	var lo, hi []byte
+	if i > 0 {
+		lo = d.chars[i-1].Pos.Path
+	}
+	if i < len(d.chars) {
+		hi = d.chars[i].Pos.Path
+	}
+	ch := Char{Pos: Position{Path: between(lo, hi), Site: d.site}, Value: v}
+	d.integrate(ch)
+	return Op{Type: Insert, Char: ch}
+}
+
+// LocalDelete — visual index i వద్ద char delete; Op return.
+func (d *Doc) LocalDelete(i int) Op {
+	ch := d.chars[i]
+	d.remove(ch.Pos)
+	return Op{Type: Delete, Char: ch}
+}
+
+// Apply — remote op apply. Commutative + idempotent ⇒ ఏ order/duplicate అయినా converge.
+func (d *Doc) Apply(op Op) {
+	switch op.Type {
+	case Insert:
+		d.integrate(op.Char)
+	case Delete:
+		d.remove(op.Char.Pos)
+	}
+}
+
+// integrate — Pos ప్రకారం sorted position లో insert (binary search). Duplicate ⇒ skip.
+func (d *Doc) integrate(ch Char) {
+	idx := sort.Search(len(d.chars), func(k int) bool {
+		return !d.chars[k].Pos.Less(ch.Pos) // first pos >= ch.Pos
+	})
+	if idx < len(d.chars) && samePos(d.chars[idx].Pos, ch.Pos) {
+		return // ఇప్పటికే ఉంది → idempotent
+	}
+	d.chars = append(d.chars, Char{})
+	copy(d.chars[idx+1:], d.chars[idx:])
+	d.chars[idx] = ch
+}
+
+func (d *Doc) remove(p Position) {
+	idx := sort.Search(len(d.chars), func(k int) bool {
+		return !d.chars[k].Pos.Less(p)
+	})
+	if idx < len(d.chars) && samePos(d.chars[idx].Pos, p) {
+		d.chars = append(d.chars[:idx], d.chars[idx+1:]...)
+	}
+}
+
+func (d *Doc) String() string {
+	var b strings.Builder
+	for _, c := range d.chars {
+		b.WriteRune(c.Value)
+	}
+	return b.String()
+}
+```
+
+**Sync hub (per-doc WebSocket fan-out):** Chat §6 hub pattern నే reuse - ఒక్కో doc కి ఒక "room", op వస్తే మిగతా clients కి broadcast. Ops idempotent + commutative కాబట్టి ordering/dedup గురించి hub worry అవ్వాల్సిన అవసరం లేదు.
+
+```go
+type Client struct{ send chan Op }
+
+// DocHub — ఒక document కి subscribers. Single goroutine owns state (no locks).
+type DocHub struct {
+	subscribe   chan *Client
+	unsubscribe chan *Client
+	broadcast   chan Op
+	clients     map[*Client]bool
+}
+
+func NewDocHub() *DocHub {
+	return &DocHub{
+		subscribe:   make(chan *Client),
+		unsubscribe: make(chan *Client),
+		broadcast:   make(chan Op, 256),
+		clients:     map[*Client]bool{},
+	}
+}
+
+func (h *DocHub) Run() {
+	for {
+		select {
+		case c := <-h.subscribe:
+			h.clients[c] = true
+		case c := <-h.unsubscribe:
+			delete(h.clients, c)
+			close(c.send)
+		case op := <-h.broadcast:
+			for c := range h.clients {
+				select {
+				case c.send <- op: // fan-out
+				default: // slow client → drop (backpressure); reconnect లో resync
+				}
+			}
+		}
+	}
+}
+```
+
+> **Go ఎందుకు perfect:** per-doc hub = **single goroutine owns state** ⇒ mutex అవసరం లేదు (share memory by communicating). CRDT `integrate` binary-search sorted insert - lock-free per-replica (ఒక్కో client తన Doc). `select { case send: default: drop }` = slow client backpressure. Millions of docs = millions of cheap goroutines (Go stack few KB).
+
+### Bottlenecks & Trade-offs
+
+- **CRDT metadata growth:** tombstones + position ids raw text కంటే చాలా ఎక్కువ ⇒ **compaction/GC** (deleted tombstones ని causal stability తర్వాత purge) లేదా periodic snapshot.
+- **Interleaving anomaly:** రెండు users ఏకకాలంలో వేర్వేరు words type చేస్తే characters interleave అవ్వొచ్చు (CRDT known issue). Word/block-level granularity తగ్గిస్తుంది.
+- **OT vs CRDT:** OT metadata తక్కువ కానీ central server + transform proofs కష్టం; CRDT offline-first + provable కానీ memory ఎక్కువ. Google Docs = OT (bandwidth), Figma/Yjs = CRDT.
+- **Large docs:** పెద్ద document కి ప్రతి keystroke op = network chatty ⇒ **batch/debounce** (50-100ms). Snapshot + op-log-since-snapshot join.
+- **Presence scale:** cursors high-frequency ⇒ throttle + Redis pub/sub cross-server; document state తో కలపకూడదు.
+- **Undo/redo:** distributed లో "నా చివరి op" undo = inverse op generate + broadcast (global undo కాదు).
+
+### Key Points
+
+- **CRDT** = ప్రతి char కి unique immutable **position** ⇒ merge commutative + idempotent ⇒ **convergence** (conflict-free). Central ordering అవసరం లేదు.
+- **OT** = op ని concurrent op కి **transform** (index shift); central server linearize; Google Docs వాడేది.
+- **Fractional indexing:** రెండు positions మధ్య ఎప్పుడూ కొత్త dense key ⇒ neighbor ని ID తో reference చేయం ⇒ concurrent delete safe.
+- **Presence (cursors)** = ephemeral **LWW**, document CRDT తో కలపొద్దు.
+- Trade-off: CRDT memory/tombstone growth ⇒ GC/compaction; batch keystrokes; interleaving granularity.
+- Go: per-doc **hub goroutine** (lock-free), `sort.Search` sorted insert, `select-default` backpressure.
+
+## 17. Web Crawler (Search Engine Spider)
+
+> **Real-life Analogy:** **సాలీడు web మీద దారం పట్టుకుని ప్రయాణం.** ఒక్కో page లోని links పట్టుకుని కొత్త pages కి వెళ్తుంది (crawl). కానీ మంచి librarian లా - ఒకే book మళ్ళీ మళ్ళీ చదవదు (**visited set**), ఒకే publisher (domain) ని ఒకేసారి వందల requests తో విసిగించదు (**politeness**), "please don't enter" board (robots.txt) ని గౌరవిస్తుంది. లక్ష్యం: billions of pages ని efficient గా, polite గా discover చేయడం.
+
+### Requirements (Functional + Non-functional)
+
+**Functional:**
+
+- **Seed URLs** నుండి మొదలుపెట్టి pages download చేయడం
+- Page లోని **links extract** చేసి recursively crawl
+- **Dedup** - ఒకే URL/content మళ్ళీ crawl చేయకూడదు
+- **robots.txt** + `crawl-delay` గౌరవించడం (politeness)
+- Content ని **store** (indexing కి), **re-crawl** for freshness
+
+**Non-functional:**
+
+- **Scale:** billions of pages; **distributed** workers
+- **Politeness:** ఒక domain ని overload చేయకూడదు (per-host rate limit)
+- **Fault-tolerant:** worker/crash అయితే resume (durable frontier)
+- **Trap-avoidance:** infinite URL spaces, spider traps, duplicate content
+- **Extensible:** వేర్వేరు content types / parsers
+
+### Estimation (QPS, storage)
+
+```
+1B pages / month → 1B / (30×86400) ≈ 386 pages/sec sustained; peak ×3 ≈ 1200/sec
+Avg page ~100 KB → 1B × 100KB = 100 TB/month raw (compressed ~20-30 TB)
+
+Seen-set (dedup):
+  Exact set: 1B URLs × ~50B = 50 GB (RAM/node కి పెద్దది)
+  Bloom filter: 1B × ~10 bits (1% FP) ≈ 1.25 GB → RAM లో fit ✓
+Frontier: billions of URLs → durable queue (Redis/Kafka), RAM కాదు
+DNS: ప్రతి fetch కి resolve ⇒ DNS cache లేకపోతే bottleneck
+```
+
+### API Design
+
+```
+User-facing API కాదు (internal system). Core interfaces:
+
+  Enqueue(url, depth)            → frontier లో add (dedup తర్వాత)
+  worker: Fetch → Parse → Extract → Enqueue(children)
+
+Admin/control:
+  POST /seeds     {urls}         → seed inject
+  GET  /stats                    → crawled, frontier size, QPS, errors
+  GET  /robots/{host}            → cached robots policy (debug)
+```
+
+### Data Model
+
+```
+URL Frontier (priority queue, per-host):
+  host → queue of {url, depth, priority}   (politeness: per-host isolation)
+
+Seen set (dedup):
+  bloom filter (fast, probabilistic) + exact store (URL → crawl metadata)
+
+Page store (content-addressed, §19 style):
+  contentHash → raw bytes ; url → {contentHash, lastCrawled, etag, status}
+
+Robots cache:
+  host → {rules, crawlDelay, fetchedAt}    (TTL, re-fetch periodically)
+```
+
+### High-level Architecture
+
+```
+  seeds ─► ┌───────────┐   pull    ┌──────────────────────┐
+           │  URL      │◄──────────┤  Worker Pool (Go)     │
+           │ Frontier  │           │  goroutines, bounded  │
+           │(per-host  │  enqueue  │  ┌─────────────────┐  │
+           │ queues)   │◄──────────┤  │ Fetch (rate-lim │  │
+           └───────────┘  children │  │ per host,robots)│  │
+                 ▲                 │  │ →Parse →Extract │  │
+                 │ dedup           │  └─────────────────┘  │
+           ┌─────┴─────┐           └──────────┬───────────┘
+           │ Bloom +   │                      │ content
+           │ Seen store│               ┌──────▼──────┐
+           └───────────┘               │ Page Store  │ (content-addressed)
+   DNS cache · Robots cache            └─────────────┘
+```
+
+### Deep Dive — Politeness + Frontier + Dedup (crawler యొక్క గుండె)
+
+**1. Politeness (అతి ముఖ్యం):** ఒక website ని second కి వందల requests కొడితే అది down అవుతుంది (unintentional DoS) + మనని ban చేస్తుంది. కాబట్టి:
+
+- **Per-host rate limit** (ఉదా: max 1 req/sec/host, లేదా robots.txt `crawl-delay`)
+- ఒక host ని **ఒకే worker** handle చేసేలా partition (host hash → worker) ⇒ per-host state simple
+- **robots.txt** fetch + cache + గౌరవించడం (disallowed paths skip)
+
+**2. Frontier design:** ఇది priority queue - ఏ URL ముందు crawl చేయాలి?
+
+- **BFS (default):** queue (FIFO) ⇒ broad coverage, links సహజంగా వేర్వేరు hosts కి వెళ్తాయి ⇒ politeness సులభం. Crawlers దీన్ని వాడతాయి.
+- **DFS:** stack ⇒ ఒకే site లో లోతుగా ఇరుక్కుపోతుంది (spider trap risk), politeness కష్టం.
+- **Priority:** PageRank/importance ఆధారంగా (important pages ముందు). Two-level: (host queue) + (per-host FIFO).
+
+**3. Dedup:** ఒకే URL billions సార్లు కనిపిస్తుంది (ప్రతి page లో home link).
+
+- **Bloom filter:** "ఇది ఇదివరకే చూశామా?" O(1), 1.25GB కి 1B URLs. **False positive** (అరుదుగా కొత్త page skip) ఆమోదయోగ్యం; **false negative ఎప్పుడూ కాదు** (duplicate crawl అవదు).
+- **URL normalization:** `HTTP` vs `http`, trailing `/`, fragment `#`, query param order ⇒ ఒకే canonical form (లేకపోతే duplicate crawl).
+- **Content dedup:** వేర్వేరు URLs ఒకే content (mirrors) ⇒ content hash (§19).
+
+**4. Trap avoidance:** infinite calendars (`?date=...`), session ids in URL ⇒ **max depth**, max URLs/host, URL length limit.
+
+### Go Implementation — concurrent crawler (bounded pool + sync.Map + per-host rate limit)
+
+Go crawler కి perfect fit: ఒక్కో fetch goroutine, **bounded worker pool** (politeness + resource control), `sync.Map` visited (concurrent dedup), `golang.org/x/time/rate` per-host limiter.
+
+```go
+package crawler
+
+import (
+	"context"
+	"io"
+	"net/http"
+	"net/url"
+	"strings"
+	"sync"
+	"time"
+
+	"golang.org/x/net/html"
+	"golang.org/x/time/rate"
+)
+
+type task struct {
+	url   string
+	depth int
+}
+
+type Crawler struct {
+	client   *http.Client
+	workers  int
+	maxDepth int
+	perHost  rate.Limit // req/sec/host (politeness)
+	burst    int
+
+	seen    sync.Map // url(string) → struct{}  (concurrent dedup seen-set)
+	hostLim sync.Map // host(string) → *rate.Limiter (per-host politeness)
+	tasks   chan task
+	pending sync.WaitGroup // in-flight tasks (frontier empty detection)
+	wg      sync.WaitGroup // worker lifetimes
+}
+
+func New(workers, maxDepth int, perHost rate.Limit) *Crawler {
+	return &Crawler{
+		client:   &http.Client{Timeout: 10 * time.Second},
+		workers:  workers,
+		maxDepth: maxDepth,
+		perHost:  perHost,
+		burst:    1,
+	}
+}
+
+// Run — seeds నుండి crawl; frontier empty అయ్యాక return.
+func (c *Crawler) Run(ctx context.Context, seeds ...string) {
+	c.tasks = make(chan task, 4096)
+	for i := 0; i < c.workers; i++ { // bounded pool
+		c.wg.Add(1)
+		go c.worker(ctx)
+	}
+	for _, s := range seeds {
+		c.enqueue(task{url: s, depth: 0})
+	}
+	go func() { c.pending.Wait(); close(c.tasks) }() // frontier empty → workers exit
+	c.wg.Wait()
+}
+
+// enqueue — dedup (LoadOrStore, race-safe) తర్వాత frontier లో add.
+func (c *Crawler) enqueue(t task) {
+	if _, loaded := c.seen.LoadOrStore(t.url, struct{}{}); loaded {
+		return // ఇదివరకే చూశాం (production: bloom filter + exact store)
+	}
+	c.pending.Add(1)
+	// non-blocking dispatch: worker frontier లోకి enqueue చేసినా deadlock లేదు.
+	// (production frontier = durable Redis/Kafka, in-memory channel కాదు.)
+	go func() { c.tasks <- t }()
+}
+
+func (c *Crawler) worker(ctx context.Context) {
+	defer c.wg.Done()
+	for t := range c.tasks {
+		c.process(ctx, t)
+		c.pending.Done()
+	}
+}
+
+func (c *Crawler) limiter(host string) *rate.Limiter {
+	if l, ok := c.hostLim.Load(host); ok {
+		return l.(*rate.Limiter)
+	}
+	l, _ := c.hostLim.LoadOrStore(host, rate.NewLimiter(c.perHost, c.burst))
+	return l.(*rate.Limiter)
+}
+
+func (c *Crawler) process(ctx context.Context, t task) {
+	u, err := url.Parse(t.url)
+	if err != nil || (u.Scheme != "http" && u.Scheme != "https") {
+		return
+	}
+	// politeness: per-host rate limit (robots.txt crawl-delay ఇక్కడ apply చేయాలి)
+	if err := c.limiter(u.Host).Wait(ctx); err != nil {
+		return // ctx cancelled
+	}
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, t.url, nil)
+	req.Header.Set("User-Agent", "GoCrawler/1.0")
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK ||
+		!strings.HasPrefix(resp.Header.Get("Content-Type"), "text/html") {
+		return
+	}
+	// store content ఇక్కడ (content-addressed, §19)
+	if t.depth >= c.maxDepth {
+		return
+	}
+	for _, link := range extractLinks(resp.Body, u) {
+		c.enqueue(task{url: link, depth: t.depth + 1})
+	}
+}
+
+// extractLinks — HTML tokenize, <a href> extract, relative→absolute resolve, normalize.
+func extractLinks(r io.Reader, base *url.URL) []string {
+	var links []string
+	z := html.NewTokenizer(r)
+	for {
+		switch z.Next() {
+		case html.ErrorToken:
+			return links // EOF సహా
+		case html.StartTagToken, html.SelfClosingTagToken:
+			tok := z.Token()
+			if tok.Data != "a" {
+				continue
+			}
+			for _, a := range tok.Attr {
+				if a.Key != "href" {
+					continue
+				}
+				ref, err := url.Parse(a.Val)
+				if err != nil {
+					continue
+				}
+				abs := base.ResolveReference(ref) // relative → absolute
+				abs.Fragment = ""                 // #section drop (normalize)
+				if abs.Scheme == "http" || abs.Scheme == "https" {
+					links = append(links, abs.String())
+				}
+			}
+		}
+	}
+}
+```
+
+> **Go ఎందుకు perfect:** **bounded worker pool** (fixed N goroutines) = politeness + resource control (unbounded goroutines self-DoS). `sync.Map` = read-heavy concurrent dedup, `LoadOrStore` race-safe "మొదటిసారేనా?". `golang.org/x/time/rate` per-host limiter + `sync.Map` = ఒక్కో host కి lazy politeness. `context` = whole-crawl cancellation/timeout. `pending.Wait()` = frontier empty detection (elegant termination).
+
+### Bottlenecks & Trade-offs
+
+- **DNS bottleneck:** ప్రతి fetch కి DNS resolve ⇒ **DNS cache** (లేకపోతే throughput DNS కి bound). Async resolver.
+- **Frontier durability:** in-memory channel crash లో lost ⇒ production లో **Redis/Kafka durable frontier** (resume). పై code in-memory (demo).
+- **Politeness vs throughput:** strict per-host limit ⇒ ఒక giant site slow; కానీ ban risk. Balance: many hosts parallel, per-host serial.
+- **Bloom false positive:** అరుదుగా real page skip (trade-off). False negative లేదు కాబట్టి duplicate crawl అవదు. Exact store backstop.
+- **Spider traps:** infinite URL spaces ⇒ max depth + per-host URL cap + pattern detection.
+- **Duplicate content:** mirrors/canonical ⇒ content-hash dedup (URL dedup సరిపోదు).
+- **Freshness vs cost:** re-crawl ఎంత తరచుగా? change-rate estimate (news తరచుగా, archive అరుదుగా).
+
+### Key Points
+
+- **Bounded worker pool** (fetchers) = politeness + resource control; unbounded = self-DoS.
+- **Per-host rate limit + robots.txt/crawl-delay** = ఒక site ని overload చేయకూడదు (+ ban నివారణ).
+- **Bloom filter dedup** (1B URLs ~1.25GB) - false positive OK, false negative ఎప్పుడూ కాదు. + **URL normalization**.
+- **BFS (queue)** = broad coverage + natural politeness; DFS = trap risk. Priority = importance-first.
+- **Durable frontier** (Redis/Kafka) = crash resume; **DNS cache** = throughput.
+- Go: `sync.Map` visited, `x/time/rate` per-host, bounded goroutine pool, `context` cancellation, `pending.Wait()` termination.
+
+## 18. Distributed Message Queue (Design Kafka)
+
+> **Real-life Analogy:** **వరుస numbers ఉన్న notice board.** Topic = ఒక notice board; partition = board మీద ఒక్కో column. కొత్త notice ఎప్పుడూ **కింద** add అవుతుంది (append-only), దానికి వరుస number (**offset**). Readers (consumers) "నేను చివరిగా ఏ number చదివాను" గుర్తుంచుకుంటారు, అక్కడి నుండి కొనసాగుతారు. Board చదివాక కూడా కొంతకాలం notices ఉంచుతుంది (**retention**) ⇒ కొత్త reader పాతవి కూడా చదవగలడు, ఒకే notice ని అనేకమంది independent గా చదవగలరు.
+
+### Requirements (Functional + Non-functional)
+
+**Functional:**
+
+- **Publish** messages to a **topic**; topic ని **partitions** గా విభజన
+- **Consumers** offset ఆధారంగా చదవడం; **consumer groups** (partition → ఒక్క consumer/group ⇒ parallelism)
+- **Ordering** guarantee (partition లోపల మాత్రమే)
+- **Retention** (time/size based); పాత messages delete/compact
+- **Replication** (durability - broker down అయినా data ఉండాలి)
+
+**Non-functional:**
+
+- **High throughput** (millions msg/sec) - sequential disk writes + zero-copy
+- **Durability** - ack తర్వాత message lost అవకూడదు
+- **Horizontal scale** - brokers/partitions add చేయడం
+- **Delivery semantics:** at-least-once, at-most-once, (near) **exactly-once**
+
+### Estimation (QPS, storage)
+
+```
+1M msg/sec, avg 1 KB → 1 GB/sec = 86 TB/day
+Retention 7 days → ~600 TB (replication ×3 ⇒ ~1.8 PB)
+
+Per-partition throughput ~10-50 MB/sec ⇒ 1 GB/sec కి ~20-100 partitions/topic
+Partitions ఎక్కువ = parallelism ఎక్కువ కానీ metadata/leader-election overhead ఎక్కువ
+
+Consumer: ఒక్కో partition ఒక్క consumer/group ⇒ max parallelism = partition count
+Offset store: consumer group → partition → committed offset (చిన్నది)
+```
+
+### API Design
+
+```
+Producer:
+  Produce(topic, key, value) → (partition, offset)
+    key hash → partition (అదే key ⇒ అదే partition ⇒ per-key ordering)
+    acks: 0 (fire-forget) | 1 (leader) | all (ISR - durable)
+
+Consumer:
+  Subscribe(topic, groupId)
+  Poll(maxRecords) → []Record      (offset నుండి pull; long-poll)
+  Commit(offset)                    (processed దాకా mark)
+  Seek(partition, offset)           (replay - వెనక్కి/ముందుకి)
+
+Fetch (low-level): Fetch(topic, partition, fromOffset, maxBytes) → []Record
+```
+
+### Data Model
+
+```
+Topic → [Partition 0, Partition 1, ... N-1]
+
+Partition = append-only, ordered log (offset = index):
+  segment files (1GB each) → [record, record, ...]
+  Record: {offset, key, value, timestamp, crc}
+  Sparse index: offset → file byte position (binary search + scan)
+
+Replication:
+  each partition: 1 leader + M followers (ISR = in-sync replicas)
+  high-water mark = అన్ని ISR లో replicate అయిన max offset (consumers దీని దాకా)
+
+Consumer offsets: (group, topic, partition) → committed offset
+  (Kafka లో __consumer_offsets అనే internal topic)
+```
+
+### High-level Architecture
+
+```
+  Producers ──► ┌───────────────── Broker (leader: partition 0) ───────────┐
+   key→hash     │  append-only log:  [o0][o1][o2]...[oN] ◄── append (seq IO)│
+   →partition   │        │ replicate (followers fetch)                      │
+                └────────┼──────────────────┬───────────────────────────────┘
+                         ▼                   ▼
+                  Follower (ISR)      Follower (ISR)     ← leader down → elect
+                         
+  Consumer Group A:  C1←part0  C2←part1   (ఒక్కో partition ఒక్క consumer)
+  Consumer Group B:  C1←part0,part1       (independent offsets, same data)
+  Controller (KRaft/ZooKeeper): metadata + leader election
+```
+
+### Deep Dive — Log + Replication + Delivery Semantics (గుండె)
+
+**1. ఎందుకు append-only log ఇంత fast:**
+
+- **Sequential disk writes** = random కంటే 100-1000× fast (disk seek లేదు); SSD మీద కూడా sequential మేలు.
+- **OS page cache** - writes/reads cache లో; app heap కాదు.
+- **Zero-copy** (`sendfile`) - disk → socket నేరుగా, user-space copy లేదు ⇒ consumer read cheap.
+- **Segments:** log ని 1GB files గా roll; retention = పాత segment file **delete** (individual message కాదు - O(1)).
+
+**2. Replication + durability:** leader partition writes handle చేస్తుంది, followers **fetch** చేసి replicate చేస్తారు. **ISR** (in-sync replicas) = leader తో caught-up followers.
+
+- **acks=all** ⇒ producer అన్ని ISR replicate అయ్యాక ack ⇒ durable (leader down అయినా data ఉంది).
+- **High-water mark (HW):** consumers HW దాకా మాత్రమే చూస్తారు (un-replicated messages చూడరు) ⇒ leader fail అయినా consumed data lost అవదు.
+- **Leader election:** leader down ⇒ controller ISR నుండి కొత్త leader ఎన్నుకుంటుంది. **Unclean election** (ISR ఖాళీ ⇒ non-ISR leader) = availability కోసం data loss risk (trade-off).
+
+**3. Delivery semantics (interview favorite):**
+
+| Semantic | ఎలా | Trade-off |
+| -------- | --- | --------- |
+| **At-most-once** | commit *ముందు* process ⇒ crash ⇒ message lost | fast, loss OK అయితే |
+| **At-least-once** | process *తర్వాత* commit ⇒ crash ⇒ reprocess (duplicate) | default; idempotent consumer కావాలి |
+| **Exactly-once** | idempotent producer (producerId+seq dedup) + transactions (atomic write + offset commit) | costly కానీ correct |
+
+> **Interview line:** "Exactly-once *delivery* distributed లో అసాధ్యం; Kafka ఇచ్చేది exactly-once *processing* = idempotent producer + transactional offset commit, లేదా consumer వైపు offset-based dedup."
+
+**4. Ordering:** partition లోపల **మాత్రమే** guaranteed (single log). Global order అక్కరలేదు ⇒ scale. అదే key అదే partition ⇒ per-key order (ఉదా: ఒక user events ordered).
+
+### Go Implementation — append-only partitioned log + offset consumers
+
+Kafka గుండె = per-partition append-only log + offset-based pull consumer. `sync.Cond` తో long-poll (కొత్త data కి consumer wait), `base` offset తో retention (front-trim).
+
+```go
+package mq
+
+import (
+	"hash/fnv"
+	"sync"
+)
+
+type Record struct {
+	Offset int64
+	Key    []byte
+	Value  []byte
+	TsUnix int64
+}
+
+// Partition = append-only, ordered log. Offset = position. ఒక partition = ordering unit.
+type Partition struct {
+	mu   sync.RWMutex
+	recs []Record // production: segment files + sparse index + page cache
+	base int64    // recs[0].Offset (retention front-trim వల్ల >0)
+	next int64    // కేటాయించాల్సిన తదుపరి offset
+	cond *sync.Cond
+}
+
+func NewPartition() *Partition {
+	p := &Partition{}
+	p.cond = sync.NewCond(&p.mu)
+	return p
+}
+
+// Append — record ని log చివర add, offset return (leader మీద). Sequential write.
+func (p *Partition) Append(key, val []byte, ts int64) int64 {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	off := p.next
+	p.recs = append(p.recs, Record{Offset: off, Key: key, Value: val, TsUnix: ts})
+	p.next++
+	p.cond.Broadcast() // wait చేస్తున్న consumers ని wake (long-poll)
+	return off
+}
+
+// Read — from offset నుండి గరిష్ఠంగా max records (offset-based fetch).
+func (p *Partition) Read(from int64, max int) []Record {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	if from < p.base {
+		from = p.base // పాత offset retention లో పోయింది → అందుబాటులో ఉన్నదాని నుండి
+	}
+	if from >= p.next {
+		return nil
+	}
+	end := from + int64(max)
+	if end > p.next {
+		end = p.next
+	}
+	out := make([]Record, end-from)
+	copy(out, p.recs[from-p.base:end-p.base])
+	return out
+}
+
+// TrimBefore — retention: minOff కంటే పాత records drop (segment delete స్ఫూర్తి).
+func (p *Partition) TrimBefore(minOff int64) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if minOff <= p.base || minOff > p.next {
+		return
+	}
+	p.recs = p.recs[minOff-p.base:]
+	p.base = minOff
+}
+
+// Consumer — ఒక partition ని offset ఆధారంగా చదువుతుంది. Offset **consumer వద్ద**
+// (pull model, broker state కాదు) ⇒ replay సులభం (Seek వెనక్కి).
+type Consumer struct {
+	p      *Partition
+	offset int64
+}
+
+func NewConsumer(p *Partition, from int64) *Consumer {
+	return &Consumer{p: p, offset: from}
+}
+
+// Poll — long-poll: కొత్త data లేకపోతే wait; వచ్చాక records return + offset advance.
+func (c *Consumer) Poll(max int) []Record {
+	c.p.mu.Lock()
+	for c.offset >= c.p.next { // కొత్తది లేదు → block
+		c.p.cond.Wait()
+	}
+	c.p.mu.Unlock()
+
+	recs := c.p.Read(c.offset, max)
+	if n := len(recs); n > 0 {
+		// process తర్వాత advance = at-least-once (crash → reprocess)
+		c.offset = recs[n-1].Offset + 1
+	}
+	return recs
+}
+
+func (c *Consumer) Seek(off int64) { c.offset = off } // replay / skip
+
+// Topic = partitions; key hash → partition (per-key ordering).
+type Topic struct {
+	parts []*Partition
+}
+
+func NewTopic(n int) *Topic {
+	t := &Topic{parts: make([]*Partition, n)}
+	for i := range t.parts {
+		t.parts[i] = NewPartition()
+	}
+	return t
+}
+
+// Produce — key ఉంటే hash→partition (అదే key అదే partition); లేకపోతే partition 0.
+func (t *Topic) Produce(key, val []byte, ts int64) (int, int64) {
+	part := 0
+	if key != nil {
+		h := fnv.New32a()
+		h.Write(key)
+		part = int(h.Sum32() % uint32(len(t.parts)))
+	}
+	return part, t.parts[part].Append(key, val, ts)
+}
+
+func (t *Topic) Partition(i int) *Partition { return t.parts[i] }
+
+// Assign — consumer group: p partitions ని n consumers కి పంచడం (range assignment).
+// Rebalance: consumer join/leave అయితే మళ్ళీ assign.
+func Assign(partitions, consumers int) map[int][]int {
+	out := map[int][]int{}
+	for p := 0; p < partitions; p++ {
+		out[p%consumers] = append(out[p%consumers], p)
+	}
+	return out
+}
+```
+
+> **Go ఎందుకు perfect:** append = slice append (sequential); `sync.RWMutex` = multi-consumer concurrent reads + single writer. **`sync.Cond`** = long-poll (busy-loop కాదు) - కొత్త record వస్తే `Broadcast` తో consumers wake. Offset consumer వద్ద ⇒ broker దాదాపు stateless, replay trivial. `hash/fnv` partitioner = per-key ordering. Real Kafka: segment files + `sendfile` zero-copy + Raft (KRaft) replication - ఇదే model, disk-backed.
+
+### Bottlenecks & Trade-offs
+
+- **Hot partition:** skewed key (ఒక celebrity user) ⇒ ఒక partition overload. Solution: better key, sub-partitioning.
+- **acks=all latency vs durability:** all ISR wait = slow కానీ durable; acks=1 fast కానీ leader-crash లో loss. Trade-off per use-case.
+- **ISR shrink:** slow follower ISR నుండి పడిపోతే durability తగ్గుతుంది; unclean election = availability కోసం data loss.
+- **Rebalance storms:** consumer group churn ⇒ frequent rebalance ⇒ processing pause. Static membership / cooperative rebalance తగ్గిస్తుంది.
+- **Too many partitions:** parallelism ఎక్కువ కానీ controller metadata + leader election + open files overhead. Balance.
+- **Ordering vs parallelism:** global order కావాలంటే 1 partition (no parallelism); per-key order + scale = key partitioning.
+- **Exactly-once cost:** transactions = 2-phase overhead ⇒ throughput తగ్గుతుంది.
+
+### Key Points
+
+- **Append-only log** (sequential IO + page cache + zero-copy) = extreme throughput; **segments** ⇒ retention = file delete O(1).
+- **Partition = ordering + parallelism unit;** ordering partition లోపల మాత్రమే; key hash → partition = per-key order.
+- **Offset consumer వద్ద** (pull) ⇒ replay/multi-consumer trivial; **consumer group** = partition/consumer parallelism.
+- **Replication (leader + ISR) + acks=all + high-water mark** = durability; unclean election = availability↔loss trade-off.
+- **At-least-once** (default, process→commit) + idempotency = **exactly-once *effect***; true exactly-once delivery అసాధ్యం.
+- Go: slice-append log, `sync.Cond` long-poll, `RWMutex` multi-consumer, `fnv` partitioner.
+
+## 19. Distributed File Storage (Dropbox / S3 / Object Storage)
+
+> **Real-life Analogy:** **contents fingerprint ఆధారంగా label చేసిన warehouse.** Box మీద "ఎవరిది" అని కాదు, దాని contents యొక్క **fingerprint (hash)** label చేస్తాం. ఇద్దరు ఒకేలాంటి item తెస్తే **ఒక్కటే box** ఉంచి ఇద్దరికీ అదే claim ticket ఇస్తాం (**dedup**). ఒక file = order లో ఉన్న tickets (chunk hashes) జాబితా. Item మారితే ఏ tickets మారాయో అవి మాత్రమే కొత్తగా store (**delta sync**) ⇒ bandwidth ఆదా.
+
+### Requirements (Functional + Non-functional)
+
+**Functional:**
+
+- పెద్ద files (GBs) **upload/download**; files ని **chunks** గా split
+- ఒకేలాంటి chunks **dedup** (across files, across users)
+- **Metadata** (file → chunk list, versions, tree)
+- **Sync** across devices - **delta** (మారిన chunks మాత్రమే)
+- **Sharing** + **presigned URLs**; **versioning**
+
+**Non-functional:**
+
+- **Durability** (11 nines) - replication / erasure coding
+- **Scale** - exabytes, billions of objects
+- **Bandwidth efficiency** - delta sync (whole file కాదు)
+- **Availability** + metadata **consistency**
+
+### Estimation (QPS, storage)
+
+```
+500M users × avg 10 GB = 5 EB (exabytes)
+Chunk size 4 MB → 5EB / 4MB ≈ 1.25 trillion chunks
+Dedup ~30% savings (identical files/chunks: OS files, shared docs)
+
+Metadata: chunk hash 32B (SHA-256) + refcount; file manifest = [hashes]
+  1.25T chunks × ~64B metadata ≈ 80 TB metadata → sharded DB
+
+Durability: replication ×3 (5EB→15EB) vs erasure coding (~1.4×, 5EB→7EB)
+  → erasure coding storage-efficient కానీ repair CPU/network ఎక్కువ
+Bandwidth: delta sync ⇒ upload = మారిన chunks మాత్రమే (edit కి full file కాదు)
+```
+
+### API Design
+
+```
+File ops:
+  PUT  /files/{path}          (chunked upload)  → {fileId, version}
+  GET  /files/{path}          → stream
+  GET  /files/{path}/manifest → {chunks: [hash], size, version}
+
+Chunk-level (dedup + delta):
+  HEAD /chunks/{hash}         → 200 (ఉంది, skip) | 404 (కావాలి)
+  POST /chunks/missing {hashes} → [missing hashes]   (batch dedup check)
+  PUT  /chunks/{hash}         (content-addressed upload)
+
+Presigned (app server offload):
+  GET /presign?path=..&op=put&exp=.. → time-limited signed URL
+     (client నేరుగా blob store కి, app server bandwidth ఆదా)
+```
+
+### Data Model
+
+```
+Chunk store (content-addressed, immutable):
+  SHA-256(content) → blob      (అదే content ⇒ అదే key ⇒ ఒక్కసారే store)
+
+File manifest (metadata DB - sharded by userId):
+  fileId → { name, size, version, mtime, chunks: [hash, hash, ...] }
+  (manifest = references మాత్రమే, content కాదు ⇒ చిన్నది)
+
+Chunk refcount (GC కి):
+  hash → count  (0 అయితే unreferenced → garbage collect)
+
+Version history: fileId → [version → manifest]  (time-travel)
+ACL / sharing: fileId → {owner, sharedWith[]}
+```
+
+### High-level Architecture
+
+```
+  Client (chunker) ──chunk hashes──► ┌──────────────────┐
+    │  local edit                    │ Metadata Service │ (sharded DB:
+    │  → CDC split → hashes          │ manifest,refcount│  file tree,
+    ▼                                │ dedup: HEAD hash │  versions,ACL)
+  "which missing?" ◄────missing──────┤                  │
+    │ upload missing chunks only     └────────┬─────────┘
+    ▼ (presigned URL, direct)                 │ manifest commit
+  ┌──────────────────────┐            ┌───────▼────────┐
+  │ Content-Addressed    │◄──────────►│ Replication /  │
+  │ Blob Store (dedup)   │  replicate │ Erasure Coding │  + CDN (download)
+  └──────────────────────┘            └────────────────┘
+```
+
+### Deep Dive — Chunking + Content-Addressing + Delta Sync (గుండె)
+
+**1. ఎందుకు chunk చేయాలి:** (a) పెద్ద file resumable upload (chunk fail → అదే chunk retry), (b) dedup granularity, (c) delta sync (మారిన chunks మాత్రమే), (d) parallel upload.
+
+**2. Fixed vs Content-Defined Chunking (CDC) — ముఖ్య insight:**
+
+- **Fixed-size (4MB blocks):** simple. కానీ file **మొదట్లో ఒక్క byte insert** అయితే అన్ని subsequent chunks **shift** ⇒ అన్ని hashes మారతాయి ⇒ dedup పోతుంది (whole file re-upload)!
+- **Content-Defined (rolling hash):** chunk boundary ని **content** నిర్ణయిస్తుంది (rolling hash ఒక pattern hit అయినప్పుడు cut). Insert జరిగినా boundary అదే content వద్ద ⇒ **ఒక్క local chunk మాత్రమే** మారుతుంది ⇒ dedup survives. (borg/restic/rsync దీన్ని వాడతాయి; Dropbox 4MB fixed.)
+
+**3. Content-addressed storage:** chunk id = `SHA-256(content)`.
+
+- **Immutable** ⇒ forever cache, CDN-friendly.
+- **Dedup automatic** - అదే content ⇒ అదే hash ⇒ ఒక్కసారే store (across ALL users/files).
+- **Integrity** - download అయ్యాక hash verify ⇒ corruption detect.
+
+**4. Delta sync:** client chunk hashes compute చేసి, "server వద్ద ఏవి లేవు?" అని అడుగుతుంది (`HEAD`/batch) ⇒ **missing chunks మాత్రమే** upload. 1GB file లో 1MB మార్పు ⇒ ~1-2 chunks upload (1GB కాదు).
+
+**5. Dedup vs privacy (senior nuance):** global cross-user dedup = storage ఆదా కానీ **side-channel** (ఒక chunk "ఇదివరకే ఉంది" అంటే ఆ content వేరేవాళ్ళ దగ్గర ఉందని తెలుస్తుంది - existence leak). Solution: per-user dedup, లేదా **convergent encryption** (content hash = key ⇒ dedup + encrypted).
+
+### Go Implementation — content-defined chunker + content-addressed store (dedup + delta)
+
+Buzhash rolling hash తో content-defined boundaries, SHA-256 content-addressing, `map[Hash][]byte` dedup store + refcount GC. `MissingChunks` = delta sync గుండె.
+
+```go
+package cas
+
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"math/rand"
+	"sync"
+)
+
+// ---- Content-Defined Chunking (Buzhash rolling hash) ----
+// Fixed chunks: file మొదట్లో byte insert ⇒ అన్ని chunks shift ⇒ dedup పోతుంది.
+// Content-defined boundary (rolling hash) ⇒ local edit ⇒ local chunk మాత్రమే మారుతుంది.
+
+const (
+	minChunk = 2 << 10  // 2 KB (అతి చిన్న chunks నివారణ)
+	maxChunk = 64 << 10 // 64 KB (అతి పెద్ద నివారణ)
+	window   = 48       // rolling window (bytes)
+	// mask: hash & mask == 0 ⇒ boundary. avg chunk ≈ 2^13 = 8 KB.
+	mask = (1 << 13) - 1
+)
+
+var bz [256]uint32
+
+func init() {
+	r := rand.New(rand.NewSource(1)) // deterministic seed ⇒ అన్ని nodes ఒకే boundaries
+	for i := range bz {
+		bz[i] = r.Uint32()
+	}
+}
+
+func rotl(x uint32, k uint) uint32 { return x<<k | x>>(32-k) }
+
+// Split — data ని content-defined chunks గా విభజన.
+func Split(data []byte) [][]byte {
+	var chunks [][]byte
+	var h uint32
+	start := 0
+	for i := 0; i < len(data); i++ {
+		h = rotl(h, 1) ^ bz[data[i]] // rolling: కొత్త byte కలుపు
+		if i-start >= window {
+			h ^= rotl(bz[data[i-window]], uint(window%32)) // window దాటిన byte తీసేయి
+		}
+		size := i - start + 1
+		if (size >= minChunk && h&mask == 0) || size >= maxChunk {
+			chunks = append(chunks, data[start:i+1])
+			start = i + 1
+			h = 0
+		}
+	}
+	if start < len(data) {
+		chunks = append(chunks, data[start:])
+	}
+	return chunks
+}
+
+// ---- Content-Addressed Store (dedup + refcount GC) ----
+type Hash string
+
+func hashOf(b []byte) Hash {
+	s := sha256.Sum256(b)
+	return Hash(hex.EncodeToString(s[:]))
+}
+
+type Store struct {
+	mu     sync.RWMutex
+	blobs  map[Hash][]byte // content-addressed: hash → blob (immutable)
+	refcnt map[Hash]int    // GC: 0 → unreferenced
+}
+
+func NewStore() *Store {
+	return &Store{blobs: map[Hash][]byte{}, refcnt: map[Hash]int{}}
+}
+
+// Put — blob store + hash return. అదే content ఉంటే మళ్ళీ store చేయదు (dedup).
+func (s *Store) Put(b []byte) Hash {
+	h := hashOf(b)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if _, ok := s.blobs[h]; !ok {
+		cp := make([]byte, len(b))
+		copy(cp, b)     // caller buffer reuse చేయొచ్చు → copy
+		s.blobs[h] = cp // మొదటిసారి మాత్రమే (dedup)
+	}
+	s.refcnt[h]++
+	return h
+}
+
+func (s *Store) Get(h Hash) ([]byte, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	b, ok := s.blobs[h]
+	return b, ok
+}
+
+// MissingChunks — delta sync: client hashes పంపితే, లేని వాటిని return
+// ⇒ client అవి **మాత్రమే** upload (bandwidth ఆదా).
+func (s *Store) MissingChunks(hashes []Hash) []Hash {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	var missing []Hash
+	for _, h := range hashes {
+		if _, ok := s.blobs[h]; !ok {
+			missing = append(missing, h)
+		}
+	}
+	return missing
+}
+
+// release — refcount 0 (file delete తర్వాత) unreferenced chunk తొలగించు (GC).
+func (s *Store) release(h Hash) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.refcnt[h]--; s.refcnt[h] <= 0 {
+		delete(s.blobs, h)
+		delete(s.refcnt, h)
+	}
+}
+
+// ---- Manifest (file → ordered chunk hashes) ----
+type Manifest struct {
+	Name   string
+	Size   int64
+	Chunks []Hash
+}
+
+// Upload — file ని chunk → కొత్త chunks మాత్రమే store (dedup) → manifest.
+// Return: manifest + నిజంగా store అయిన bytes (dedup ఎంత ఆదా చేసిందో చూపుతుంది).
+func Upload(s *Store, name string, data []byte) (Manifest, int) {
+	m := Manifest{Name: name, Size: int64(len(data))}
+	storedBytes := 0
+	for _, ch := range Split(data) {
+		_, existed := s.Get(hashOf(ch))
+		h := s.Put(ch)
+		if !existed {
+			storedBytes += len(ch) // ఈ chunk కొత్తది (dedup కాలేదు)
+		}
+		m.Chunks = append(m.Chunks, h)
+	}
+	return m, storedBytes
+}
+
+// Download — manifest chunks ని order లో join చేసి file reconstruct + integrity verify.
+func Download(s *Store, m Manifest) ([]byte, error) {
+	out := make([]byte, 0, m.Size)
+	for _, h := range m.Chunks {
+		b, ok := s.Get(h)
+		if !ok {
+			return nil, fmt.Errorf("missing chunk %s", h)
+		}
+		if hashOf(b) != h { // content-addressed ⇒ integrity check
+			return nil, fmt.Errorf("corrupt chunk %s", h)
+		}
+		out = append(out, b...)
+	}
+	return out, nil
+}
+```
+
+**Presigned URL (app server offload):** app server ఒక HMAC-signed, time-limited URL ఇస్తుంది; client నేరుగా blob store కి upload/download చేస్తాడు (app server bandwidth ఆదా, secret client కి వెళ్ళదు):
+
+```go
+package cas
+
+import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"time"
+)
+
+// Presign — path + expiry ని HMAC తో sign; verify: exp future? + HMAC match?
+// ⇒ blob store నేరుగా serve చేస్తుంది (ప్రతి request కి auth service అవసరం లేదు).
+func Presign(secret []byte, path string, exp time.Time) string {
+	mac := hmac.New(sha256.New, secret)
+	fmt.Fprintf(mac, "%s\n%d", path, exp.Unix())
+	sig := hex.EncodeToString(mac.Sum(nil))
+	return fmt.Sprintf("/blob/%s?exp=%d&sig=%s", path, exp.Unix(), sig)
+}
+```
+
+> **Go ఎందుకు perfect:** `crypto/sha256` content-addressing, `map[Hash][]byte` + `sync.RWMutex` dedup store (read-heavy: చాలా HEAD checks, తక్కువ writes). Buzhash rolling hash = streaming chunking. `crypto/hmac` presigned URLs = stateless auth. Production: blobs = S3/disk + erasure coding, metadata = sharded Postgres/Cassandra, కానీ **model ఇదే**.
+
+### Bottlenecks & Trade-offs
+
+- **Metadata scale:** billions of files ⇒ metadata DB **shard by userId**; manifest చిన్నది (references) కాబట్టి RAM-cacheable.
+- **Fixed vs CDC chunking:** fixed simple కానీ insert-shift dedup పోతుంది; CDC dedup మేలు కానీ CPU (rolling hash) + variable chunk sizes.
+- **Hot chunks:** popular file (viral video) chunk ⇒ read hotspot ⇒ **CDN + replication** (content-addressed ⇒ cache forever, trivial).
+- **Dedup vs privacy:** global dedup storage ఆదా కానీ existence side-channel ⇒ per-user dedup / **convergent encryption**.
+- **GC races:** chunk delete అవుతుండగా మరో file అదే chunk reference చేస్తే? refcount race ⇒ **mark-sweep** (concurrent) లేదా delete ముందు grace period.
+- **Durability - replication (×3) vs erasure coding (~1.4×):** EC storage-efficient కానీ node fail repair = CPU + network heavy (k chunks చదివి reconstruct).
+- **Metadata↔blob consistency:** blob ముందు commit, తర్వాత manifest ⇒ manifest ఎప్పుడూ committed chunks నే reference చేస్తుంది (orphan chunks GC తీసేస్తుంది); reverse అయితే dangling reference.
+- **Small files:** chunk/manifest overhead చిన్న files కి పెద్ద ratio ⇒ small files ని pack (combine).
+
+### Key Points
+
+- **Chunking** = resumable upload + dedup granularity + delta sync + parallelism.
+- **Content-Defined Chunking (rolling hash)** > fixed: insert-shift లో dedup survives (local chunk మాత్రమే మారుతుంది).
+- **Content-addressed (SHA-256)** = automatic dedup (అదే content ⇒ ఒక్కసారే store) + immutability + integrity verify.
+- **Delta sync** = missing chunks మాత్రమే upload ⇒ 1GB file లో చిన్న edit = KBs transfer.
+- **Presigned URLs** = client నేరుగా blob store కి (app server offload); **erasure coding** = storage-efficient durability.
+- Trade-offs: dedup↔privacy (convergent encryption), fixed↔CDC, replication↔EC, GC refcount races.
+- Go: `sha256` content-addressing, Buzhash rolling chunker, `map+RWMutex` dedup store, `hmac` presigned URLs.
+
 # Part 3 — Reference
 
 ---
 
-## 16. Common Patterns Across Designs (Recap)
+## 20. Common Patterns Across Designs (Recap)
 
-> ఇప్పటిదాకా 12 case studies చేశాం. వాటిల్లో **అవే patterns** మళ్ళీ మళ్ళీ వచ్చాయి. ఇవి interview లో ఏ system కైనా reach చేసే "tools" - ఒకసారి పట్టుకుంటే ఏ design అయినా వీటి combination గా కనిపిస్తుంది.
+> ఇప్పటిదాకా 16 case studies చేశాం. వాటిల్లో **అవే patterns** మళ్ళీ మళ్ళీ వచ్చాయి. ఇవి interview లో ఏ system కైనా reach చేసే "tools" - ఒకసారి పట్టుకుంటే ఏ design అయినా వీటి combination గా కనిపిస్తుంది.
 
 ### Real-life Analogy
 
@@ -3534,13 +4709,13 @@ func (s *Service) storeResult(ctx context.Context, tx *sql.Tx, key string, r Tra
 
 ### Key Points
 
-- 12 systems = 5 core patterns (idempotency, dedup, backpressure, sharding, caching) + bonus (fan-out, queue, leader, quorum, saga) recombined.
+- 16 systems = 5 core patterns (idempotency, dedup, backpressure, sharding, caching) + bonus (fan-out, queue, leader, quorum, saga) recombined.
 - **Idempotency + dedup** = correctness under retries (exactly-once effect).
 - **Backpressure + sharding + caching** = scale + protection.
 - ప్రతి pattern కి ఒక Go mechanism ఉంది - ఈ mapping పట్టుకుంటే code instant గా వస్తుంది.
 - కొత్త system వచ్చినా: "ఏ patterns? ఏ Go primitives?" - అదే framework.
 
-## 17. System-Design-in-Go Interview Checklist + Cheat Sheets
+## 21. System-Design-in-Go Interview Checklist + Cheat Sheets
 
 > ఇది చివరి section - interview కి ముందు 10 నిమిషాలు చదివే "revision card". Framework, memory tips, common mistakes, numbers - అన్నీ ఒకచోట.
 

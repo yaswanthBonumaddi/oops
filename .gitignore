@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# dependencies
+node_modules/
+
+# generated archive (pdfs/ folder is committed instead)
+pdfs.zip

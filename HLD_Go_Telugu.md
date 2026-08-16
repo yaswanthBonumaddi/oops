@@ -1528,6 +1528,42 @@ if u, ok := cache.Get("user:1"); ok {
 
 > "Popular product page cache expire అయిన క్షణం DB కూలుతోంది - fix?" → *"Cache stampede/thundering herd. singleflight తో duplicate concurrent DB loads ని ఒక్క call గా collapse చేస్తా - ఒక్కటే DB hit, మిగతావి result share. Plus jittered TTL (అన్ని keys ఒకేసారి expire కాకుండా), stale-while-revalidate (పాత value serve చేస్తూ background refresh)."* singleflight చెప్పడం Go-specific senior signal.
 
+### CDN (Content Delivery Network) — edge caching (Go service దృష్టి)
+
+Cache ని **user కి దగ్గరగా** (geographically) పెట్టడం = CDN. Static assets (images, JS, CSS, videos), అలాగే cacheable API responses ని ప్రపంచవ్యాప్త **edge servers** (Cloudflare, CloudFront, Fastly) లో ఉంచి, origin (నీ Go server) మీద load తగ్గించి latency కోసుగా తగ్గిస్తుంది.
+
+> **Real-life:** Amazon ప్రతి ఆర్డర్‌కి ఒకే central warehouse నుండి పంపదు — నీ నగరంలోని local warehouse నుండి పంపుతుంది. CDN edge = local warehouse; origin = central warehouse.
+
+```
+User (Hyderabad) ──► CDN edge (Mumbai)  ──HIT──► తక్షణం response (origin touch కాదు)
+                          │
+                          └──MISS──► Origin (నీ Go service) ──► edge cache చేసి user కి
+```
+
+Go service CDN తో ఎలా సహకరిస్తుంది — **cache headers** origin నుండే నియంత్రిస్తాం:
+
+```go
+func serveAsset(w http.ResponseWriter, r *http.Request) {
+	// edge + browser ఈ response ని ఎంతసేపు cache చేయాలో origin చెప్తుంది
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable") // 1 ఏడాది (versioned asset)
+	w.Header().Set("ETag", `"v2-abc123"`)                                   // conditional GET కి
+	if match := r.Header.Get("If-None-Match"); match == `"v2-abc123"` {
+		w.WriteHeader(http.StatusNotModified) // 304 — body పంపదు, bandwidth save
+		return
+	}
+	http.ServeContent(w, r, "app.js", time.Now(), assetReader)
+}
+```
+
+| Push CDN | Pull CDN |
+| --- | --- |
+| Content ని ముందే edge కి upload చేస్తాం | మొదటి request miss → origin నుండి lazy fetch |
+| అరుదుగా మారే పెద్ద files (releases) | సాధారణ web assets (auto-populate) |
+
+- **Cache busting:** file content మారితే URL లో version/hash (`app.v2.js`) — `immutable` + long TTL safe గా వాడొచ్చు.
+- **Dynamic content:** personalized responses CDN చేయకూడదు; `Cache-Control: private, no-store`. Signed/expiring URLs తో private assets serve చేయొచ్చు.
+- **Trade-off:** stale content risk (invalidation కష్టం, CDN purge lag) vs భారీ latency+bandwidth గెలుపు. Go origin ఎప్పుడూ correct cache headers set చేయాలి — CDN behavior origin driven.
+
 ---
 
 ## 12. Message queues in Go — Kafka, NATS, RabbitMQ
@@ -1665,6 +1701,56 @@ Producers                Kafka topic "orders"              Consumer group
 ### Interview దృష్టి
 
 > "Order events process చేసేటప్పుడు duplicates - fix?" → *"At-least-once delivery కాబట్టి duplicates natural. Idempotent consumer: message id/key తో dedup store (Redis) - already processed అయితే skip. Offset ని process + mark అయ్యాకే commit (crash-safe replay). Effectively-once = at-least-once + idempotency. Ordering కావాలంటే key తో same partition."* Delivery semantics + idempotency clarity = senior signal.
+
+### Event-Driven Architecture — CQRS & Event Sourcing (Go lens)
+
+Message queues మీద కట్టే రెండు శక్తివంతమైన patterns. Senior system-design లో తరచుగా అడుగుతారు.
+
+**CQRS (Command Query Responsibility Segregation):** Write model (commands — state మార్చేవి) ని Read model (queries — data చదివేవి) నుండి **వేరు చేయడం**. ఒకే model రెంటికీ కాకుండా, writes normalized DB కి, reads denormalized/optimized store (cache, search index, materialized view) కి.
+
+> **Real-life:** ఒక restaurant లో kitchen (orders తీసుకొని food తయారు చేయడం = write) మరియు display board (customers కి "ready orders" చూపడం = read) వేరు వేరు. Board ని కిచెన్ update చేస్తుంది, కానీ customers board చూస్తారు, kitchen కాదు.
+
+```
+Command ──► Write Model (Postgres, normalized) ──emits──► Events (Kafka)
+                                                              │
+                                                              ▼
+Query   ◄── Read Model (Redis / Elasticsearch, denormalized) ◄── projector consumes events
+```
+
+**Event Sourcing:** current state ని store చేయకుండా, **జరిగిన అన్ని events ని append-only log** గా store చేయడం. Current state = అన్ని events ని replay చేసి derive చేస్తాం. (Bank passbook — balance కాదు, ప్రతి transaction store అవుతుంది; balance = transactions sum.)
+
+```go
+// Event Sourcing — state కాదు, events store; state = fold(events)
+type Event interface{ apply(*Account) }
+
+type Deposited struct{ Amount int }
+func (e Deposited) apply(a *Account) { a.Balance += e.Amount }
+
+type Withdrawn struct{ Amount int }
+func (e Withdrawn) apply(a *Account) { a.Balance -= e.Amount }
+
+type Account struct{ Balance int }
+
+// current state = అన్ని events ని క్రమంలో replay
+func rebuild(events []Event) *Account {
+	a := &Account{}
+	for _, e := range events {
+		e.apply(a) // ప్రతి event ని fold
+	}
+	return a
+}
+// events := []Event{Deposited{100}, Withdrawn{30}, Deposited{50}} → Balance 120
+```
+
+| Pattern | ప్రయోజనం | ఖరీదు (trade-off) |
+| --- | --- | --- |
+| **CQRS** | Read/write independently scale; read-optimized views | Eventual consistency (read model lag), complexity |
+| **Event Sourcing** | పూర్తి audit log, time-travel/replay, temporal queries | Storage పెరుగుతుంది, event schema evolution, snapshotting అవసరం |
+
+- CQRS + Event Sourcing తరచుగా కలిసి వాడతారు కానీ **విడివిడిగా కూడా** వాడొచ్చు.
+- **Eventual consistency:** write తర్వాత read model వెంటనే update కాకపోవచ్చు (projector lag). UX లో దీన్ని account చేయాలి.
+- **Snapshot:** millions events replay ఖరీదు — క్రమానుగతంగా snapshot store చేసి, snapshot + తర్వాతి events మాత్రమే replay.
+- **ఎప్పుడు వద్దు:** simple CRUD కి over-engineering. High audit/compliance (banking, ledger), complex domains లోనే విలువ. Go లో event log = Kafka/append-only table, projectors = consumers.
 
 ---
 
@@ -1906,6 +1992,40 @@ func (s *ShardedStore) GetUser(ctx context.Context, userID string) (*User, error
 ### Interview దృష్టి
 
 > "10M users - shard చేస్తావా?" → *"వెంటనే కాదు. ముందు: Postgres primary + read replicas (read scale) + caching (Redis) + proper indexes + connection pooler. Single primary millions users handle చేస్తుంది. Write throughput/data size ఒక్క node capacity దాటినప్పుడే shard - high-cardinality even-access shard key (user_id), cross-shard queries minimize. Sharding operational cost ఎక్కువ."* "Shard as last resort" = maturity.
+
+### Database Indexing — sharding కంటే ముందు అసలైన scale lever
+
+Shard చేయకముందు **సరైన indexes** చాలా apps ని రక్షిస్తాయి. Index అంటే DB ఒక column(s) కోసం ముందే sort చేసి ఉంచే data structure — full-table scan (O(n)) ని fast lookup (O(log n)) గా మార్చుతుంది.
+
+> **Real-life:** ఒక పుస్తకంలో ఒక topic వెతకాలంటే ప్రతి page తిప్పడం (full scan) vs చివర ఉన్న **index** చూసి నేరుగా page కి వెళ్లడం. Index లేకపోతే DB ప్రతి row చదవాలి.
+
+```sql
+-- ప్రతి query "WHERE email = ?" full scan (నెమ్మది) → index తో O(log n)
+CREATE INDEX idx_users_email ON users(email);
+
+-- Composite index — column ORDER ముఖ్యం (leftmost prefix rule)
+CREATE INDEX idx_orders_user_created ON orders(user_id, created_at);
+--   ✓ WHERE user_id=? , WHERE user_id=? AND created_at>?  → index వాడుతుంది
+--   ✗ WHERE created_at>?  (ఒక్కటే) → ఈ index వాడదు (user_id leftmost)
+
+-- Covering index — query కి కావాల్సిన అన్ని columns index లోనే → table touch అక్కర్లేదు
+CREATE INDEX idx_cover ON orders(user_id) INCLUDE (status, total);
+```
+
+| Index రకం | ఏమిటి / ఎప్పుడు |
+| --- | --- |
+| **B-tree** | Default. Range + equality + sort + prefix. Most queries. |
+| **Hash** | Equality మాత్రమే (`=`), range కాదు. అరుదు. |
+| **LSM-tree** | Write-heavy (Cassandra, RocksDB). Append + compaction. |
+| **Composite** | బహుళ columns; **leftmost prefix** rule వర్తిస్తుంది. |
+| **Covering** | Query needs = index columns → heap fetch skip (fastest reads). |
+| **Partial** | `WHERE deleted=false` — subset మాత్రమే index (చిన్నది, fast). |
+| **Inverted** | Full-text search (Elasticsearch); word → doc list. |
+
+- **Trade-off:** ప్రతి index **write ని నెమ్మది** చేస్తుంది (insert/update లో index కూడా update కావాలి) + storage తింటుంది. కాబట్టి **read patterns బట్టి మాత్రమే** index; అనవసర indexes తీసేయి.
+- **B-tree vs LSM:** B-tree = read-optimized (in-place update, Postgres/MySQL). LSM = write-optimized (append-only + background compaction, Cassandra) — write-heavy systems కి. (లోతు: `SystemDesign_Go_Telugu.md`, `HLD_Telugu.md`.)
+- **EXPLAIN ఎప్పుడూ చూడు:** slow query = index వాడుతోందా (`EXPLAIN ANALYZE`) verify చేయి — index ఉన్నా planner వాడకపోవచ్చు (low selectivity, stale stats).
+- **High cardinality** columns (unique-ish: email, user_id) index కి మంచివి; low cardinality (gender, boolean) సాధారణంగా పనికిరావు.
 
 ---
 

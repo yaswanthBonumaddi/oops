@@ -1,0 +1,169 @@
+/* ======================================================================
+   Telugu technical-doc print stylesheet (GitHub-like, Chrome print-to-pdf)
+   Font stacks include Telugu faces so every Telugu glyph shapes correctly,
+   with English/code falling back to Latin faces first.
+   ====================================================================== */
+
+@page {
+  size: A4;
+  margin: 16mm 14mm 18mm 14mm;
+}
+
+:root {
+  --fg: #1f2328;
+  --muted: #656d76;
+  --border: #d0d7de;
+  --link: #0969da;
+  --code-bg: #f6f8fa;
+  --quote-border: #d0d7de;
+  --accent: #0969da;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body.markdown-body {
+  font-family: -apple-system, "Segoe UI", "Noto Sans", "Kohinoor Telugu",
+    "Telugu Sangam MN", "Noto Sans Telugu", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 10.4pt;
+  line-height: 1.72;
+  color: var(--fg);
+  margin: 0;
+  padding: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ---------- Headings ---------- */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 21pt;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0.3em;
+  margin-top: 0.2em;
+}
+/* Part headers (H1 mid-document) start on a fresh page */
+h1 + * { page-break-before: avoid; }
+h1:not(:first-of-type) { page-break-before: always; }
+h2 {
+  font-size: 16pt;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.25em;
+  page-break-before: auto;
+}
+h3 { font-size: 13pt; }
+h4 { font-size: 11.5pt; }
+h5, h6 { font-size: 10.4pt; color: var(--muted); }
+
+/* keep a heading with the block right after it */
+h2, h3, h4 { break-after: avoid-page; }
+
+/* ---------- Text blocks ---------- */
+p, ul, ol, blockquote, table, pre { margin: 0.55em 0 0.85em; }
+ul, ol { padding-left: 1.6em; }
+li { margin: 0.18em 0; }
+li > ul, li > ol { margin: 0.15em 0; }
+
+a { color: var(--link); text-decoration: none; }
+
+strong { font-weight: 700; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.3em 0;
+}
+
+/* ---------- Blockquotes (real-life analogies) ---------- */
+blockquote {
+  margin-left: 0;
+  padding: 0.5em 1em;
+  color: #3b3f45;
+  background: #f6f8fa;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+
+/* ---------- Inline code ---------- */
+code {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas,
+    "Kohinoor Telugu", "Telugu Sangam MN", monospace;
+  font-size: 0.88em;
+  background: rgba(175, 184, 193, 0.2);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  white-space: break-spaces;
+}
+
+/* ---------- Code blocks ---------- */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 8.7pt;
+  line-height: 1.5;
+  overflow: visible;
+  /* wrap long lines so nothing is clipped off the page edge in print */
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  page-break-inside: auto;   /* allow very long blocks to split across pages */
+}
+pre code {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas,
+    "Kohinoor Telugu", "Telugu Sangam MN", monospace;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  border-radius: 0;
+}
+
+/* ---------- Tables ---------- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 9.2pt;
+  page-break-inside: avoid;
+  display: table;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+  word-break: break-word;
+}
+th { background: #f1f3f5; font-weight: 700; }
+tr:nth-child(even) td { background: #fafbfc; }
+
+/* Emoji-ish check/cross marks keep their color in print */
+img { max-width: 100%; }
+
+/* ======================================================================
+   highlight.js — GitHub light theme (token colors)
+   ====================================================================== */
+.hljs { color: #1f2328; background: transparent; }
+.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-type,
+.hljs-built_in, .hljs-name { color: #d73a49; }
+.hljs-string, .hljs-attr, .hljs-template-tag,
+.hljs-regexp, .hljs-addition { color: #032f62; }
+.hljs-title, .hljs-title.class_, .hljs-title.function_,
+.hljs-section { color: #6f42c1; }
+.hljs-number, .hljs-literal, .hljs-variable,
+.hljs-template-variable, .hljs-tag .hljs-attr { color: #005cc5; }
+.hljs-symbol, .hljs-bullet, .hljs-link { color: #e36209; }
+.hljs-meta { color: #6a737d; }
+.hljs-deletion { color: #b31d28; background: #ffeef0; }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 700; }

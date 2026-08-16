@@ -1,0 +1,12 @@
+{
+  "name": "telugu-pdftool",
+  "private": true,
+  "type": "module",
+  "description": "Markdown -> styled HTML -> PDF (via system Chrome) with correct Telugu rendering",
+  "dependencies": {
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.2.0",
+    "markdown-it-highlightjs": "^4.2.0",
+    "puppeteer-core": "^25.3.0"
+  }
+}

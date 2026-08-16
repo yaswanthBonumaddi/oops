@@ -633,6 +633,41 @@ A: Silent bugs తగ్గించడానికి. `int` + `float` లా�
 **Q: Integer overflow అయితే Go ఏం చేస్తుంది?**
 A: Panic కాదు; two's-complement wrap around అవుతుంది (uint8 255+1=0). కాబట్టి తగిన integer size ఎంచుకోవాలి. Constant expressions overflow మాత్రం compile-time లో caught.
 
+### Named Types vs Type Aliases — `type X Y` vs `type X = Y`
+
+Go లో `type` keyword కి **రెండు వేర్వేరు అర్థాలు** ఉన్నాయి — ఇది చాలా మంది గందరగోళపడే subtle concept.
+
+```go
+// 1) DEFINED type (named type) — కొత్త, ప్రత్యేకమైన type పుడుతుంది
+type Celsius float64      // Celsius కి underlying type float64, కానీ float64 కాదు
+type UserID int           // UserID కి methods జోడించవచ్చు, type safety వస్తుంది
+
+// 2) type ALIAS — అదే type కి కేవలం రెండో పేరు (కొత్త type కాదు)
+type Temp = float64       // Temp అంటే అక్షరాలా float64 — identical
+```
+
+| అంశం | Defined type `type X Y` | Alias `type X = Y` |
+| --- | --- | --- |
+| కొత్త type పుడుతుందా? | అవును (distinct) | కాదు (అదే type, రెండో పేరు) |
+| Method జోడించగలమా? | అవును (`func (c Celsius) ...`) | కాదు (alias మీద method నిషేధం) |
+| Auto-convert అవుతుందా? | కాదు — explicit `float64(c)` కావాలి | అవును (identical types) |
+| ఎప్పుడు | Domain types, type safety, methods | Refactoring/migration లో package మార్చేటప్పుడు compatibility |
+
+```go
+type Celsius float64
+func (c Celsius) ToF() Celsius { return c*9/5 + 32 }   // method on named type
+
+var c Celsius = 36.6
+var f float64 = 36.6
+// c = f          // ❌ compile error — Celsius ≠ float64 (type safety!)
+c = Celsius(f)    // ✅ explicit conversion
+fmt.Println(c.ToF())
+
+// byte = uint8, rune = int32, any = interface{} — ఇవి stdlib లో నిజమైన ALIASES
+```
+
+> **గుర్తు:** `=` ఉంటే **alias** (అదే type), `=` లేకపోతే **కొత్త defined type**. Method attach చేయాలంటే defined type కావాలి. `byte`/`rune`/`any` నిజమైన aliases (అందుకే `byte` == `uint8`). Alias యొక్క అసలు use case: పెద్ద codebase లో ఒక type ని కొత్త package కి క్రమంగా తరలించేటప్పుడు (`type OldName = newpkg.NewName`) పాత code విరగకుండా ఉంచడం.
+
 ---
 
 ## 6. Strings, byte, rune, UTF-8 Deep Dive
@@ -1326,6 +1361,30 @@ A: Read from nil map = zero value (safe). Write to nil map = **panic**. అం�
 
 **Q: Map iteration order guaranteed నా?**
 A: లేదు — ఉద్దేశపూర్వకంగా randomized (ప్రతి range random bucket నుండి మొదలు). Deterministic order కావాలంటే keys collect చేసి sort చేయాలి.
+
+### `clear()` builtin — map/slice ని ఖాళీ చేయడం (Go 1.21+)
+
+Go 1.21 లో వచ్చిన `clear()` builtin — map లోని **అన్ని entries ని తీసేస్తుంది** (అదే map ని reuse చేస్తూ, కొత్తది allocate చేయకుండా), లేదా slice లోని అన్ని elements ని zero value కి set చేస్తుంది.
+
+```go
+m := map[string]int{"a": 1, "b": 2, "c": 3}
+clear(m)                 // అన్ని keys తీసేస్తుంది
+fmt.Println(len(m))      // 0  (అదే map, re-allocate కాదు — memory reuse)
+
+// పాత విధానం: loop తో delete (ఇప్పటికీ valid, కానీ clear చిన్నది)
+// for k := range m { delete(m, k) }
+
+s := []int{1, 2, 3}
+clear(s)                 // slice లో అన్నీ zero → [0 0 0]  (len మారదు!)
+fmt.Println(s, len(s))   // [0 0 0] 3
+```
+
+| Target | `clear()` ఏం చేస్తుంది |
+| --- | --- |
+| **Map** | అన్ని entries delete (len → 0), అదే backing map reuse |
+| **Slice** | అన్ని elements ని zero value కి (len/cap **మారవు**) |
+
+> **Gotcha:** slice కి `clear(s)` elements ని sunna చేస్తుంది కానీ length తగ్గించదు — length 0 చేయాలంటే `s = s[:0]`. Map ను reuse చేయాలనుకున్నప్పుడు (hot loop లో re-allocation తప్పించడానికి) `clear(m)` ఉత్తమం. NaN keys ఉన్న maps ని loop-delete తో పూర్తిగా clear చేయలేము — `clear()` వాటిని కూడా తీసేస్తుంది (ఇది clear() ఉనికికి ఒక అసలు కారణం).
 
 ---
 
@@ -2553,6 +2612,43 @@ return &HTTPError{Code: 404, Message: "user not found", Err: ErrNotFound}
 ```
 
 `Unwrap()` method define చేస్తే నీ custom error `errors.Is/As` chain లో పాల్గొంటుంది.
+
+### errors.Join — బహుళ errors ని ఒకేసారి (Go 1.20+)
+
+కొన్నిసార్లు ఒకే operation లో **చాలా errors** వస్తాయి (ఉదా: batch validation — అన్ని fields check చేసి అన్ని తప్పులు ఒకేసారి report చేయాలి). వాటిని ఒకే error గా కలపడానికి `errors.Join`.
+
+```go
+import "errors"
+
+func validate(u User) error {
+	var errs []error
+	if u.Name == "" {
+		errs = append(errs, errors.New("name ఖాళీ"))
+	}
+	if u.Age < 0 {
+		errs = append(errs, errors.New("age negative"))
+	}
+	// errors.Join(nil, nil) == nil — ఏ error లేకపోతే nil return అవుతుంది
+	return errors.Join(errs...)
+}
+
+func main() {
+	err := validate(User{Name: "", Age: -5})
+	fmt.Println(err)
+	// name ఖాళీ
+	// age negative   (ప్రతి error కొత్త line లో)
+
+	// joined error కూడా errors.Is తో wrap-aware — ప్రతి sub-error ని match చేస్తుంది
+	fmt.Println(errors.Is(err, err)) // true
+}
+```
+
+| Wrapping విధానం | ఎప్పుడు వాడాలి |
+| --- | --- |
+| `fmt.Errorf("...: %w", err)` | **ఒక** underlying error కి context జోడించడానికి (single chain) |
+| `errors.Join(e1, e2, ...)` | **బహుళ** independent errors ని కలపడానికి (multi-error). `%w` ని రెండుసార్లు `fmt.Errorf` లో వాడి కూడా multi-wrap చేయవచ్చు (1.20+) |
+
+> **గమనిక:** `errors.Join` returned error లో `nil` entries automatically skip అవుతాయి; అన్నీ nil అయితే మొత్తం `nil`. కాబట్టి పైన `return errors.Join(errs...)` — errors లేకపోతే safe గా nil ఇస్తుంది.
 
 ### panic vs error — ఎప్పుడు ఏది
 
@@ -5679,6 +5775,65 @@ A: Handler ని accept చేసి, wrapped Handler return చేసే funct
 
 **Q: Graceful shutdown ఎందుకు, ఎలా?**
 A: Deploy/scale-down లో server ని kill చేస్తే in-flight requests fail (data loss, bad UX). `srv.Shutdown(ctx)` — కొత్త connections reject చేసి, in-flight requests context deadline వరకు drain అయ్యేవరకు wait. SIGTERM/SIGINT signal catch చేసి Shutdown call చేయాలి. Zero-downtime deploys కి essential.
+
+### Raw TCP / UDP — `net` package (HTTP కి కింద ఉన్నది)
+
+`net/http` అనేది `net` package మీద కట్టబడింది. Custom protocols (game servers, proxies, DB drivers, gRPC transport) కోసం నేరుగా TCP/UDP sockets వాడతాం. ఇక్కడ కూడా **goroutine-per-connection** idiom — netpoller వల్ల లక్షల connections scale అవుతాయి.
+
+```go
+// TCP echo server — ప్రతి connection ఒక goroutine
+func main() {
+	ln, err := net.Listen("tcp", ":9000")   // listening socket
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer ln.Close()
+	for {
+		conn, err := ln.Accept()   // కొత్త client connection కోసం block
+		if err != nil {
+			continue
+		}
+		go handle(conn)            // ప్రతి client ని concurrent గా serve
+	}
+}
+
+func handle(conn net.Conn) {
+	defer conn.Close()
+	conn.SetReadDeadline(time.Now().Add(30 * time.Second)) // idle timeout
+	scanner := bufio.NewScanner(conn)   // bufio = efficient buffered read
+	for scanner.Scan() {
+		line := scanner.Text()
+		conn.Write([]byte("echo: " + line + "\n"))
+	}
+}
+```
+
+```go
+// TCP client
+conn, err := net.Dial("tcp", "localhost:9000")
+if err != nil { log.Fatal(err) }
+defer conn.Close()
+fmt.Fprintln(conn, "hello")
+resp, _ := bufio.NewReader(conn).ReadString('\n')
+fmt.Print(resp)   // echo: hello
+
+// UDP — connectionless (packets, no handshake, no delivery guarantee)
+udpAddr, _ := net.ResolveUDPAddr("udp", ":9001")
+udpConn, _ := net.ListenUDP("udp", udpAddr)
+buf := make([]byte, 1024)
+n, clientAddr, _ := udpConn.ReadFromUDP(buf)   // ఏ client నుండైనా packet
+udpConn.WriteToUDP([]byte("ack"), clientAddr)
+_ = n
+```
+
+| అంశం | **TCP** (`net.Listen`/`Dial`) | **UDP** (`net.ListenUDP`) |
+| --- | --- | --- |
+| Connection | Stream, handshake, ordered, reliable | Connectionless, packets, unordered |
+| API | `Accept`/`Read`/`Write` (stream) | `ReadFromUDP`/`WriteToUDP` (datagram) |
+| వాడకం | HTTP, gRPC, DB, chat | DNS, video/voice, gaming, metrics |
+| Go idiom | goroutine-per-conn | ఒక goroutine loop (packets) |
+
+> **Key idea:** `net.Conn` అనేది `io.Reader` + `io.Writer` interface ని satisfy చేస్తుంది — కాబట్టి `bufio`, `io.Copy`, `encoding/json` డైరెక్ట్‌గా socket మీద పనిచేస్తాయి. TCP server లో ఎప్పుడూ read/write **deadlines** (`SetReadDeadline`) పెట్టు — లేకపోతే slow/dead clients goroutines ని లీక్ చేస్తాయి.
 
 ---
 

@@ -1,0 +1,462 @@
+/* ======================================================================
+   EDITORIAL print stylesheet  —  "design report" look.
+   Dark cover, cream paper, orange accent rules, inline SVG diagrams.
+   Everything stays REAL TEXT (searchable, selectable) — no raster images.
+   Telugu shapes via macOS Kohinoor Telugu; Latin uses Avenir Next.
+   Used by:  node build.mjs --style editorial <file.md>
+   ====================================================================== */
+
+:root {
+  --ink:        #16203a;   /* headings, dark UI                      */
+  --ink-deep:   #111a2f;   /* cover background                       */
+  --body:       #2b3242;   /* body copy                              */
+  --muted:      #6f7889;   /* captions, secondary                    */
+  --faint:      #98a0b0;   /* footers, rules                         */
+  --accent:     #e2653a;   /* orange — rules, emphasis, human gates  */
+  --accent-sft: #fdeee7;   /* orange tint background                 */
+  --paper:      #fdf9f2;   /* cream content panel                    */
+  --paper-2:    #f7f1e6;   /* cream, one step darker (table headers) */
+  --line:       #e2dcd0;   /* hairline on cream                      */
+  --good:       #2f7d5d;
+  --good-sft:   #e9f4ee;
+  --bad:        #c0463a;
+  --bad-sft:    #fcecea;
+  --info:       #2f5fa8;
+  --info-sft:   #eaf0fa;
+}
+
+@page { size: A4; margin: 14mm 0 16mm; }
+/* Cover page bleeds to the paper edge. */
+@page :first { margin: 0; }
+
+html {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  background: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Avenir Next", "Avenir", -apple-system, "Segoe UI",
+    "Noto Sans", "Kohinoor Telugu", "Telugu Sangam MN", "Noto Sans Telugu",
+    Helvetica, Arial, sans-serif;
+  font-size: 10.3pt;
+  line-height: 1.72;
+  color: var(--body);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* The cream sheet the text sits on. White gutters left/right, like the
+   reference report. The background repaints on every printed fragment. */
+body.markdown-body {
+  background: var(--paper);
+  padding: 0 16mm;
+  border-left: 10mm solid #fff;
+  border-right: 10mm solid #fff;
+}
+
+/* ----------------------------------------------------------------------
+   Headings
+   ---------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.24;
+  letter-spacing: -0.005em;
+  break-after: avoid-page;
+}
+
+/* h1 = a numbered problem. Always opens a fresh page, with the big
+   ghost number sitting behind it. */
+h1 {
+  font-size: 25pt;
+  margin: 6mm 0 6mm;
+  padding-top: 2mm;
+}
+h1:not(:first-of-type) { break-before: page; }
+
+/* h2 = a step in the thinking process. Short orange rule above it. */
+h2 {
+  font-size: 15.5pt;
+  margin: 9mm 0 3mm;
+  padding-top: 4mm;
+  position: relative;
+}
+h2::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 34px; height: 3px;
+  background: var(--accent);
+}
+
+h3 {
+  font-size: 12pt;
+  margin: 6mm 0 1.5mm;
+}
+h4 {
+  font-size: 10.4pt;
+  margin: 4.5mm 0 1mm;
+  color: var(--ink);
+}
+/* h5 is repurposed as the small orange caption above a figure */
+h5 {
+  font-size: 7.6pt;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 6mm 0 2mm;
+}
+h6 {
+  font-size: 7.6pt;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 6mm 0 2mm;
+}
+
+/* ----------------------------------------------------------------------
+   Text blocks
+   ---------------------------------------------------------------------- */
+p { margin: 0 0 3.4mm; }
+ul, ol { margin: 0 0 3.4mm; padding-left: 5.5mm; }
+li { margin: 0.6mm 0; }
+li > ul, li > ol { margin: 0.6mm 0; }
+strong { font-weight: 700; color: var(--ink); }
+em { font-style: italic; }
+a { color: var(--info); text-decoration: none; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 7mm 0;
+}
+
+/* Pull-quote / callout: orange bar, the reference report's signature block */
+blockquote {
+  margin: 5mm 0;
+  padding: 0.5mm 0 0.5mm 5mm;
+  border-left: 3px solid var(--accent);
+  color: var(--ink);
+  font-size: 11pt;
+  line-height: 1.62;
+  break-inside: avoid;
+}
+blockquote p { margin: 1.5mm 0; }
+blockquote strong { color: var(--ink); }
+
+/* ----------------------------------------------------------------------
+   Cover page
+   ---------------------------------------------------------------------- */
+.cover {
+  /* Bleed to the paper edge. Negative margins clear the cream panel, and the
+     huge solid box-shadow paints the printed page margins too (Chrome will not
+     let a negative margin cross the page box, but it does paint shadows there). */
+  margin: 0 -26mm;
+  padding: 44mm 26mm 24mm;
+  min-height: 297mm;
+  background: #141d33;
+  color: #fff;
+  position: relative;
+  break-after: page;
+  display: flex;
+  flex-direction: column;
+}
+.cover-num {
+  position: absolute;
+  top: 22mm; right: 26mm;
+  font-size: 62pt;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: rgba(226, 101, 58, 0.30);
+  line-height: 1;
+}
+.cover .kicker {
+  font-size: 8.4pt;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #aeb8cc;
+  margin: 0 0 4mm;
+}
+.cover .rule {
+  width: 32mm; height: 3px;
+  background: var(--accent);
+  margin: 0 0 9mm;
+}
+.cover h1,
+.cover .cover-title {
+  font-size: 34pt;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 8mm;
+  max-width: 132mm;
+  padding: 0;
+  border: none;
+}
+.cover .lede {
+  border-left: 3px solid var(--accent);
+  padding-left: 5mm;
+  margin: 0 0 8mm;
+  max-width: 118mm;
+  font-size: 12.5pt;
+  line-height: 1.55;
+  color: #e8ecf4;
+}
+.cover .sub {
+  max-width: 112mm;
+  font-size: 9.4pt;
+  line-height: 1.62;
+  color: #9aa5ba;
+  margin: 0;
+}
+.cover .spacer { flex: 1 1 auto; min-height: 18mm; }
+.cover .cover-foot {
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  padding-top: 4mm;
+  display: flex;
+  justify-content: space-between;
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8b96ac;
+}
+
+/* ----------------------------------------------------------------------
+   Problem opener strip (top of each h1 problem page)
+   ---------------------------------------------------------------------- */
+.opener {
+  position: relative;
+  margin: 0 0 6mm;
+  padding-top: 3mm;
+  break-after: avoid-page;
+}
+.opener .ghost {
+  position: absolute;
+  top: -6mm; right: 0;
+  font-size: 46pt;
+  font-weight: 800;
+  color: rgba(22, 32, 58, 0.07);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.opener .kicker {
+  font-size: 7.8pt;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 2.5mm;
+}
+.opener .title {
+  font-size: 24pt;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.14;
+  margin: 0 0 3mm;
+  max-width: 140mm;
+}
+.opener .meta {
+  font-size: 8.6pt;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+.opener .meta b { color: var(--ink); }
+
+/* ----------------------------------------------------------------------
+   Tables
+   ---------------------------------------------------------------------- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 3mm 0 5mm;
+  font-size: 8.9pt;
+  line-height: 1.5;
+  background: #fff;
+}
+/* Long tables may split across pages, but never mid-row. */
+tr { break-inside: avoid; }
+thead { display: table-header-group; }
+th, td {
+  border: 1px solid var(--line);
+  padding: 2.2mm 3mm;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: var(--paper-2);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 8.4pt;
+  letter-spacing: 0.02em;
+}
+td code { font-size: 8.2pt; }
+
+/* ----------------------------------------------------------------------
+   Code
+   ---------------------------------------------------------------------- */
+code {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+  font-size: 0.87em;
+  background: #f0ece2;
+  color: #37405a;
+  padding: 0.1em 0.36em;
+  border-radius: 3px;
+}
+pre {
+  background: #fbfaf7;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink);
+  border-radius: 3px;
+  padding: 3.5mm 4mm;
+  margin: 3mm 0 5mm;
+  font-size: 8.2pt;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  break-inside: auto;
+}
+pre code {
+  background: none;
+  padding: 0;
+  color: #263048;
+  font-size: inherit;
+}
+
+/* ----------------------------------------------------------------------
+   Utility blocks used from raw HTML inside the markdown
+   ---------------------------------------------------------------------- */
+.pagebreak { break-after: page; }
+.keep { break-inside: avoid; }
+
+/* Figure wrapper: caption + diagram, never split across pages */
+.fig {
+  margin: 4mm 0 6mm;
+  break-inside: avoid;
+}
+.fig > svg { display: block; width: 100%; height: auto; }
+.fig .cap {
+  font-size: 7.6pt;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 2.5mm;
+}
+.fig .note {
+  font-size: 8.4pt;
+  color: var(--muted);
+  margin: 2mm 0 0;
+  line-height: 1.5;
+}
+
+/* Coloured note boxes */
+.box {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 3.5mm 4.5mm;
+  margin: 4mm 0;
+  background: #fff;
+  font-size: 9.4pt;
+  line-height: 1.62;
+  break-inside: avoid;
+}
+.box .lab {
+  font-size: 7.4pt;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 1.5mm;
+}
+.box.good { background: var(--good-sft); border-color: #cfe4d8; }
+.box.good .lab { color: var(--good); }
+.box.bad  { background: var(--bad-sft);  border-color: #f0cfca; }
+.box.bad  .lab { color: var(--bad); }
+.box.warn { background: var(--accent-sft); border-color: #f5d4c6; }
+.box.warn .lab { color: var(--accent); }
+.box.info { background: var(--info-sft); border-color: #cfdcf0; }
+.box.info .lab { color: var(--info); }
+
+/* The "say this out loud" English script block */
+.script {
+  background: var(--ink);
+  color: #e6eaf2;
+  border-radius: 4px;
+  padding: 5mm 6mm;
+  margin: 5mm 0;
+  font-size: 9.5pt;
+  line-height: 1.68;
+  break-inside: avoid;
+}
+.script .lab {
+  font-size: 7.4pt;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 2.5mm;
+}
+.script p { margin: 0 0 3mm; }
+.script p:last-child { margin: 0; }
+.script b, .script strong { color: #fff; }
+.script em { color: #f0b49a; font-style: normal; font-weight: 600; }
+
+/* Simple 2/3/4-up card grids */
+.grid { display: flex; gap: 3mm; margin: 4mm 0; break-inside: avoid; }
+.grid > .card { flex: 1 1 0; }
+.card {
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  background: #fff;
+  padding: 3mm 3.5mm;
+  font-size: 8.8pt;
+  line-height: 1.55;
+}
+.card .t {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 9.4pt;
+  margin-bottom: 1.2mm;
+}
+.card .s { color: var(--muted); font-size: 8.2pt; }
+
+/* ----------------------------------------------------------------------
+   Inline-SVG diagram design system.
+   Diagrams are written as plain <svg> in the markdown and inherit
+   these classes, so the markup stays short and every diagram matches.
+   ---------------------------------------------------------------------- */
+svg { font-family: "Avenir Next", Helvetica, Arial, sans-serif; }
+svg text { fill: var(--ink); }
+
+.n      { fill: #ffffff; stroke: #d9d3c6; stroke-width: 1.2; }
+.n-dark { fill: #17203a; stroke: none; }
+.n-acc  { fill: #e2653a; stroke: none; }
+.n-good { fill: #e9f4ee; stroke: #b4d6c4; stroke-width: 1.2; }
+.n-bad  { fill: #fcecea; stroke: #eec4bd; stroke-width: 1.2; }
+.n-info { fill: #eaf0fa; stroke: #c3d3ec; stroke-width: 1.2; }
+.n-soft { fill: #f4efe4; stroke: #ded7c8; stroke-width: 1.2; }
+
+.t      { font-size: 12px; font-weight: 600; fill: #16203a; }
+.t-sm   { font-size: 9.6px;  font-weight: 500; fill: #6f7889; }
+.t-xs   { font-size: 7.6px; font-weight: 700; fill: #6f7889; letter-spacing: 0.1em; }
+.t-w    { font-size: 12px; font-weight: 600; fill: #ffffff; }
+.t-w-sm { font-size: 9.2px; font-weight: 500; fill: #c3cbdb; }
+.t-acc  { font-size: 10px; font-weight: 700; fill: #e2653a; }
+.mid    { text-anchor: middle; }
+.end    { text-anchor: end; }
+.mono   { font-family: "SF Mono", Menlo, monospace; font-size: 9px; }
+
+.ln      { stroke: #a9b0be; stroke-width: 1.3; fill: none; }
+.ln-acc  { stroke: #e2653a; stroke-width: 1.5; fill: none; }
+.ln-dash { stroke: #a9b0be; stroke-width: 1.2; fill: none; stroke-dasharray: 4 3; }
+.ln-thin { stroke: #d9d3c6; stroke-width: 1; fill: none; }

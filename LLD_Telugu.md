@@ -1,8 +1,28 @@
-# JavaScript లో LLD (Low-Level Design) - పూర్తి తెలుగు గైడ్
+<!-- style: editorial -->
+<!-- footer: LLD · పూర్తి తెలుగు గైడ్ · Patterns & Principles -->
 
-> ఈ document చదివిన తర్వాత LLD మళ్ళీ మర్చిపోలేవు. ప్రతి principle, ప్రతి design pattern కి real-life scenario, వివరణ, UML ఆలోచన, మరియు run అయ్యే JavaScript code ఉంటాయి. ఇది OOP గైడ్ (`OOPS_Telugu.md`) కి కొనసాగింపు - OOP పునాది అయితే, LLD ఆ పునాది మీద కట్టే భవనం.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="hollowd" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2" stroke-dasharray="0"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">LLD</div>
+<div class="kicker">Object Design · Principles · 23 GoF Patterns</div>
+<div class="rule"></div>
+<div class="cover-title">Low-Level<br>Design</div>
+<div class="lede">ఈ document చదివిన తర్వాత LLD మళ్ళీ మర్చిపోలేవు. ప్రతి principle, ప్రతి pattern కి — <b>UML diagram</b>, real-life scenario, వివరణ, మరియు run అయ్యే JavaScript code.</div>
+<div class="sub">ఇది OOP గైడ్ (<code>OOPS_Telugu.md</code>) కి కొనసాగింపు — OOP పునాది అయితే, LLD ఆ పునాది మీద కట్టే భవనం. Interview lo అడిగే <i>design problems</i> కోసం <code>LLD_Design_Problems_Telugu.pdf</code> చూడండి; ఇది వాటి వెనక ఉన్న <i>పరికరాల పెట్టె</i>.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -175,6 +195,48 @@ LLD లో అతి ముఖ్యమైనది - classes మధ్య **స
 > - **Aggregation:** Cricket **Team** కి **Players** ఉంటారు. Team రద్దయినా players బతికే ఉంటారు (వేరే team కి వెళ్తారు). Weak bond.
 > - **Composition:** **ఇల్లు** కి **గదులు** ఉంటాయి. ఇల్లు కూలిపోతే గదులు కూడా పోతాయి. Strong bond - గది ఇల్లు లేకుండా ఒంటరిగా ఉండదు.
 
+<div class="fig">
+<div class="cap">నాలుగు సంబంధాలు · ఒకే చిత్రంలో</div>
+<svg viewBox="0 0 750 320">
+<text class="t-xs" x="0" y="14">1 · ASSOCIATION — "తెలుసు" · రెండూ పూర్తిగా స్వతంత్రం</text>
+<rect class="n" x="0" y="26" width="130" height="40" rx="4"/>
+<text class="t mid" x="65" y="51">Teacher</text>
+<line class="ln" x1="134" y1="46" x2="216" y2="46" marker-end="url(#a)"/>
+<text class="t-sm mid" x="175" y="38">teaches</text>
+<rect class="n" x="220" y="26" width="130" height="40" rx="4"/>
+<text class="t mid" x="285" y="51">Student</text>
+<text class="t-sm" x="370" y="42">Teacher, Student ని వాడుతుంది. ఒకరు పోయినా</text>
+<text class="t-sm" x="370" y="58">రెండోవారు బతికే ఉంటారు. బలహీనమైన సంబంధం.</text>
+<text class="t-xs" x="0" y="98">2 · AGGREGATION — "కలిగి ఉంది" (ఖాళీ ◇) · భాగాలు విడిగా బతకగలవు</text>
+<rect class="n" x="0" y="110" width="130" height="40" rx="4"/>
+<text class="t mid" x="65" y="135">Team</text>
+<line class="ln" x1="216" y1="130" x2="136" y2="130" marker-end="url(#diao)"/>
+<text class="t-sm mid" x="176" y="122">1 … *</text>
+<rect class="n" x="220" y="110" width="130" height="40" rx="4"/>
+<text class="t mid" x="285" y="135">Player</text>
+<text class="t-sm" x="370" y="126">Team రద్దయినా players ఉంటారు — వేరే team కి</text>
+<text class="t-sm" x="370" y="142">వెళ్తారు. Players బయట create అవుతారు.</text>
+<text class="t-xs" x="0" y="182">3 · COMPOSITION — "సొంతం" (నిండు ◆) · భాగాలు కలిసి పుడతాయి, కలిసి చస్తాయి</text>
+<rect class="n" x="0" y="194" width="130" height="40" rx="4"/>
+<text class="t mid" x="65" y="219">House</text>
+<line class="ln" x1="216" y1="214" x2="136" y2="214" marker-end="url(#dia)"/>
+<text class="t-sm mid" x="176" y="206">1 … *</text>
+<rect class="n-acc" x="220" y="194" width="130" height="40" rx="4"/>
+<text class="t-w mid" x="285" y="219">Room</text>
+<text class="t-sm" x="370" y="210">ఇల్లు కూలితే గదులూ పోతాయి. Rooms ని House</text>
+<text class="t-sm" x="370" y="226">తన constructor lo తానే create చేస్తుంది.</text>
+<text class="t-xs" x="0" y="266">4 · INHERITANCE — "ఒక రకం" (ఖాళీ △) · Dog IS-A Animal</text>
+<rect class="n" x="0" y="278" width="130" height="40" rx="4"/>
+<text class="t mid" x="65" y="303">Dog</text>
+<line class="ln" x1="134" y1="298" x2="216" y2="298" marker-end="url(#hollow)"/>
+<rect class="n" x="220" y="278" width="130" height="40" rx="4"/>
+<text class="t mid" x="285" y="303">Animal</text>
+<text class="t-sm" x="370" y="294">బాణం ఎప్పుడూ <tspan class="t-acc">child → parent</tspan> దిశలో.</text>
+<text class="t-sm" x="370" y="310">"Dog is an Animal" అని చదవాలి.</text>
+</svg>
+<div class="note">తేడాని గుర్తుంచుకోవడానికి ఒక ప్రశ్న చాలు: <b>"కంటైనర్ చస్తే భాగాలు కూడా చస్తాయా?"</b> చస్తే composition (◆), బతికితే aggregation (◇), అసలు కలిగి ఉండకపోతే కేవలం association (→).</div>
+</div>
+
 ### Code
 
 ```javascript
@@ -292,14 +354,48 @@ LLD interviews లో మాటలతో కాకుండా **class diagram**
 
 ### Relationship Arrows (బాణాలు)
 
-| బాణం                      | సంబంధం                            |
-| ------------------------- | --------------------------------- |
-| `──▷` (ఖాళీ triangle)     | Inheritance (extends)             |
-| `┄┄▷` (చుక్కల + triangle) | Interface implement (realization) |
-| `───>`                    | Association                       |
-| `◇───`                    | Aggregation                       |
-| `◆───`                    | Composition                       |
-| `┄┄>`                     | Dependency                        |
+<div class="fig">
+<div class="cap">UML బాణాల నిఘంటువు · ఇది ఒక్కసారి గుర్తుంచుకుంటే చాలు</div>
+<svg viewBox="0 0 750 230">
+<rect class="n-soft" x="0" y="8" width="366" height="42" rx="4"/>
+<line class="ln" x1="20" y1="30" x2="120" y2="30" marker-end="url(#hollow)"/>
+<text class="t" x="140" y="27">Inheritance</text>
+<text class="t-sm" x="140" y="42">class Dog extends Animal</text>
+<rect class="n-soft" x="384" y="8" width="366" height="42" rx="4"/>
+<line class="ln-dash" x1="404" y1="30" x2="504" y2="30" marker-end="url(#hollow)"/>
+<text class="t" x="524" y="27">Realization</text>
+<text class="t-sm" x="524" y="42">interface ని implement చేయడం</text>
+<rect class="n-soft" x="0" y="58" width="366" height="42" rx="4"/>
+<line class="ln" x1="20" y1="80" x2="120" y2="80" marker-end="url(#a)"/>
+<text class="t" x="140" y="77">Association</text>
+<text class="t-sm" x="140" y="92">"ఒకరికొకరు తెలుసు" — వాడుకుంటుంది</text>
+<rect class="n-soft" x="384" y="58" width="366" height="42" rx="4"/>
+<line class="ln-dash" x1="404" y1="80" x2="504" y2="80" marker-end="url(#a)"/>
+<text class="t" x="524" y="77">Dependency</text>
+<text class="t-sm" x="524" y="92">తాత్కాలికం — parameter గా వస్తుంది</text>
+<rect class="n-soft" x="0" y="108" width="366" height="42" rx="4"/>
+<line class="ln" x1="120" y1="130" x2="24" y2="130" marker-end="url(#diao)"/>
+<text class="t" x="140" y="127">Aggregation (ఖాళీ ◇)</text>
+<text class="t-sm" x="140" y="142">Team ◇— Player · విడిగా బతుకుతాయి</text>
+<rect class="n-soft" x="384" y="108" width="366" height="42" rx="4"/>
+<line class="ln" x1="504" y1="130" x2="408" y2="130" marker-end="url(#dia)"/>
+<text class="t" x="524" y="127">Composition (నిండు ◆)</text>
+<text class="t-sm" x="524" y="142">House ◆— Room · కలిసి చస్తాయి</text>
+<rect class="n-acc" x="0" y="162" width="750" height="60" rx="4"/>
+<text class="t-w" x="16" y="184">రెండు నియమాలు గుర్తుంచుకుంటే చాలు</text>
+<text class="t-w-sm" x="16" y="204"><tspan class="mono">1.</tspan> ముక్కు (triangle/diamond) ఎప్పుడూ <tspan class="t-acc">"పెద్దవాడి" వైపు</tspan> — parent వైపు, లేదా owner వైపు.</text>
+<text class="t-w-sm" x="16" y="218"><tspan class="mono">2.</tspan> చుక్కల గీత = బలహీనమైన/తాత్కాలిక సంబంధం. నిండు గీత = నిజమైన, స్థిరమైన సంబంధం.</text>
+</svg>
+</div>
+
+| బాణం | సంబంధం | JavaScript lo ఎలా కనిపిస్తుంది |
+| ---- | ------ | ------------------------------- |
+| `──▷` ఖాళీ triangle | Inheritance | `class Dog extends Animal` |
+| `┄┄▷` చుక్కలు + triangle | Realization (interface) | Duck typing / abstract base class |
+| `───>` | Association | `this.other = other` (constructor lo inject) |
+| `◇───` ఖాళీ diamond | Aggregation | `this.players = []` (బయట create అయినవి) |
+| `◆───` నిండు diamond | Composition | `this.rooms = [new Room()]` (లోపలే create) |
+| `┄┄>` చుక్కల బాణం | Dependency | `method(param)` — parameter గా మాత్రమే |
 
 ### Key Points
 
@@ -352,6 +448,11 @@ SOLID = మంచి LLD కి 5 మూల సూత్రాలు. (వివ
 | **L**  | Liskov Substitution   | Child ని parent స్థానంలో పెట్టినా break అవ్వకూడదు |
 | **I**  | Interface Segregation | పెద్ద interface కాదు, చిన్న role-based interfaces |
 | **D**  | Dependency Inversion  | Concrete కాదు, abstraction మీద depend అవ్వు       |
+
+<div class="fig">
+<div class="cap">SOLID · ఐదు సూత్రాలు ఒక చూపులో</div>
+<svg viewBox="0 0 750 302"><rect class="n-acc" x="0" y="8" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="33" style="font-size:17px;font-weight:800">S</text><rect class="n" x="52" y="8" width="698" height="38" rx="4"/><text class="t" x="66" y="25">Single Responsibility</text><text class="t-sm" x="66" y="40">ఒక class కి మారడానికి ఒకే ఒక్క కారణం ఉండాలి</text><rect class="n-acc" x="0" y="54" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="79" style="font-size:17px;font-weight:800">O</text><rect class="n" x="52" y="54" width="698" height="38" rx="4"/><text class="t" x="66" y="71">Open / Closed</text><text class="t-sm" x="66" y="86">పొడిగించడానికి తెరిచి, మార్చడానికి మూసి</text><rect class="n-info" x="0" y="100" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="125" style="font-size:17px;font-weight:800">L</text><rect class="n" x="52" y="100" width="698" height="38" rx="4"/><text class="t" x="66" y="117">Liskov Substitution</text><text class="t-sm" x="66" y="132">Child ని parent స్థానంలో పెడితే ఏమీ విరగకూడదు</text><rect class="n-info" x="0" y="146" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="171" style="font-size:17px;font-weight:800">I</text><rect class="n" x="52" y="146" width="698" height="38" rx="4"/><text class="t" x="66" y="163">Interface Segregation</text><text class="t-sm" x="66" y="178">వాడని methods ని implement చేయమని బలవంతం చేయొద్దు</text><rect class="n-good" x="0" y="192" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="217" style="font-size:17px;font-weight:800">D</text><rect class="n" x="52" y="192" width="698" height="38" rx="4"/><text class="t" x="66" y="209">Dependency Inversion</text><text class="t-sm" x="66" y="224">Concrete class మీద కాదు, abstraction మీద ఆధారపడు</text><rect class="n-soft" x="0" y="242" width="750" height="52" rx="4"/><text class="t mid" x="375" y="264">ఐదింటిలో <tspan class="t-acc">O</tspan> మరియు <tspan class="t-acc">D</tspan> — ఇవే interview lo అత్యధికంగా test అవుతాయి</text><text class="t-sm mid" x="375" y="284">ఎందుకంటే "కొత్త requirement వస్తే ఏం మారుతుంది?" అనే ప్రశ్నకి జవాబు సరిగ్గా ఈ రెండే</text></svg>
+</div>
 
 ### Code - SRP + OCP + DIP కలిసి ఒక ఉదాహరణలో
 
@@ -455,6 +556,11 @@ Inheritance ("is-a") శక్తివంతమైనది కానీ గట
 ### Real-life Scenario
 
 > **Problem:** `Robot` ఒక `Animal` కాదు, కానీ దానికి walk చేయగలగాలి. `Animal` నుండి inherit చేస్తే eat(), sleep() కూడా వస్తాయి - అవసరం లేనివి. బదులుగా `walk` అనే behaviour ని _కలుపుతాం_ (compose).
+
+<div class="fig">
+<div class="cap">Composition over Inheritance · ఎందుకు "has-a" మేలు</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">❌ INHERITANCE తో — combinatorial పేలుడు</text><rect class="n" x="250" y="24" width="140" height="34" rx="4"/><text class="t mid" x="320" y="46">Bird</text><line class="ln" x1="180" y1="76" x2="290" y2="60" marker-end="url(#hollow)"/><line class="ln" x1="460" y1="76" x2="350" y2="60" marker-end="url(#hollow)"/><rect class="n" x="60" y="80" width="240" height="34" rx="4"/><text class="t-sm mid" x="180" y="102">FlyingBird</text><rect class="n" x="340" y="80" width="240" height="34" rx="4"/><text class="t-sm mid" x="460" y="102">SwimmingBird</text><rect class="n-bad" x="600" y="80" width="150" height="34" rx="4"/><text class="t-sm mid" x="675" y="102">FlyingSwimming…?</text><text class="t-sm" x="0" y="136">బాతు ఎగురుతుంది <tspan class="t-acc">మరియు</tspan> ఈదుతుంది. Penguin ఈదుతుంది కానీ ఎగరదు. ప్రతి కలయికకీ ఒక కొత్త class — n behaviours = 2ⁿ classes.</text><text class="t-xs" x="0" y="172">✓ COMPOSITION తో — behaviours ని ముక్కలుగా చేసి కలపడం</text><rect class="n-acc" x="270" y="182" width="210" height="46" rx="4"/><text class="t-w mid" x="375" y="202">Duck</text><text class="t-w-sm mid" x="375" y="218">- fly: FlyBehaviour</text><line class="ln-acc" x1="330" y1="232" x2="180" y2="256" marker-end="url(#aa)"/><line class="ln-acc" x1="420" y1="232" x2="570" y2="256" marker-end="url(#aa)"/><rect class="n-good" x="60" y="260" width="240" height="40" rx="4"/><text class="t-sm mid" x="180" y="278">FlyWithWings</text><text class="t-sm mid" x="180" y="293">setFlyBehaviour() తో runtime lo మార్చొచ్చు</text><rect class="n-good" x="450" y="260" width="240" height="40" rx="4"/><text class="t-sm mid" x="570" y="278">CannotFly</text><text class="t-sm mid" x="570" y="293">Penguin కి ఇది</text><text class="t-acc mid" x="375" y="322">3 behaviours × 3 birds = 9 కలయికలు, కానీ 6 classes మాత్రమే</text></svg>
+</div>
 
 ### Code
 
@@ -581,6 +687,11 @@ new Waiter().collectBill(customer, 300); // Rs.300 paid. Balance: Rs.700
 
 > **Power socket** ఒక interface. TV, phone charger, fridge - ఏదైనా ఆ socket కి plug అవుతాయి. Socket కి లోపల ఏ device ఉందో పట్టదు - అది "plug shape" అనే contract మీద మాత్రమే ఆధారపడుతుంది.
 
+<div class="fig">
+<div class="cap">Program to Interface · ఆధారపడే దిశని తిప్పడం</div>
+<svg viewBox="0 0 750 292"><text class="t-xs" x="0" y="14">❌ CONCRETE మీద ఆధారపడటం</text><rect class="n" x="0" y="24" width="200" height="44" rx="4"/><text class="t mid" x="100" y="44">OrderService</text><text class="t-sm mid" x="100" y="60">new MySQLRepo()</text><line class="ln" x1="204" y1="46" x2="266" y2="46" marker-end="url(#a)"/><rect class="n-bad" x="270" y="24" width="200" height="44" rx="4"/><text class="t mid" x="370" y="52">MySQLRepository</text><text class="t-sm" x="490" y="40">DB మార్చాలంటే OrderService ని</text><text class="t-sm" x="490" y="56">edit చేయాలి. Test lo mock రాదు.</text><text class="t-xs" x="0" y="102">✓ INTERFACE మీద ఆధారపడటం</text><rect class="n" x="0" y="112" width="200" height="44" rx="4"/><text class="t mid" x="100" y="132">OrderService</text><text class="t-sm mid" x="100" y="148">- repo: Repository</text><line class="ln" x1="204" y1="134" x2="266" y2="134" marker-end="url(#a)"/><rect class="n-acc" x="270" y="112" width="200" height="44" rx="4"/><text class="t-w mid" x="370" y="132">«interface»</text><text class="t-w mid" x="370" y="148">Repository</text><line class="ln-dash" x1="330" y1="180" x2="370" y2="162" marker-end="url(#hollow)"/><line class="ln-dash" x1="410" y1="180" x2="370" y2="162" marker-end="url(#hollow)"/><rect class="n-good" x="230" y="184" width="130" height="36" rx="4"/><text class="t-sm mid" x="295" y="206">MySQLRepo</text><rect class="n-good" x="380" y="184" width="130" height="36" rx="4"/><text class="t-sm mid" x="445" y="206">InMemoryRepo</text><text class="t-sm" x="530" y="128">OrderService కి implementation</text><text class="t-sm" x="530" y="144">గురించి తెలియదు.</text><text class="t-acc" x="530" y="168">Test lo InMemoryRepo,</text><text class="t-acc" x="530" y="184">prod lo MySQLRepo —</text><text class="t-acc" x="530" y="200">code ఒక్క line మారదు.</text><rect class="n-soft" x="0" y="236" width="750" height="46" rx="4"/><text class="t mid" x="375" y="258">"Encapsulate what varies" — ఏది మారుతుందో దాన్ని ఒక interface వెనక దాచు</text><text class="t-sm mid" x="375" y="276">ఈ ఒక్క వాక్యమే దాదాపు అన్ని design patterns యొక్క సారాంశం</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -640,6 +751,12 @@ console.log(new DataProcessor(new QuickSort()).process(data)); // [1,2,5,9]
 > ఒక కంపెనీకి **ఒకే CEO**. ఎవరు అడిగినా అదే CEO. కొత్త CEO ని ప్రతిసారి create చేయరు.\
 > Config, Logger, DB connection pool - వీటికి Singleton సరిపోతుంది.
 
+<div class="fig">
+<div class="cap">Singleton · ఒకే instance, global access</div>
+<svg viewBox="0 0 750 200"><rect class="n" x="275" y="40" width="200" height="76" rx="4"/><rect class="n-acc" x="275" y="40" width="200" height="22" rx="4"/><text class="t-w mid" x="375" y="56">Singleton</text><text class="t-sm mono" x="285" y="78">- static instance</text><text class="t-sm mono" x="285" y="92">- constructor() private</text><text class="t-sm mono" x="285" y="106">+ static getInstance()</text><path class="ln-acc" d="M475 60 Q 545 60 545 95 Q 545 128 480 118" marker-end="url(#aa)"/><text class="t-sm" x="500" y="150">తనని తానే</text><text class="t-sm" x="500" y="164">create చేసుకుంటుంది</text><rect class="n-good" x="0" y="40" width="200" height="52" rx="4"/><text class="t mid" x="100" y="62">Client A</text><text class="t-sm mid" x="100" y="78">getInstance()</text><rect class="n-good" x="0" y="106" width="200" height="52" rx="4"/><text class="t mid" x="100" y="128">Client B</text><text class="t-sm mid" x="100" y="144">getInstance()</text><line class="ln" x1="204" y1="66" x2="271" y2="76" marker-end="url(#a)"/><line class="ln" x1="204" y1="132" x2="271" y2="100" marker-end="url(#a)"/><text class="t-acc mid" x="375" y="185">ఇద్దరికీ ఒకే object తిరిగి వస్తుంది</text></svg>
+<div class="note">ప్రమాదం: ఇది ఒక <b>global variable</b> — hidden dependency, test lo mock చేయడం కష్టం. అందుకే modern code lo <b>Dependency Injection</b> మేలు (§40).</div>
+</div>
+
 ### Code
 
 ```javascript
@@ -685,6 +802,12 @@ console.log(c2.settings.theme); // light - c1, c2 ఒకటే కాబట్�
 ### Real-life Scenario
 
 > **Restaurant** లో నువ్వు kitchen లోకి వెళ్ళి వంట చేయవు. "One pizza" అని **order** ఇస్తావు - kitchen (factory) సరైన dish తయారు చేసి ఇస్తుంది. నీకు internal recipe అక్కర్లేదు.
+
+<div class="fig">
+<div class="cap">Factory Method · "ఏది create చేయాలో" subclass నిర్ణయిస్తుంది</div>
+<svg viewBox="0 0 750 220"><rect class="n" x="0" y="46" width="200" height="62" rx="4"/><rect class="n-dark" x="0" y="46" width="200" height="22" rx="4"/><text class="t-w mid" x="100" y="62">«abstract» Creator</text><text class="t-sm mono" x="10" y="84">+ factoryMethod()</text><text class="t-sm mono" x="10" y="98">+ operation()</text><line class="ln" x1="100" y1="118" x2="100" y2="150" marker-end="url(#hollow)"/><rect class="n" x="0" y="154" width="200" height="48" rx="4"/><rect class="n-dark" x="0" y="154" width="200" height="22" rx="4"/><text class="t-w mid" x="100" y="170">ConcreteCreator</text><text class="t-sm mono" x="10" y="192">+ factoryMethod()</text><rect class="n" x="400" y="46" width="200" height="48" rx="4"/><rect class="n-acc" x="400" y="46" width="200" height="22" rx="4"/><text class="t-w mid" x="500" y="62">«interface» Product</text><text class="t-sm mono" x="410" y="84">+ use()</text><line class="ln" x1="500" y1="118" x2="500" y2="150" marker-end="url(#hollow)"/><rect class="n" x="400" y="154" width="200" height="48" rx="4"/><rect class="n-dark" x="400" y="154" width="200" height="22" rx="4"/><text class="t-w mid" x="500" y="170">ConcreteProduct</text><text class="t-sm mono" x="410" y="192">+ use()</text><line class="ln-dash" x1="204" y1="178" x2="396" y2="178" marker-end="url(#a)"/><text class="t-sm mid" x="300" y="170">creates</text><text class="t-sm" x="240" y="76">Creator కి ConcreteProduct</text><text class="t-sm" x="240" y="92">గురించి తెలియదు — అది</text><text class="t-acc" x="240" y="108">interface ని మాత్రమే చూస్తుంది</text></svg>
+<div class="note">కొత్త product రకం వస్తే — ఒక కొత్త <code>ConcreteCreator</code> + ఒక కొత్త <code>ConcreteProduct</code>. ఉన్న code lo <b>సున్నా మార్పు</b>.</div>
+</div>
 
 ### Code
 
@@ -747,6 +870,12 @@ class ShapeFactory {
 ### Real-life Scenario
 
 > **Furniture showroom** లో "Victorian style" అడిగితే - Victorian chair + Victorian table + Victorian sofa అన్నీ ఒకే style లో వస్తాయి. "Modern" అడిగితే మొత్తం modern family. Styles mix అవ్వవు.
+
+<div class="fig">
+<div class="cap">Abstract Factory · సంబంధిత objects యొక్క కుటుంబం</div>
+<svg viewBox="0 0 750 270"><rect class="n" x="275" y="8" width="200" height="62" rx="4"/><rect class="n-acc" x="275" y="8" width="200" height="22" rx="4"/><text class="t-w mid" x="375" y="24">«interface» AbstractFactory</text><text class="t-sm mono" x="285" y="46">+ createButton()</text><text class="t-sm mono" x="285" y="60">+ createCheckbox()</text><line class="ln" x1="340" y1="90" x2="200" y2="118" marker-end="url(#hollow)"/><line class="ln" x1="410" y1="90" x2="550" y2="118" marker-end="url(#hollow)"/><rect class="n" x="60" y="122" width="200" height="62" rx="4"/><rect class="n-dark" x="60" y="122" width="200" height="22" rx="4"/><text class="t-w mid" x="160" y="138">MacFactory</text><text class="t-sm mono" x="70" y="160">+ createButton()</text><text class="t-sm mono" x="70" y="174">+ createCheckbox()</text><rect class="n" x="490" y="122" width="200" height="62" rx="4"/><rect class="n-dark" x="490" y="122" width="200" height="22" rx="4"/><text class="t-w mid" x="590" y="138">WinFactory</text><text class="t-sm mono" x="500" y="160">+ createButton()</text><text class="t-sm mono" x="500" y="174">+ createCheckbox()</text><rect class="n-good" x="60" y="212" width="200" height="46" rx="4"/><text class="t-sm mid" x="160" y="232">MacButton · MacCheckbox</text><text class="t-sm mid" x="160" y="248">ఒకే కుటుంబం</text><rect class="n-info" x="490" y="212" width="200" height="46" rx="4"/><text class="t-sm mid" x="590" y="232">WinButton · WinCheckbox</text><text class="t-sm mid" x="590" y="248">ఒకే కుటుంబం</text><line class="ln-dash" x1="160" y1="194" x2="160" y2="208" marker-end="url(#a)"/><line class="ln-dash" x1="590" y1="194" x2="590" y2="208" marker-end="url(#a)"/><text class="t-acc mid" x="375" y="240">Factory ని మార్చితే మొత్తం</text><text class="t-acc mid" x="375" y="256">కుటుంబం ఒకేసారి మారుతుంది</text></svg>
+<div class="note">Factory Method ఒక product ని create చేస్తుంది; Abstract Factory <b>పరస్పరం సరిపోయే products సమూహాన్ని</b>. Mac button పక్కన Windows checkbox రాకుండా ఇది ఆపుతుంది.</div>
+</div>
 
 ### Code
 
@@ -825,6 +954,11 @@ buildUI(new LightThemeFactory()); // తెల్ల button + తెల్ల ch
 
 > **Subway** sandwich: bread ఎంచుకో → veggies → sauce → toast? ఒక్కో step జోడించి చివరిలో sandwich ready. అన్నీ ఒకేసారి చెప్పక్కర్లేదు, optional వి skip చేయవచ్చు.
 
+<div class="fig">
+<div class="cap">Builder · చాలా parameters ఉన్న objects ని అడుగడుగునా కట్టడం</div>
+<svg viewBox="0 0 750 210"><rect class="n" x="0" y="40" width="230" height="90" rx="4"/><rect class="n-acc" x="0" y="40" width="230" height="22" rx="4"/><text class="t-w mid" x="115" y="56">Builder</text><text class="t-sm mono" x="10" y="78">+ setEngine(v)   → this</text><text class="t-sm mono" x="10" y="92">+ setWheels(n)   → this</text><text class="t-sm mono" x="10" y="106">+ setColour(c)   → this</text><text class="t-sm mono" x="10" y="120">+ build()        → Car</text><line class="ln-dash" x1="234" y1="90" x2="300" y2="90" marker-end="url(#a)"/><text class="t-sm mid" x="267" y="82">builds</text><rect class="n" x="304" y="40" width="200" height="62" rx="4"/><rect class="n-dark" x="304" y="40" width="200" height="22" rx="4"/><text class="t-w mid" x="404" y="56">Car</text><text class="t-sm mono" x="314" y="78">- engine, wheels</text><text class="t-sm mono" x="314" y="92">- colour, sunroof</text><rect class="n-good" x="530" y="40" width="220" height="112" rx="4"/><text class="t" x="544" y="62">ఎందుకు అవసరం</text><text class="t-sm mono" x="544" y="84">new Car(v8, 4, "red",</text><text class="t-sm mono" x="544" y="98">  true, false, null, 2)</text><text class="t-sm" x="544" y="118">— ఈ 7 arguments ఏమిటో</text><text class="t-sm" x="544" y="132">ఎవరికీ గుర్తుండవు.</text><text class="t-acc" x="544" y="146">Builder వాటికి పేర్లు ఇస్తుంది.</text><text class="t-sm mono mid" x="375" y="180">new Builder().setEngine("v8").setColour("red").build()</text><text class="t-sm mid" x="375" y="198">ప్రతి setter <tspan class="t-acc">this</tspan> ని return చేస్తుంది — అదే chaining ని సాధ్యం చేస్తుంది</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -895,6 +1029,11 @@ plain.describe(); // Small burger + patty
 
 > ఒక **resume template** ని ప్రతిసారి మొదటి నుండి type చేయవు - ఉన్నదాన్ని **copy** చేసి పేరు, details మారుస్తావు. అదే prototype cloning.
 
+<div class="fig">
+<div class="cap">Prototype · కొత్తగా కట్టకుండా, ఉన్నదాన్ని clone చేయడం</div>
+<svg viewBox="0 0 750 220"><rect class="n" x="0" y="40" width="220" height="48" rx="4"/><rect class="n-acc" x="0" y="40" width="220" height="22" rx="4"/><text class="t-w mid" x="110" y="56">«interface» Prototype</text><text class="t-sm mono" x="10" y="78">+ clone(): Prototype</text><line class="ln" x1="110" y1="106" x2="110" y2="138" marker-end="url(#hollow)"/><rect class="n" x="0" y="142" width="220" height="62" rx="4"/><rect class="n-dark" x="0" y="142" width="220" height="22" rx="4"/><text class="t-w mid" x="110" y="158">Document</text><text class="t-sm mono" x="10" y="180">- heavy config</text><text class="t-sm mono" x="10" y="194">+ clone()</text><line class="ln-dash" x1="224" y1="178" x2="300" y2="178" marker-end="url(#a)"/><text class="t-sm mid" x="262" y="170">clone()</text><rect class="n" x="304" y="142" width="220" height="62" rx="4"/><rect class="n-dark" x="304" y="142" width="220" height="22" rx="4"/><text class="t-w mid" x="414" y="158">Document (copy)</text><text class="t-sm mono" x="314" y="180">- అదే config</text><text class="t-sm mono" x="314" y="194">+ clone()</text><rect class="n-good" x="530" y="40" width="220" height="86" rx="4"/><text class="t" x="544" y="62">ఎప్పుడు వాడాలి</text><text class="t-sm" x="544" y="84">Object create చేయడం ఖరీదైనప్పుడు —</text><text class="t-sm" x="544" y="100">DB read, network call, భారీ parsing.</text><text class="t-acc" x="544" y="118">కొత్తగా కట్టడం కంటే copy చౌక.</text><rect class="n-bad" x="530" y="136" width="220" height="72" rx="4"/><text class="t" x="544" y="158">ఉచ్చు: shallow copy</text><text class="t-sm" x="544" y="178">లోపలి objects ని కూడా clone</text><text class="t-sm" x="544" y="194">చేయకపోతే — రెండూ ఒకే</text><text class="t-sm" x="544" y="208">array ని పంచుకుంటాయి.</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -956,6 +1095,12 @@ console.log(clonedConfig.nested.debug); // false
 
 > నీ laptop కి **US plug**, ఇంట్లో **Indian socket**. మధ్యలో **travel adapter** పెడతావు - రెండూ మారవు, adapter అనుసంధానం చేస్తుంది.
 
+<div class="fig">
+<div class="cap">Adapter · సరిపోని రెండు interfaces ని కలపడం</div>
+<svg viewBox="0 0 750 220"><rect class="n-good" x="0" y="60" width="150" height="48" rx="4"/><text class="t mid" x="75" y="82">Client</text><text class="t-sm mid" x="75" y="98">Target ని ఆశిస్తుంది</text><line class="ln" x1="154" y1="84" x2="216" y2="84" marker-end="url(#a)"/><rect class="n" x="220" y="46" width="190" height="48" rx="4"/><rect class="n-acc" x="220" y="46" width="190" height="22" rx="4"/><text class="t-w mid" x="315" y="62">«interface» Target</text><text class="t-sm mono" x="230" y="84">+ request()</text><line class="ln" x1="315" y1="112" x2="315" y2="144" marker-end="url(#hollow)"/><rect class="n" x="220" y="148" width="190" height="62" rx="4"/><rect class="n-dark" x="220" y="148" width="190" height="22" rx="4"/><text class="t-w mid" x="315" y="164">Adapter</text><text class="t-sm mono" x="230" y="186">- adaptee</text><text class="t-sm mono" x="230" y="200">+ request()</text><line class="ln" x1="414" y1="184" x2="476" y2="184" marker-end="url(#a)"/><text class="t-sm mid" x="445" y="176">అనువదిస్తుంది</text><rect class="n" x="480" y="148" width="220" height="48" rx="4"/><rect class="n-dark" x="480" y="148" width="220" height="22" rx="4"/><text class="t-w mid" x="590" y="164">Adaptee</text><text class="t-sm mono" x="490" y="186">+ specificRequest()</text><text class="t-sm" x="480" y="66">ఇది ఇప్పటికే ఉన్న / third-party class.</text><text class="t-sm" x="480" y="82">దీన్ని మనం మార్చలేం — అందుకే</text><text class="t-acc" x="480" y="98">దాని చుట్టూ ఒక అనువాదకుడు.</text></svg>
+<div class="note">నిజ జీవితంలో: మన code <code>pay()</code> ఆశిస్తుంది, Razorpay SDK <code>createTransaction()</code> ఇస్తుంది. Adapter ఆ అంతరాన్ని పూడుస్తుంది — <b>SDK ని మార్చకుండా</b>.</div>
+</div>
+
 ### Code
 
 ```javascript
@@ -1008,6 +1153,11 @@ runApp(new LoggerAdapter(new OldLibrary())); // పాత library file కి �
 ### Real-life Scenario
 
 > **Remote** (abstraction) మరియు **Device** (TV/Radio - implementation) విడివిడిగా. ఏ remote అయినా ఏ device తోనైనా పని చేస్తుంది. లేకపోతే TVRemote, RadioRemote, SmartTVRemote... explosion అవుతుంది.
+
+<div class="fig">
+<div class="cap">Bridge · రెండు స్వతంత్ర axes ని విడదీయడం</div>
+<svg viewBox="0 0 750 248"><rect class="n" x="0" y="40" width="210" height="62" rx="4"/><rect class="n-acc" x="0" y="40" width="210" height="22" rx="4"/><text class="t-w mid" x="105" y="56">Abstraction</text><text class="t-sm mono" x="10" y="78"># impl: Implementor</text><text class="t-sm mono" x="10" y="92">+ operation()</text><line class="ln" x1="214" y1="66" x2="300" y2="66" marker-end="url(#a)"/><text class="t-sm mid" x="257" y="58">◆ has-a</text><rect class="n" x="400" y="40" width="210" height="48" rx="4"/><rect class="n-acc" x="400" y="40" width="210" height="22" rx="4"/><text class="t-w mid" x="505" y="56">«interface» Implementor</text><text class="t-sm mono" x="410" y="78">+ doWork()</text><line class="ln" x1="105" y1="106" x2="105" y2="138" marker-end="url(#hollow)"/><line class="ln" x1="505" y1="106" x2="505" y2="138" marker-end="url(#hollow)"/><rect class="n" x="0" y="142" width="100" height="22" rx="4"/><rect class="n-dark" x="0" y="142" width="100" height="22" rx="4"/><text class="t-w mid" x="50" y="158">Circle</text><rect class="n" x="110" y="142" width="100" height="22" rx="4"/><rect class="n-dark" x="110" y="142" width="100" height="22" rx="4"/><text class="t-w mid" x="160" y="158">Square</text><rect class="n" x="400" y="142" width="100" height="22" rx="4"/><rect class="n-dark" x="400" y="142" width="100" height="22" rx="4"/><text class="t-w mid" x="450" y="158">SVG</text><rect class="n" x="510" y="142" width="100" height="22" rx="4"/><rect class="n-dark" x="510" y="142" width="100" height="22" rx="4"/><text class="t-w mid" x="560" y="158">Canvas</text><rect class="n-good" x="0" y="186" width="750" height="52" rx="4"/><text class="t mid" x="375" y="208">2 shapes × 2 renderers = 4 కలయికలు, కానీ 4 classes రాయలేదు — <tspan class="t-acc">2 + 2 మాత్రమే</tspan></text><text class="t-sm mid" x="375" y="228">Inheritance తో చేస్తే: CircleSVG, CircleCanvas, SquareSVG, SquareCanvas — combinatorial పేలుడు</text></svg>
+</div>
 
 ### Code
 
@@ -1071,6 +1221,11 @@ r.mute(); // Radio volume: 0 / Muted 🔇
 
 > **Folder** లో files ఉంటాయి, మరో folders ఉంటాయి. "size ఎంత?" అని folder ని అడిగితే, అది లోపలి అన్నిటినీ కలిపి చెప్తుంది. File అయినా folder అయినా `getSize()` ఒకేలా అడుగుతాం.
 
+<div class="fig">
+<div class="cap">Composite · leaf ని, container ని ఒకేలా చూడటం</div>
+<svg viewBox="0 0 750 246"><rect class="n" x="275" y="8" width="210" height="62" rx="4"/><rect class="n-acc" x="275" y="8" width="210" height="22" rx="4"/><text class="t-w mid" x="380" y="24">«abstract» Component</text><text class="t-sm mono" x="285" y="46">+ operation()</text><text class="t-sm mono" x="285" y="60">+ size</text><line class="ln" x1="340" y1="82" x2="200" y2="112" marker-end="url(#hollow)"/><line class="ln" x1="420" y1="82" x2="560" y2="112" marker-end="url(#hollow)"/><rect class="n" x="100" y="116" width="200" height="48" rx="4"/><rect class="n-dark" x="100" y="116" width="200" height="22" rx="4"/><text class="t-w mid" x="200" y="132">Leaf (File)</text><text class="t-sm mono" x="110" y="154">+ operation()</text><rect class="n" x="460" y="116" width="200" height="76" rx="4"/><rect class="n-dark" x="460" y="116" width="200" height="22" rx="4"/><text class="t-w mid" x="560" y="132">Composite (Folder)</text><text class="t-sm mono" x="470" y="154">- children[]</text><text class="t-sm mono" x="470" y="168">+ add(c) / remove(c)</text><text class="t-sm mono" x="470" y="182">+ operation()</text><path class="ln" d="M660 140 Q 720 140 720 60 Q 720 20 489 20" marker-end="url(#dia)"/><text class="t-acc" x="600" y="196">Composite తనలో Components ని</text><text class="t-acc" x="600" y="212">పట్టుకుంటుంది — అదే recursion</text><rect class="n-good" x="0" y="180" width="560" height="56" rx="4"/><text class="t" x="16" y="202">Client ఎప్పుడూ "ఇది file నా folder నా" అని అడగదు</text><text class="t-sm" x="16" y="224"><tspan class="mono">node.size</tspan> — Leaf అయితే సొంత size, Composite అయితే children మొత్తం. Type check లేదు.</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -1129,6 +1284,12 @@ console.log(`Images size: ${sub.getSize()} KB`); // 500 KB
 ### Real-life Scenario
 
 > **Coffee**: base coffee → milk జోడించు → sugar జోడించు → cream జోడించు. ప్రతి addition price + description ని పెంచుతుంది. MilkSugarCreamCoffee అనే class వద్దు - పొరలుగా చుడతాం.
+
+<div class="fig">
+<div class="cap">Decorator · inheritance లేకుండా runtime lo behaviour కలపడం</div>
+<svg viewBox="0 0 750 250"><rect class="n" x="275" y="8" width="210" height="48" rx="4"/><rect class="n-acc" x="275" y="8" width="210" height="22" rx="4"/><text class="t-w mid" x="380" y="24">«interface» Component</text><text class="t-sm mono" x="285" y="46">+ cost()</text><line class="ln" x1="340" y1="60" x2="190" y2="92" marker-end="url(#hollow)"/><line class="ln" x1="420" y1="60" x2="570" y2="92" marker-end="url(#hollow)"/><rect class="n" x="90" y="96" width="200" height="48" rx="4"/><rect class="n-dark" x="90" y="96" width="200" height="22" rx="4"/><text class="t-w mid" x="190" y="112">Coffee</text><text class="t-sm mono" x="100" y="134">+ cost() → 50</text><rect class="n" x="470" y="96" width="210" height="62" rx="4"/><rect class="n-dark" x="470" y="96" width="210" height="22" rx="4"/><text class="t-w mid" x="575" y="112">Decorator</text><text class="t-sm mono" x="480" y="134"># inner: Component</text><text class="t-sm mono" x="480" y="148">+ cost()</text><path class="ln" d="M680 120 Q 730 120 730 40 Q 730 14 489 14" marker-end="url(#dia)"/><line class="ln" x1="575" y1="160" x2="575" y2="192" marker-end="url(#hollow)"/><rect class="n" x="400" y="196" width="160" height="48" rx="4"/><rect class="n-dark" x="400" y="196" width="160" height="22" rx="4"/><text class="t-w mid" x="480" y="212">Milk</text><text class="t-sm mono" x="410" y="234">cost()+10</text><rect class="n" x="570" y="196" width="160" height="48" rx="4"/><rect class="n-dark" x="570" y="196" width="160" height="22" rx="4"/><text class="t-w mid" x="650" y="212">Sugar</text><text class="t-sm mono" x="580" y="234">cost()+5</text><rect class="n-good" x="0" y="150" width="360" height="88" rx="4"/><text class="t" x="16" y="172">పొరలుగా పేర్చడం</text><text class="t-sm mono" x="16" y="194">new Sugar(new Milk(new Coffee()))</text><text class="t-sm" x="16" y="214">cost() = 50 + 10 + 5 = <tspan class="t-acc">65</tspan></text><text class="t-sm" x="16" y="232">Decorator కూడా Component — అందుకే మళ్ళీ చుట్టొచ్చు</text></svg>
+<div class="note">Inheritance తో చేస్తే: <code>CoffeeWithMilk</code>, <code>CoffeeWithMilkAndSugar</code>… n toppings కి 2<tspan class="t-acc">ⁿ</tspan> classes. Decorator తో n classes.</div>
+</div>
 
 ### Code
 
@@ -1199,6 +1360,11 @@ console.log(`Rs.${order.cost()}`); // Rs.70 (50+10+5+5)
 
 > **Car** లో "start" button నొక్కితే - fuel pump, ignition, battery, starter motor అన్నీ లోపల జరుగుతాయి. నీకు ఒక్క button (facade) చాలు, లోపలి 10 steps అక్కర్లేదు.
 
+<div class="fig">
+<div class="cap">Facade · జటిలమైన subsystem కి ఒక సులభమైన ముఖద్వారం</div>
+<svg viewBox="0 0 750 258"><rect class="n-good" x="0" y="70" width="160" height="50" rx="4"/><text class="t mid" x="80" y="92">Client</text><text class="t-sm mid" x="80" y="108">ఒకే ఒక్క call</text><line class="ln" x1="164" y1="95" x2="226" y2="95" marker-end="url(#a)"/><rect class="n" x="230" y="70" width="190" height="48" rx="4"/><rect class="n-acc" x="230" y="70" width="190" height="22" rx="4"/><text class="t-w mid" x="325" y="86">Facade</text><text class="t-sm mono" x="240" y="108">+ placeOrder()</text><line class="ln-dash" x1="424" y1="82" x2="500" y2="30" marker-end="url(#a)"/><line class="ln-dash" x1="424" y1="95" x2="500" y2="95" marker-end="url(#a)"/><line class="ln-dash" x1="424" y1="108" x2="500" y2="160" marker-end="url(#a)"/><rect class="n" x="504" y="10" width="246" height="40" rx="4"/><text class="t-sm mid" x="627" y="35">InventoryService</text><rect class="n" x="504" y="76" width="246" height="40" rx="4"/><text class="t-sm mid" x="627" y="101">PaymentService</text><rect class="n" x="504" y="142" width="246" height="40" rx="4"/><text class="t-sm mid" x="627" y="167">ShippingService</text><rect class="n-info" x="0" y="196" width="750" height="52" rx="4"/><text class="t mid" x="375" y="218">Facade subsystems ని <tspan class="t-acc">దాచదు</tspan> — కేవలం సులభమైన దారి ఇస్తుంది</text><text class="t-sm mid" x="375" y="238">అవసరమైన client ఇప్పటికీ లోపలి services ని నేరుగా వాడొచ్చు. ఇది ఒక సౌకర్యం, ఒక గోడ కాదు.</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -1258,6 +1424,11 @@ new CarFacade().start();
 ### Real-life Scenario
 
 > **అడవి** లో 10 లక్షల చెట్లు. ప్రతి చెట్టుకి texture, color image (2MB) విడిగా store చేస్తే memory పేలుతుంది. బదులుగా "Oak" type data ఒక్కసారి store చేసి, అన్ని Oak చెట్లు దాన్ని share చేస్తాయి; ప్రతి చెట్టుకి కేవలం (x, y) position మాత్రం.
+
+<div class="fig">
+<div class="cap">Flyweight · పంచుకోగల state ని వేరు చేసి memory ఆదా చేయడం</div>
+<svg viewBox="0 0 750 252"><rect class="n" x="250" y="8" width="250" height="62" rx="4"/><rect class="n-acc" x="250" y="8" width="250" height="22" rx="4"/><text class="t-w mid" x="375" y="24">FlyweightFactory</text><text class="t-sm mono" x="260" y="46">- pool: Map</text><text class="t-sm mono" x="260" y="60">+ get(key): Flyweight</text><line class="ln-dash" x1="375" y1="74" x2="375" y2="106" marker-end="url(#a)"/><text class="t-sm mid" x="375" y="98">ఉంటే తిరిగి ఇవ్వు, లేకపోతే create</text><rect class="n" x="250" y="116" width="250" height="62" rx="4"/><rect class="n-dark" x="250" y="116" width="250" height="22" rx="4"/><text class="t-w mid" x="375" y="132">Flyweight (Glyph "A")</text><text class="t-sm mono" x="260" y="154">- font, shape  ← intrinsic</text><text class="t-sm mono" x="260" y="168">+ draw(x, y)   ← extrinsic</text><rect class="n-good" x="0" y="8" width="230" height="72" rx="4"/><text class="t" x="14" y="30">INTRINSIC (పంచుకునేది)</text><text class="t-sm" x="14" y="52">అక్షరం ఆకారం, font, రంగు —</text><text class="t-sm" x="14" y="68">ఇవి అన్ని "A" లకీ ఒకటే</text><rect class="n-info" x="520" y="8" width="230" height="72" rx="4"/><text class="t" x="534" y="30">EXTRINSIC (బయటిది)</text><text class="t-sm" x="534" y="52">ఈ "A" ఎక్కడ ఉంది (x, y) —</text><text class="t-sm" x="534" y="68">ఇది ప్రతి సారీ వేరు</text><rect class="n-acc" x="0" y="190" width="750" height="52" rx="4"/><text class="t-w mid" x="375" y="212">1 లక్ష అక్షరాల document = 1 లక్ష objects కాదు — <tspan class="mono">~60</tspan> Glyph objects + positions</text><text class="t-w-sm mid" x="375" y="232">మారని state ని పంచుకోవడం, మారే state ని బయట ఉంచడం — అదే మొత్తం ఆలోచన</text></svg>
+</div>
 
 ### Code
 
@@ -1331,6 +1502,12 @@ console.log(
 
 > **Credit card** = నీ bank account కి proxy. షాప్ లో account నేరుగా ఇవ్వవు; card (proxy) ద్వారా access - అది limit check, security చేస్తుంది.
 
+<div class="fig">
+<div class="cap">Proxy · అసలు objectకి ముందు నిలబడే ప్రతినిధి</div>
+<svg viewBox="0 0 750 250"><rect class="n-good" x="0" y="70" width="150" height="48" rx="4"/><text class="t mid" x="75" y="98">Client</text><line class="ln" x1="154" y1="94" x2="216" y2="94" marker-end="url(#a)"/><rect class="n" x="220" y="56" width="190" height="48" rx="4"/><rect class="n-acc" x="220" y="56" width="190" height="22" rx="4"/><text class="t-w mid" x="315" y="72">«interface» Subject</text><text class="t-sm mono" x="230" y="94">+ request()</text><line class="ln" x1="280" y1="122" x2="200" y2="154" marker-end="url(#hollow)"/><line class="ln" x1="350" y1="122" x2="500" y2="154" marker-end="url(#hollow)"/><rect class="n" x="100" y="158" width="200" height="48" rx="4"/><rect class="n-dark" x="100" y="158" width="200" height="22" rx="4"/><text class="t-w mid" x="200" y="174">RealSubject</text><text class="t-sm mono" x="110" y="196">+ request()</text><rect class="n" x="400" y="158" width="210" height="62" rx="4"/><rect class="n-dark" x="400" y="158" width="210" height="22" rx="4"/><text class="t-w mid" x="505" y="174">Proxy</text><text class="t-sm mono" x="410" y="196">- real: RealSubject</text><text class="t-sm mono" x="410" y="210">+ request()</text><line class="ln-dash" x1="400" y1="194" x2="304" y2="194" marker-end="url(#a)"/><text class="t-sm mid" x="352" y="186">నియంత్రిత access</text><rect class="n-info" x="630" y="150" width="120" height="90" rx="4"/><text class="t-sm" x="642" y="172">Proxy రకాలు:</text><text class="t-sm" x="642" y="192">· Virtual (lazy)</text><text class="t-sm" x="642" y="208">· Protection (auth)</text><text class="t-sm" x="642" y="224">· Remote (network)</text><text class="t-sm" x="642" y="240">· Caching</text><text class="t-sm" x="0" y="140">Client కి Proxy నా RealSubject నా అనేది తెలియదు — రెండూ ఒకే interface</text></svg>
+<div class="note"><b>Decorator vs Proxy:</b> రెండూ ఒకేలా కనిపిస్తాయి. తేడా <i>ఉద్దేశంలో</i> — Decorator <b>సామర్థ్యాన్ని కలుపుతుంది</b>, Proxy <b>access ని నియంత్రిస్తుంది</b>.</div>
+</div>
+
 ### Code
 
 ```javascript
@@ -1395,6 +1572,11 @@ img.display(); // ఇప్పటికే load అయింది - మళ్�
 
 > **Customer support**: నీ complaint → Level 1 agent → పరిష్కారం కాకపోతే → Manager → కాకపోతే → Director. ఒక్కో స్థాయి తనవల్ల అయ్యేది చేస్తుంది, లేకపోతే పైకి పంపుతుంది.
 
+<div class="fig">
+<div class="cap">Chain of Responsibility · తీసుకునేవాడు దొరికేదాకా ముందుకి</div>
+<svg viewBox="0 0 750 226"><rect class="n-good" x="0" y="60" width="120" height="46" rx="4"/><text class="t mid" x="60" y="88">Request</text><line class="ln" x1="124" y1="83" x2="166" y2="83" marker-end="url(#a)"/><rect class="n" x="170" y="60" width="170" height="48" rx="4"/><rect class="n-dark" x="170" y="60" width="170" height="22" rx="4"/><text class="t-w mid" x="255" y="76">Handler A</text><text class="t-sm mono" x="180" y="98">నాదేనా? కాకపోతే →</text><rect class="n" x="360" y="60" width="170" height="48" rx="4"/><rect class="n-dark" x="360" y="60" width="170" height="22" rx="4"/><text class="t-w mid" x="445" y="76">Handler B</text><text class="t-sm mono" x="370" y="98">నాదేనా? కాకపోతే →</text><rect class="n" x="550" y="60" width="200" height="48" rx="4"/><rect class="n-acc" x="550" y="60" width="200" height="22" rx="4"/><text class="t-w mid" x="650" y="76">Handler C</text><text class="t-sm mono" x="560" y="98">ఇక్కడ ఆగుతుంది</text><line class="ln" x1="344" y1="83" x2="356" y2="83" marker-end="url(#a)"/><line class="ln" x1="534" y1="83" x2="546" y2="83" marker-end="url(#a)"/><rect class="n-info" x="0" y="130" width="366" height="86" rx="4"/><text class="t" x="14" y="152">ఎప్పుడు సరైనది</text><text class="t-sm" x="14" y="174">ఒక request ని <tspan class="t-acc">ఒక్కడే</tspan> handle చేయాలి,</text><text class="t-sm" x="14" y="192">మరియు ఎవరు అన్నది <tspan class="t-acc">క్రమం</tspan> మీద ఆధారపడుతుంది.</text><text class="t-sm" x="14" y="210">ఉదా: ATM cash dispenser, validation, middleware</text><rect class="n-bad" x="384" y="130" width="366" height="86" rx="4"/><text class="t" x="398" y="152">ఎప్పుడు తప్పు</text><text class="t-sm" x="398" y="174">అందరూ ప్రతి message నీ చూడాలంటే — అది</text><text class="t-sm" x="398" y="192">chain కాదు, <tspan class="t-acc">fan-out</tspan>. Logging అలాంటిదే.</text><text class="t-sm" x="398" y="210">అప్పుడు ఒక జాబితా వాడాలి, chain కాదు.</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -1458,6 +1640,11 @@ lead.handle(500000); // Rs.500000 ఎవరూ approve చేయలేకపో�
 ### Real-life Scenario
 
 > **Restaurant order slip**: నువ్వు చెప్పింది waiter ఒక slip (command object) గా రాస్తాడు. ఆ slip ని queue చేయవచ్చు, cancel చేయవచ్చు, kitchen కి పంపవచ్చు. Order = object.
+
+<div class="fig">
+<div class="cap">Command · ఒక చర్యను object గా మార్చడం</div>
+<svg viewBox="0 0 750 226"><rect class="n-good" x="0" y="46" width="160" height="50" rx="4"/><text class="t mid" x="80" y="68">Invoker</text><text class="t-sm mid" x="80" y="84">Button / Menu</text><line class="ln" x1="164" y1="71" x2="226" y2="71" marker-end="url(#a)"/><rect class="n" x="230" y="32" width="190" height="62" rx="4"/><rect class="n-acc" x="230" y="32" width="190" height="22" rx="4"/><text class="t-w mid" x="325" y="48">«interface» Command</text><text class="t-sm mono" x="240" y="70">+ execute()</text><text class="t-sm mono" x="240" y="84">+ undo()</text><line class="ln" x1="325" y1="98" x2="325" y2="130" marker-end="url(#hollow)"/><rect class="n" x="230" y="134" width="190" height="62" rx="4"/><rect class="n-dark" x="230" y="134" width="190" height="22" rx="4"/><text class="t-w mid" x="325" y="150">PasteCommand</text><text class="t-sm mono" x="240" y="172">- receiver</text><text class="t-sm mono" x="240" y="186">+ execute() / undo()</text><line class="ln" x1="424" y1="170" x2="486" y2="170" marker-end="url(#a)"/><text class="t-sm mid" x="455" y="162">నిజమైన పని</text><rect class="n" x="490" y="134" width="200" height="48" rx="4"/><rect class="n-dark" x="490" y="134" width="200" height="22" rx="4"/><text class="t-w mid" x="590" y="150">Receiver (Editor)</text><text class="t-sm mono" x="500" y="172">+ paste()</text><rect class="n-acc" x="440" y="32" width="310" height="72" rx="4"/><text class="t-w" x="454" y="54">ఒక action ని object చేస్తే మూడు ఉచిత బహుమతులు</text><text class="t-w-sm" x="454" y="74">1 · Undo/redo   2 · Queue / schedule చేయడం</text><text class="t-w-sm" x="454" y="92">3 · Audit log — ఏం జరిగిందో record ఉంటుంది</text><text class="t-sm mid" x="375" y="214">Invoker కి Receiver గురించి తెలియదు. Button కి "paste" అంటే ఏమిటో తెలియదు — అదే decoupling.</text></svg>
+</div>
 
 ### Code
 
@@ -1539,6 +1726,11 @@ remote.undoLast(); // ↩️ Undo: → 💡 Light ఆన్ (last command revers
 
 > **TV remote** లో channel up button - TV లోపల channels ఎలా store అయ్యాయో నీకు అక్కర్లేదు, "next" నొక్కితే తర్వాతిది వస్తుంది. అదే iterator.
 
+<div class="fig">
+<div class="cap">Iterator · లోపలి నిర్మాణాన్ని బయటపెట్టకుండా ఒక్కొక్కటిగా తిరగడం</div>
+<svg viewBox="0 0 750 226"><rect class="n" x="0" y="40" width="230" height="62" rx="4"/><rect class="n-acc" x="0" y="40" width="230" height="22" rx="4"/><text class="t-w mid" x="115" y="56">«interface» Aggregate</text><text class="t-sm mono" x="10" y="78">- items[]</text><text class="t-sm mono" x="10" y="92">+ createIterator()</text><line class="ln-dash" x1="234" y1="70" x2="296" y2="70" marker-end="url(#a)"/><text class="t-sm mid" x="265" y="62">creates</text><rect class="n" x="300" y="40" width="230" height="62" rx="4"/><rect class="n-acc" x="300" y="40" width="230" height="22" rx="4"/><text class="t-w mid" x="415" y="56">«interface» Iterator</text><text class="t-sm mono" x="310" y="78">+ hasNext(): bool</text><text class="t-sm mono" x="310" y="92">+ next(): T</text><rect class="n-good" x="0" y="130" width="530" height="86" rx="4"/><text class="t" x="16" y="152">ఎందుకు అవసరం</text><text class="t-sm" x="16" y="174">Client కి collection <tspan class="t-acc">లోపల array నా, tree నా, linked list నా</tspan> అని తెలియనవసరం లేదు.</text><text class="t-sm" x="16" y="194">అదే code array మీద, tree మీద, database cursor మీద పని చేస్తుంది.</text><text class="t-sm" x="16" y="210">JavaScript lo ఇది భాషలోనే ఉంది: <tspan class="mono">Symbol.iterator</tspan> + <tspan class="mono">for…of</tspan> + generators.</text><rect class="n-info" x="550" y="40" width="200" height="176" rx="4"/><text class="t" x="564" y="62">JS lo</text><text class="t-sm mono" x="564" y="86">*[Symbol.iterator]()</text><text class="t-sm mono" x="564" y="104">  { yield a; }</text><text class="t-sm" x="564" y="132">అంటే మీరు Iterator</text><text class="t-sm" x="564" y="148">pattern ని ఇప్పటికే</text><text class="t-sm" x="564" y="164">రోజూ వాడుతున్నారు —</text><text class="t-acc" x="564" y="188">for…of ప్రతిసారీ</text><text class="t-acc" x="564" y="204">దాన్నే పిలుస్తుంది.</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -1590,6 +1782,11 @@ console.log([...playlist].length); // 3 (spread కూడా పనిచేస�
 ### Real-life Scenario
 
 > **Air Traffic Control (ATC)**: విమానాలు ఒకదానితో ఒకటి నేరుగా మాట్లాడవు - అన్నీ ATC tower (mediator) తో మాట్లాడతాయి. లేకపోతే గందరగోళం, ప్రమాదం.
+
+<div class="fig">
+<div class="cap">Mediator · అందరూ ఒకరితో ఒకరు కాకుండా, ఒక మధ్యవర్తి ద్వారా</div>
+<svg viewBox="0 0 750 230"><text class="t-xs" x="0" y="14">MEDIATOR లేకుండా · ప్రతి ఒక్కరూ ప్రతి ఒక్కరికీ తెలుసు — n(n−1)/2 సంబంధాలు</text><circle cx="60" cy="80" r="22" fill="#17203a"/><text class="t-w mid" x="60" y="85">A</text><circle cx="190" cy="50" r="22" fill="#17203a"/><text class="t-w mid" x="190" y="55">B</text><circle cx="190" cy="120" r="22" fill="#17203a"/><text class="t-w mid" x="190" y="125">C</text><circle cx="320" cy="80" r="22" fill="#17203a"/><text class="t-w mid" x="320" y="85">D</text><line class="ln-thin" x1="60" y1="80" x2="190" y2="50"/><line class="ln-thin" x1="60" y1="80" x2="190" y2="120"/><line class="ln-thin" x1="60" y1="80" x2="320" y2="80"/><line class="ln-thin" x1="190" y1="50" x2="190" y2="120"/><line class="ln-thin" x1="190" y1="50" x2="320" y2="80"/><line class="ln-thin" x1="190" y1="120" x2="320" y2="80"/><text class="t-xs" x="420" y="14">MEDIATOR తో · అందరూ ఒక్కడితో మాత్రమే — n సంబంధాలు</text><circle cx="590" cy="85" r="30" fill="#e2653a"/><text class="t-w mid" x="590" y="82">Media-</text><text class="t-w mid" x="590" y="96">tor</text><circle cx="460" cy="45" r="20" fill="#17203a"/><text class="t-w mid" x="460" y="50">A</text><line class="ln-acc" x1="460" y1="45" x2="590" y2="85"/><circle cx="460" cy="125" r="20" fill="#17203a"/><text class="t-w mid" x="460" y="130">B</text><line class="ln-acc" x1="460" y1="125" x2="590" y2="85"/><circle cx="720" cy="45" r="20" fill="#17203a"/><text class="t-w mid" x="720" y="50">C</text><line class="ln-acc" x1="720" y1="45" x2="590" y2="85"/><circle cx="720" cy="125" r="20" fill="#17203a"/><text class="t-w mid" x="720" y="130">D</text><line class="ln-acc" x1="720" y1="125" x2="590" y2="85"/><rect class="n-good" x="0" y="160" width="750" height="60" rx="4"/><text class="t mid" x="375" y="182">నిజ ఉదాహరణ: విమానాశ్రయంలో pilots ఒకరితో ఒకరు మాట్లాడరు — అందరూ <tspan class="t-acc">control tower</tspan> తోనే</text><text class="t-sm mid" x="375" y="204">ప్రమాదం: Mediator పెద్దదై ఒక "god object" అవుతుంది. అప్పుడు దాన్ని విభజించాలి.</text></svg>
+</div>
 
 ### Code
 
@@ -1655,6 +1852,11 @@ a.send("అందరికీ నమస్తే!");
 
 > **Game save point**: boss fight ముందు save చేస్తావు. చనిపోతే ఆ save point కి తిరిగి వస్తావు. State ని snapshot గా దాచడం.
 
+<div class="fig">
+<div class="cap">Memento · state ని encapsulation విరగకుండా snapshot తీయడం</div>
+<svg viewBox="0 0 750 216"><rect class="n" x="0" y="46" width="210" height="76" rx="4"/><rect class="n-acc" x="0" y="46" width="210" height="22" rx="4"/><text class="t-w mid" x="105" y="62">Originator</text><text class="t-sm mono" x="10" y="84">- state</text><text class="t-sm mono" x="10" y="98">+ save(): Memento</text><text class="t-sm mono" x="10" y="112">+ restore(m)</text><line class="ln-dash" x1="214" y1="84" x2="276" y2="84" marker-end="url(#a)"/><text class="t-sm mid" x="245" y="76">creates</text><rect class="n" x="280" y="46" width="190" height="48" rx="4"/><rect class="n-dark" x="280" y="46" width="190" height="22" rx="4"/><text class="t-w mid" x="375" y="62">Memento</text><text class="t-sm mono" x="290" y="84">- state (readonly)</text><line class="ln" x1="474" y1="84" x2="536" y2="84" marker-end="url(#a)"/><text class="t-sm mid" x="505" y="76">దాచుకుంటుంది</text><rect class="n" x="540" y="46" width="210" height="62" rx="4"/><rect class="n-dark" x="540" y="46" width="210" height="22" rx="4"/><text class="t-w mid" x="645" y="62">Caretaker</text><text class="t-sm mono" x="550" y="84">- history: Memento[]</text><text class="t-sm mono" x="550" y="98">+ undo()</text><rect class="n-acc" x="0" y="132" width="750" height="52" rx="4"/><text class="t-w mid" x="375" y="154">కీలకమైన నియమం: Caretaker కి Memento <tspan class="mono">లోపల</tspan> ఏముందో తెలియకూడదు</text><text class="t-w-sm mid" x="375" y="174">అది కేవలం దాచి, తిరిగి ఇస్తుంది. Encapsulation విరగకుండానే state ని బయటికి తీసిన ఏకైక మార్గం ఇది.</text><text class="t-sm mid" x="375" y="204">Command (§23) తో పోలిక — Command "ఏం జరిగింది" దాచుతుంది, Memento "ఏం ఉండేది" దాచుతుంది</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -1717,6 +1919,11 @@ console.log(editor.getContent()); // నమస్తే
 
 > **YouTube channel**: నువ్వు subscribe చేస్తే, కొత్త video వచ్చినప్పుడు అందరు subscribers కి notification. Channel ప్రతి subscriber ని విడిగా పిలవదు - అందరికీ broadcast.
 
+<div class="fig">
+<div class="cap">Observer · ఒకటి మారితే మిగతా అందరికీ తెలియడం</div>
+<svg viewBox="0 0 750 222"><rect class="n" x="0" y="46" width="230" height="90" rx="4"/><rect class="n-acc" x="0" y="46" width="230" height="22" rx="4"/><text class="t-w mid" x="115" y="62">Subject</text><text class="t-sm mono" x="10" y="84">- observers[]</text><text class="t-sm mono" x="10" y="98">+ subscribe(o)</text><text class="t-sm mono" x="10" y="112">+ unsubscribe(o)</text><text class="t-sm mono" x="10" y="126">+ notify()</text><line class="ln" x1="234" y1="90" x2="296" y2="90" marker-end="url(#a)"/><text class="t-sm mid" x="265" y="82">notify()</text><rect class="n" x="300" y="46" width="200" height="48" rx="4"/><rect class="n-acc" x="300" y="46" width="200" height="22" rx="4"/><text class="t-w mid" x="400" y="62">«interface» Observer</text><text class="t-sm mono" x="310" y="84">+ update(data)</text><line class="ln" x1="360" y1="116" x2="300" y2="148" marker-end="url(#hollow)"/><line class="ln" x1="440" y1="116" x2="560" y2="148" marker-end="url(#hollow)"/><rect class="n" x="210" y="152" width="180" height="22" rx="4"/><rect class="n-dark" x="210" y="152" width="180" height="22" rx="4"/><text class="t-w mid" x="300" y="168">EmailNotifier</text><rect class="n" x="480" y="152" width="180" height="22" rx="4"/><rect class="n-dark" x="480" y="152" width="180" height="22" rx="4"/><text class="t-w mid" x="570" y="168">AuditLogger</text><rect class="n-good" x="530" y="46" width="220" height="86" rx="4"/><text class="t" x="544" y="68">ముఖ్యమైన నియమం</text><text class="t-sm" x="544" y="90">ఒక observer throw చేస్తే</text><text class="t-sm" x="544" y="106">మిగతావాళ్ళు ఆగకూడదు —</text><text class="t-acc" x="544" y="124">ప్రతి దాన్నీ try/catch lo</text><text class="t-sm mid" x="375" y="212">Subject కి observers ఎవరో తెలియదు — కేవలం interface తెలుసు. కొత్త observer = సున్నా edits.</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -1771,6 +1978,11 @@ channel.upload("Design Patterns"); // ఇప్పుడు Yaswanth కి మ�
 ### Real-life Scenario
 
 > **Traffic signal**: Red → Green → Yellow → Red. ఒక్కో state లో "next()" వేరే విధంగా పనిచేస్తుంది. Signal ఒకటే object, కానీ state బట్టి behaviour మారుతుంది.
+
+<div class="fig">
+<div class="cap">State · ప్రవర్తన state ని బట్టి మారితే, state ని object చేయడం</div>
+<svg viewBox="0 0 750 262"><rect class="n" x="0" y="56" width="210" height="62" rx="4"/><rect class="n-acc" x="0" y="56" width="210" height="22" rx="4"/><text class="t-w mid" x="105" y="72">Context</text><text class="t-sm mono" x="10" y="94">- state: State</text><text class="t-sm mono" x="10" y="108">+ request()</text><line class="ln" x1="214" y1="84" x2="276" y2="84" marker-end="url(#a)"/><text class="t-sm mid" x="245" y="76">delegate</text><rect class="n" x="280" y="40" width="200" height="48" rx="4"/><rect class="n-acc" x="280" y="40" width="200" height="22" rx="4"/><text class="t-w mid" x="380" y="56">«interface» State</text><text class="t-sm mono" x="290" y="78">+ handle()</text><line class="ln" x1="330" y1="92" x2="250" y2="130" marker-end="url(#hollow)"/><line class="ln" x1="430" y1="92" x2="520" y2="130" marker-end="url(#hollow)"/><rect class="n" x="160" y="134" width="180" height="48" rx="4"/><rect class="n-dark" x="160" y="134" width="180" height="22" rx="4"/><text class="t-w mid" x="250" y="150">IdleState</text><text class="t-sm mono" x="170" y="172">+ handle()</text><rect class="n" x="450" y="134" width="210" height="48" rx="4"/><rect class="n-dark" x="450" y="134" width="210" height="22" rx="4"/><text class="t-w mid" x="555" y="150">DispensingState</text><text class="t-sm mono" x="460" y="172">+ handle()</text><path class="ln-acc" d="M340 170 L440 170" marker-end="url(#aa)"/><text class="t-sm mid" x="390" y="162">transition</text><rect class="n-good" x="0" y="196" width="750" height="56" rx="4"/><text class="t mid" x="375" y="218">Context lo ఒక్క <tspan class="mono">if (state === …)</tspan> కూడా ఉండదు — అన్ని methods delegate చేస్తాయి</text><text class="t-sm mid" x="375" y="240">కొత్త state = కొత్త class. Base class default గా "invalid action" throw చేస్తే — ఆ state lo చెల్లని actions ఆటోమేటిక్ గా ఆగుతాయి.</text></svg>
+</div>
 
 ### Code
 
@@ -1831,6 +2043,11 @@ signal.show(); // 🔴 Red (ఆగు) - cycle
 
 > **Google Maps** లో ఒకే గమ్యానికి: కారు route, నడక route, bus route. ఒకే "navigate" - కానీ నువ్వు ఎంచుకున్న **strategy** బట్టి లెక్క మారుతుంది.
 
+<div class="fig">
+<div class="cap">Strategy · మారే algorithm ని బయట పెట్టడం</div>
+<svg viewBox="0 0 750 270"><rect class="n" x="0" y="56" width="220" height="76" rx="4"/><rect class="n-acc" x="0" y="56" width="220" height="22" rx="4"/><text class="t-w mid" x="110" y="72">Context</text><text class="t-sm mono" x="10" y="94">- strategy: Strategy</text><text class="t-sm mono" x="10" y="108">+ setStrategy(s)</text><text class="t-sm mono" x="10" y="122">+ execute()</text><line class="ln" x1="224" y1="90" x2="286" y2="90" marker-end="url(#a)"/><text class="t-sm mid" x="255" y="82">uses</text><rect class="n" x="290" y="40" width="200" height="48" rx="4"/><rect class="n-acc" x="290" y="40" width="200" height="22" rx="4"/><text class="t-w mid" x="390" y="56">«interface» Strategy</text><text class="t-sm mono" x="300" y="78">+ run(input)</text><line class="ln" x1="340" y1="92" x2="240" y2="136" marker-end="url(#hollow)"/><line class="ln" x1="440" y1="92" x2="560" y2="136" marker-end="url(#hollow)"/><rect class="n" x="150" y="140" width="180" height="22" rx="4"/><rect class="n-dark" x="150" y="140" width="180" height="22" rx="4"/><text class="t-w mid" x="240" y="156">QuickSort</text><rect class="n" x="500" y="140" width="180" height="22" rx="4"/><rect class="n-dark" x="500" y="140" width="180" height="22" rx="4"/><text class="t-w mid" x="590" y="156">MergeSort</text><rect class="n-info" x="0" y="188" width="366" height="72" rx="4"/><text class="t" x="14" y="210">State vs Strategy — తేడా</text><text class="t-sm" x="14" y="232">నిర్మాణం <tspan class="t-acc">అచ్చం ఒకటే</tspan>. తేడా ఉద్దేశంలో:</text><text class="t-sm" x="14" y="250">State తనని తానే మారుస్తుంది; Strategy ని <tspan class="t-acc">బయటివారు</tspan> ఎంచుకుంటారు.</text><rect class="n-good" x="384" y="188" width="366" height="72" rx="4"/><text class="t" x="398" y="210">ఎప్పుడు వాడాలి</text><text class="t-sm" x="398" y="232">"ఈ algorithm భవిష్యత్తులో మారుతుంది" అని</text><text class="t-sm" x="398" y="250">మీరు <tspan class="t-acc">ఖచ్చితంగా</tspan> నమ్మినప్పుడు మాత్రమే.</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -1875,6 +2092,11 @@ planner.setStrategy(bikeStrategy).plan(120); // 🏍️ బైక్: 120km → 
 ### Real-life Scenario
 
 > **Tea vs Coffee** తయారీ: నీళ్ళు మరిగించు → \[ఏదో కలుపు\] → కప్‌లో పోయు → \[ఏదో జోడించు\]. Skeleton ఒకటే; కలిపే పదార్థం మాత్రం tea/coffee బట్టి మారుతుంది.
+
+<div class="fig">
+<div class="cap">Template Method · క్రమం స్థిరం, అడుగులు మారేవి</div>
+<svg viewBox="0 0 750 258"><rect class="n" x="190" y="40" width="370" height="90" rx="4"/><rect class="n-acc" x="190" y="40" width="370" height="22" rx="4"/><text class="t-w mid" x="375" y="56">AbstractClass</text><text class="t-sm mono" x="200" y="78">+ templateMethod()   ← final, క్రమం స్థిరం</text><text class="t-sm mono" x="200" y="92"># step1()   ← subclass నింపాలి</text><text class="t-sm mono" x="200" y="106"># step2()   ← subclass నింపాలి</text><text class="t-sm mono" x="200" y="120"># hook()    ← ఐచ్ఛికం</text><line class="ln" x1="375" y1="152" x2="375" y2="184" marker-end="url(#hollow)"/><rect class="n" x="190" y="188" width="370" height="48" rx="4"/><rect class="n-dark" x="190" y="188" width="370" height="22" rx="4"/><text class="t-w mid" x="375" y="204">ConcreteClass</text><text class="t-sm mono" x="200" y="226"># step1() / step2() ని override చేస్తుంది</text><rect class="n-good" x="0" y="40" width="170" height="112" rx="4"/><text class="t" x="14" y="62">ఆలోచన</text><text class="t-sm" x="14" y="84">Algorithm యొక్క</text><text class="t-sm" x="14" y="100"><tspan class="t-acc">అస్థిపంజరం</tspan> base lo,</text><text class="t-sm" x="14" y="118">మారే అడుగులు</text><text class="t-sm" x="14" y="134">subclass lo.</text><rect class="n-info" x="580" y="40" width="170" height="112" rx="4"/><text class="t" x="594" y="62">Strategy తో తేడా</text><text class="t-sm" x="594" y="84">Template = inheritance</text><text class="t-sm" x="594" y="100">(compile time)</text><text class="t-sm" x="594" y="122">Strategy = composition</text><text class="t-sm" x="594" y="138">(runtime lo మార్చొచ్చు)</text><text class="t-sm mid" x="375" y="248">ఉదా: <tspan class="mono">ParkingSpot.canFit()</tspan> — నియమం base lo ఒక్కసారే, subclass లు కేవలం data ఇస్తాయి</text></svg>
+</div>
 
 ### Code
 
@@ -1944,6 +2166,11 @@ new Coffee().prepare();
 
 > **Tax auditor** ఇంటింటికీ వెళ్తాడు (visit). ప్రతి ఇల్లు (shop, house, factory) తనని తాను మార్చుకోదు - auditor తన లెక్క (operation) తెచ్చి ప్రతిదానిపై apply చేస్తాడు.
 
+<div class="fig">
+<div class="cap">Visitor · classes ని ముట్టుకోకుండా కొత్త operations కలపడం</div>
+<svg viewBox="0 0 750 212"><rect class="n" x="0" y="46" width="230" height="48" rx="4"/><rect class="n-acc" x="0" y="46" width="230" height="22" rx="4"/><text class="t-w mid" x="115" y="62">«interface» Element</text><text class="t-sm mono" x="10" y="84">+ accept(visitor)</text><line class="ln" x1="60" y1="100" x2="60" y2="132" marker-end="url(#hollow)"/><line class="ln" x1="170" y1="100" x2="170" y2="132" marker-end="url(#hollow)"/><rect class="n" x="0" y="136" width="110" height="22" rx="4"/><rect class="n-dark" x="0" y="136" width="110" height="22" rx="4"/><text class="t-w mid" x="55" y="152">File</text><rect class="n" x="120" y="136" width="110" height="22" rx="4"/><rect class="n-dark" x="120" y="136" width="110" height="22" rx="4"/><text class="t-w mid" x="175" y="152">Folder</text><line class="ln-dash" x1="234" y1="74" x2="296" y2="74" marker-end="url(#a)"/><text class="t-sm mid" x="375" y="66">accept(v) → v.visitFile(this)</text><rect class="n" x="300" y="46" width="230" height="62" rx="4"/><rect class="n-acc" x="300" y="46" width="230" height="22" rx="4"/><text class="t-w mid" x="415" y="62">«interface» Visitor</text><text class="t-sm mono" x="310" y="84">+ visitFile(f)</text><text class="t-sm mono" x="310" y="98">+ visitFolder(d)</text><line class="ln" x1="360" y1="114" x2="360" y2="146" marker-end="url(#hollow)"/><line class="ln" x1="470" y1="114" x2="470" y2="146" marker-end="url(#hollow)"/><rect class="n" x="300" y="150" width="110" height="22" rx="4"/><rect class="n-dark" x="300" y="150" width="110" height="22" rx="4"/><text class="t-w mid" x="355" y="166">SizeCalc</text><rect class="n" x="420" y="150" width="110" height="22" rx="4"/><rect class="n-dark" x="420" y="150" width="110" height="22" rx="4"/><text class="t-w mid" x="475" y="166">Printer</text><rect class="n-bad" x="550" y="46" width="200" height="126" rx="4"/><text class="t" x="564" y="68">ఖరీదు — దీన్ని చెప్పండి</text><text class="t-sm" x="564" y="90">కొత్త <tspan class="t-acc">operation</tspan> చౌక</text><text class="t-sm" x="564" y="106">(ఒక కొత్త visitor).</text><text class="t-sm" x="564" y="130">కొత్త <tspan class="t-acc">element type</tspan> ఖరీదు —</text><text class="t-sm" x="564" y="146">ప్రతి visitor ని edit</text><text class="t-sm" x="564" y="162">చేయాలి.</text><text class="t-sm mid" x="375" y="200">కాబట్టి: element types స్థిరంగా ఉండి operations పెరిగే చోట మాత్రమే Visitor</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -2004,6 +2231,11 @@ shapes.forEach((s) => {
 ### Real-life Scenario
 
 > **Calculator** లో "5 + 3 - 2" అని type చేస్తే, అది ఆ expression ని అర్థం చేసుకొని (interpret) 6 అని లెక్కిస్తుంది. లేదా Google Translate ఒక వాక్యాన్ని అర్థం చేసుకున్నట్టు - grammar ప్రకారం interpret చేయడం.
+
+<div class="fig">
+<div class="cap">Interpreter · ఒక చిన్న భాషని syntax tree గా evaluate చేయడం</div>
+<svg viewBox="0 0 750 246"><rect class="n" x="275" y="8" width="210" height="48" rx="4"/><rect class="n-acc" x="275" y="8" width="210" height="22" rx="4"/><text class="t-w mid" x="380" y="24">«interface» Expression</text><text class="t-sm mono" x="285" y="46">+ interpret(ctx)</text><line class="ln" x1="340" y1="60" x2="200" y2="92" marker-end="url(#hollow)"/><line class="ln" x1="420" y1="60" x2="560" y2="92" marker-end="url(#hollow)"/><rect class="n" x="90" y="96" width="210" height="48" rx="4"/><rect class="n-dark" x="90" y="96" width="210" height="22" rx="4"/><text class="t-w mid" x="195" y="112">NumberExpr</text><text class="t-sm mono" x="100" y="134">+ interpret() → value</text><rect class="n" x="460" y="96" width="230" height="62" rx="4"/><rect class="n-dark" x="460" y="96" width="230" height="22" rx="4"/><text class="t-w mid" x="575" y="112">AddExpr</text><text class="t-sm mono" x="470" y="134">- left, right: Expression</text><text class="t-sm mono" x="470" y="148">+ interpret()</text><path class="ln" d="M690 120 Q 735 120 735 40 Q 735 14 489 14" marker-end="url(#dia)"/><rect class="n-good" x="0" y="164" width="750" height="72" rx="4"/><text class="t" x="16" y="186">ఇది Composite యొక్క ఒక ప్రత్యేక రూపం</text><text class="t-sm mono" x="16" y="208">"2 + 3 * 4"  →  Add( Number(2), Multiply( Number(3), Number(4) ) )</text><text class="t-sm" x="16" y="228">ప్రతి node తనని తాను evaluate చేసుకుంటుంది. <tspan class="t-acc">నిజ ప్రపంచంలో అరుదు</tspan> — grammar పెరిగితే parser generator మేలు.</text></svg>
+</div>
 
 ### Code
 
@@ -2077,6 +2309,13 @@ console.log(interpretRPN("10 20 +".split(" "))); // 30
 # Part 6 — Real-world Case Studies
 
 > ఇప్పుడు నేర్చుకున్న principles + patterns ని కలిపి, నిజమైన interview problems solve చేద్దాం. ప్రతి case study లో: requirements → entities → patterns → tested code.
+
+<div class="box warn">
+<div class="lab">ఈ Part గురించి ఒక ముఖ్యమైన మాట</div>
+కింది 7 case studies ఇక్కడ <b>సంక్షిప్తంగా</b> ఉన్నాయి — patterns ని నిజమైన problem lo ఎలా కలుపుతారో చూపించడానికి.<br><br>
+కానీ ఇవే problems <b><code>LLD_Design_Problems_Telugu.pdf</code></b> lo చాలా లోతుగా ఉన్నాయి — ఒక్కో దానికి 6–10 పేజీలు: clarifying questions, UML class diagram, పూర్తి runnable code, extensibility test, మరియు <b>interview lo నోటితో చెప్పాల్సిన English script</b>.<br><br>
+<b>ఎలా వాడాలి:</b> ఈ document = <i>పరికరాల పెట్టె</i> (patterns ఎప్పుడు, ఎందుకు). ఆ book = <i>ఆ పరికరాలతో నిజమైన problems ని ఎలా పరిష్కరించాలి</i>. Interview ముందు — ముందు ఇది, తర్వాత అది.
+</div>
 
 ---
 
@@ -2664,6 +2903,11 @@ container.resolve("car").drive(); // 🔧 Engine started
 - Angular, NestJS, Spring - DI containers మీద నడుస్తాయి
 
 ---
+<div class="fig">
+<div class="cap">Dependency Injection · dependencies ని బయటి నుంచి ఇవ్వడం</div>
+<svg viewBox="0 0 750 288"><text class="t-xs" x="0" y="14">DI యొక్క మూడు రూపాలు</text><rect class="n-good" x="0" y="24" width="240" height="76" rx="4"/><text class="t" x="14" y="46">1 · Constructor injection ✓</text><text class="t-sm mono" x="14" y="68">constructor(repo) {</text><text class="t-sm mono" x="14" y="84">  this.repo = repo }</text><rect class="n" x="255" y="24" width="240" height="76" rx="4"/><text class="t" x="269" y="46">2 · Setter injection</text><text class="t-sm mono" x="269" y="68">setRepo(repo) {…}</text><text class="t-sm" x="269" y="90">ఐచ్ఛిక dependencies కి</text><rect class="n" x="510" y="24" width="240" height="76" rx="4"/><text class="t" x="524" y="46">3 · Method injection</text><text class="t-sm mono" x="524" y="68">save(order, repo)</text><text class="t-sm" x="524" y="90">ఒక్కసారి వాడేదానికి</text><rect class="n-acc" x="0" y="112" width="750" height="52" rx="4"/><text class="t-w mid" x="375" y="134">Constructor injection ఎందుకు ఉత్తమం</text><text class="t-w-sm mid" x="375" y="154">Object create అయిన క్షణం నుంచే అది పూర్తిగా చెల్లుబాటు అవుతుంది — "సగం నిర్మించిన" స్థితి ఉండదు. Dependencies అన్నీ constructor చూస్తే కనిపిస్తాయి.</text><text class="t-xs" x="0" y="192">SINGLETON vs DI — ఇదే అసలు తేడా</text><rect class="n-bad" x="0" y="202" width="366" height="76" rx="4"/><text class="t" x="14" y="224">Singleton</text><text class="t-sm mono" x="14" y="246">const db = Database.getInstance()</text><text class="t-sm" x="14" y="266">Dependency <tspan class="t-acc">దాగి</tspan> ఉంది. Test lo మార్చలేం.</text><rect class="n-good" x="384" y="202" width="366" height="76" rx="4"/><text class="t" x="398" y="224">DI</text><text class="t-sm mono" x="398" y="246">constructor(db) { this.db = db }</text><text class="t-sm" x="398" y="266">Dependency <tspan class="t-acc">కనిపిస్తుంది</tspan>. Test lo fake ఇవ్వొచ్చు.</text></svg>
+</div>
+
 
 ## 41. Object Pool
 
@@ -2898,6 +3142,11 @@ bus.emit("order.placed", { item: "Book" });
 # Part 8 — Interview & Reference
 
 ---
+<div class="fig">
+<div class="cap">Architecture patterns · MVC, Layered, Pub-Sub</div>
+<svg viewBox="0 0 750 312"><text class="t-xs" x="0" y="14">MVC</text><rect class="n" x="0" y="24" width="110" height="38" rx="4"/><text class="t mid" x="55" y="48">View</text><rect class="n-acc" x="125" y="24" width="110" height="38" rx="4"/><text class="t-w mid" x="180" y="48">Controller</text><rect class="n" x="250" y="24" width="110" height="38" rx="4"/><text class="t mid" x="305" y="48">Model</text><line class="ln" x1="114" y1="43" x2="121" y2="43" marker-end="url(#a)"/><line class="ln" x1="239" y1="43" x2="246" y2="43" marker-end="url(#a)"/><path class="ln-dash" d="M305 66 L305 82 L55 82 L55 66" marker-end="url(#a)"/><text class="t-sm mid" x="180" y="96">model మారితే view refresh</text><text class="t-xs" x="420" y="14">LAYERED</text><rect class="n" x="420" y="24" width="330" height="26" rx="3"/><text class="t-sm mid" x="585" y="42">Presentation (UI / API)</text><rect class="n-acc" x="420" y="54" width="330" height="26" rx="3"/><text class="t-w-sm mid" x="585" y="72">Business logic</text><rect class="n" x="420" y="84" width="330" height="26" rx="3"/><text class="t-sm mid" x="585" y="102">Data access</text><text class="t-sm mid" x="585" y="128">ప్రతి పొర తన కింది పొరతో మాత్రమే మాట్లాడుతుంది</text><text class="t-xs" x="0" y="152">PUB-SUB</text><rect class="n" x="0" y="162" width="140" height="38" rx="4"/><text class="t-sm mid" x="70" y="186">OrderService</text><line class="ln-acc" x1="144" y1="181" x2="216" y2="181" marker-end="url(#aa)"/><text class="t-sm mid" x="180" y="173">publish</text><rect class="n-acc" x="220" y="162" width="140" height="38" rx="4"/><text class="t-w-sm mid" x="290" y="186">Event Bus</text><line class="ln-acc" x1="364" y1="172" x2="436" y2="152" marker-end="url(#aa)"/><line class="ln-acc" x1="364" y1="181" x2="436" y2="181" marker-end="url(#aa)"/><line class="ln-acc" x1="364" y1="190" x2="436" y2="210" marker-end="url(#aa)"/><rect class="n-good" x="440" y="134" width="200" height="34" rx="4"/><text class="t-sm mid" x="540" y="155">EmailService</text><rect class="n-good" x="440" y="172" width="200" height="34" rx="4"/><text class="t-sm mid" x="540" y="193">AnalyticsService</text><rect class="n-good" x="440" y="210" width="200" height="34" rx="4"/><text class="t-sm mid" x="540" y="231">InventoryService</text><text class="t-sm" x="660" y="176">Publisher కి</text><text class="t-sm" x="660" y="192">subscribers ఎవరో</text><text class="t-acc" x="660" y="208">తెలియదు</text><rect class="n-soft" x="0" y="256" width="750" height="46" rx="4"/><text class="t mid" x="375" y="278">MVC = UI ని logic నుంచి · Layered = బాధ్యతలను పొరలుగా · Pub-Sub = సమయం మరియు జ్ఞానం రెండింటినీ విడదీయడం</text><text class="t-sm mid" x="375" y="296">ఇవి patterns కంటే <tspan class="t-acc">పెద్ద స్థాయి</tspan> — ఒక class ని కాదు, మొత్తం application ని ఎలా అమర్చాలో చెప్తాయి</text></svg>
+</div>
+
 
 ## 45. ఏ Pattern ఎప్పుడు వాడాలి? (Cheat Sheet)
 

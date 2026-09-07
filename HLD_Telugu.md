@@ -1,10 +1,27 @@
-# HLD (High-Level Design / System Design) - పూర్తి తెలుగు గైడ్ (SDE2 & SSE)
+<!-- style: editorial -->
+<!-- footer: HLD · పూర్తి తెలుగు గైడ్ · Concepts & Building Blocks -->
 
-> ఈ document చదివిన తర్వాత System Design మళ్ళీ మర్చిపోలేవు. ప్రతి concept కి real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, trade-offs, diagram, మరియు interview దృష్టి ఉంటాయి. ఇది `OOPS_Telugu.md` (OOP) + `LLD_Telugu.md` (Low-Level Design) కి కొనసాగింపు - **OOP → LLD → HLD** అనే ప్రయాణంలో చివరి, అతి పెద్ద మెట్టు.
->
-> **లక్ష్యం:** SDE2 (mid-level) మరియు SSE (Senior Software Engineer) system design rounds ని confident గా clear చేయడం.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">HLD</div>
+<div class="kicker">System Design · Concepts &amp; Building Blocks · SDE2 / SSE</div>
+<div class="rule"></div>
+<div class="cover-title">High-Level<br>Design</div>
+<div class="lede">ఈ document చదివిన తర్వాత System Design మళ్ళీ మర్చిపోలేవు. ప్రతి concept కి — <b>diagram</b>, real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, trade-offs, మరియు interview దృష్టి.</div>
+<div class="sub"><b>OOP → LLD → HLD</b> అనే ప్రయాణంలో చివరి, అతి పెద్ద మెట్టు. లక్ష్యం: SDE2 మరియు SSE system design rounds ని confident గా clear చేయడం. Interview lo అడిగే <i>design problems</i> కోసం <code>HLD_Design_Problems_Telugu.pdf</code> చూడండి; ఇది వాటి వెనక ఉన్న <i>పరికరాల పెట్టె</i>.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -292,6 +309,12 @@ Browser లో `youtube.com` type చేస్తే ఏం జరుగుత�
 
 > **Bank లో ఒకే queue, అనేక counters.** Manager (LB) "మీరు counter 3 కి వెళ్ళండి" అని పంపుతాడు - ఏ counter ఖాళీగా ఉందో చూసి. ఒక counter మూసేసినా, మిగతావి పని చేస్తాయి.
 
+<div class="fig">
+<div class="cap">Load Balancing · ఎక్కడ, ఎలా పంచాలి</div>
+<svg viewBox="0 0 750 258"><text class="t-xs" x="0" y="14">L4 vs L7 — ఎక్కడ నిర్ణయం జరుగుతుంది</text><rect class="n-info" x="0" y="24" width="366" height="64" rx="4"/><text class="t mid" x="183" y="54">L4 (Transport)</text><text class="t-sm mid" x="183" y="70">IP + port మాత్రమే చూస్తుంది · content చూడదు · చాలా వేగం</text><rect class="n-good" x="384" y="24" width="366" height="64" rx="4"/><text class="t mid" x="567" y="54">L7 (Application)</text><text class="t-sm mid" x="567" y="70">URL, header, cookie చూస్తుంది · /api → A, /img → B · తెలివైనది</text><text class="t-xs" x="0" y="112">ALGORITHMS</text><rect class="n" x="0" y="122" width="178" height="52" rx="4"/><text class="t mid" x="89" y="146">Round Robin</text><text class="t-sm mid" x="89" y="162">వరుసగా ఒక్కొక్కరికి</text><rect class="n" x="190" y="122" width="178" height="52" rx="4"/><text class="t mid" x="279" y="146">Least Connections</text><text class="t-sm mid" x="279" y="162">తక్కువ busy server కి</text><rect class="n" x="380" y="122" width="178" height="52" rx="4"/><text class="t mid" x="469" y="146">Weighted</text><text class="t-sm mid" x="469" y="162">పెద్ద server కి ఎక్కువ</text><rect class="n" x="570" y="122" width="178" height="52" rx="4"/><text class="t mid" x="659" y="146">IP Hash</text><text class="t-sm mid" x="659" y="162">ఒకే client → ఒకే server</text><rect class="n-acc" x="0" y="190" width="750" height="58" rx="4"/><text class="t-w mid" x="375" y="217">Health check — ఇదే load balancer యొక్క అసలు విలువ</text><text class="t-w-sm mid" x="375" y="233">ప్రతి కొన్ని సెకన్లకి /health కొట్టి, జవాబు ఇవ్వని server ని pool నుంచి తీసేయడం. Traffic పంచడం కంటే ఇదే ముఖ్యం.</text></svg>
+<div class="note"><b>Sticky session ఉచ్చు:</b> IP hash తో ఒకే user ఎప్పుడూ ఒకే server కి వెళ్తాడు — session memory lo ఉంచొచ్చు. కానీ ఆ server చస్తే session పోతుంది, మరియు scaling అసమానం అవుతుంది. మేలైనది: <b>servers ని stateless గా ఉంచి session ని Redis lo</b> పెట్టడం.</div>
+</div>
+
 ### L4 vs L7 Load Balancer
 
 |               | **L4** (Transport) | **L7** (Application)                     |
@@ -332,6 +355,12 @@ Browser లో `youtube.com` type చేస్తే ఏం జరుగుత�
 ### Real-life Scenario
 
 > **Fridge vs Market.** ప్రతిసారి పాలు కోసం market కి వెళ్ళవు (DB) - fridge లో (cache) ఉంచుకుంటావు. వేగం. కానీ fridge చిన్నది (RAM ఖరీదు), పాలు పాడవుతాయి (stale data) - అందుకే expiry (TTL).
+
+<div class="fig">
+<div class="cap">మూడు caching patterns · ఎప్పుడు ఏది</div>
+<svg viewBox="0 0 750 296"><text class="t-xs" x="0" y="14">CACHE-ASIDE (lazy loading) — అత్యంత సాధారణం</text><rect class="n" x="0" y="24" width="110" height="44" rx="4"/><text class="t mid" x="55" y="51">App</text><line class="ln" x1="114" y1="46" x2="168" y2="46" marker-end="url(#a)"/><rect class="n-info" x="172" y="24" width="140" height="44" rx="4"/><text class="t mid" x="242" y="44">Cache</text><text class="t-sm mid" x="242" y="60">miss?</text><line class="ln" x1="316" y1="46" x2="370" y2="46" marker-end="url(#a)"/><rect class="n-soft" x="374" y="24" width="140" height="44" rx="4"/><text class="t mid" x="444" y="51">Database</text><path class="ln-acc" d="M444 70 L444 86 L242 86 L242 70" marker-end="url(#aa)"/><text class="t-sm" x="530" y="40">App స్వయంగా cache ని నింపుతుంది.</text><text class="t-sm" x="530" y="56">✓ సులభం · ✗ మొదటి request నెమ్మది</text><text class="t-xs" x="0" y="120">WRITE-THROUGH — cache మరియు DB ఒకేసారి</text><rect class="n" x="0" y="130" width="110" height="44" rx="4"/><text class="t mid" x="55" y="157">App</text><line class="ln-acc" x1="114" y1="152" x2="168" y2="152" marker-end="url(#a)"/><rect class="n-info" x="172" y="130" width="140" height="44" rx="4"/><text class="t mid" x="242" y="157">Cache</text><line class="ln-acc" x1="316" y1="152" x2="370" y2="152" marker-end="url(#a)"/><rect class="n-soft" x="374" y="130" width="140" height="44" rx="4"/><text class="t mid" x="444" y="157">Database</text><text class="t-sm" x="530" y="146">Cache ఎప్పుడూ తాజాగా ఉంటుంది.</text><text class="t-sm" x="530" y="162">✓ stale లేదు · ✗ ప్రతి write నెమ్మది</text><text class="t-xs" x="0" y="212">WRITE-BACK — cache lo రాసి, తర్వాత DB కి</text><rect class="n" x="0" y="222" width="110" height="44" rx="4"/><text class="t mid" x="55" y="249">App</text><line class="ln-acc" x1="114" y1="244" x2="168" y2="244" marker-end="url(#a)"/><rect class="n-info" x="172" y="222" width="140" height="44" rx="4"/><text class="t mid" x="242" y="249">Cache</text><line class="ln-dash" x1="316" y1="244" x2="370" y2="244" marker-end="url(#a)"/><rect class="n-soft" x="374" y="222" width="140" height="44" rx="4"/><text class="t mid" x="444" y="249">Database</text><text class="t-sm mid" x="345" y="282">async flush</text><text class="t-sm" x="530" y="238">✓ writes చాలా వేగం</text><text class="t-acc" x="530" y="256">✗ crash అయితే data loss</text></svg>
+<div class="note"><b>నియమం:</b> Read-heavy + కొంత staleness ఫర్వాలేదు → cache-aside. Stale అస్సలు వద్దు → write-through. Write-heavy మరియు కొంత data loss భరించగలరు (analytics counters) → write-back.</div>
+</div>
 
 ### ఎక్కడ cache చేయవచ్చు
 
@@ -391,6 +420,12 @@ Client (browser cache) → CDN → Load Balancer →
 ### Real-life Scenario
 
 > **Amazon warehouses.** ఒకే central warehouse నుండి కాకుండా, ప్రతి నగరంలో warehouse ఉంటే delivery వేగంగా. CDN అలా content ని user దగ్గరికి తెస్తుంది.
+
+<div class="fig">
+<div class="cap">CDN · content ని user దగ్గరికి తీసుకెళ్ళడం</div>
+<svg viewBox="0 0 750 300"><rect class="n-soft" x="300" y="10" width="150" height="44" rx="4"/><text class="t mid" x="375" y="30">Origin</text><text class="t-sm mid" x="375" y="46">మన server</text><line class="ln-dash" x1="340" y1="58" x2="180" y2="96" marker-end="url(#a)"/><line class="ln-dash" x1="375" y1="58" x2="375" y2="96" marker-end="url(#a)"/><line class="ln-dash" x1="410" y1="58" x2="570" y2="96" marker-end="url(#a)"/><rect class="n-info" x="60" y="100" width="190" height="44" rx="4"/><text class="t mid" x="155" y="120">Edge · Mumbai</text><text class="t-sm mid" x="155" y="136">cached copy</text><rect class="n-info" x="280" y="100" width="190" height="44" rx="4"/><text class="t mid" x="375" y="120">Edge · Singapore</text><text class="t-sm mid" x="375" y="136">cached copy</text><rect class="n-info" x="500" y="100" width="190" height="44" rx="4"/><text class="t mid" x="595" y="120">Edge · Frankfurt</text><text class="t-sm mid" x="595" y="136">cached copy</text><line class="ln" x1="155" y1="148" x2="155" y2="182" marker-end="url(#a)"/><line class="ln" x1="375" y1="148" x2="375" y2="182" marker-end="url(#a)"/><line class="ln" x1="595" y1="148" x2="595" y2="182" marker-end="url(#a)"/><rect class="n-good" x="60" y="186" width="190" height="38" rx="4"/><text class="t mid" x="155" y="210">Users దగ్గరలో</text><rect class="n-good" x="280" y="186" width="190" height="38" rx="4"/><text class="t mid" x="375" y="210">Users దగ్గరలో</text><rect class="n-good" x="500" y="186" width="190" height="38" rx="4"/><text class="t mid" x="595" y="210">Users దగ్గరలో</text><rect class="n" x="0" y="240" width="366" height="52" rx="4"/><text class="t mid" x="183" y="264">PULL (lazy)</text><text class="t-sm mid" x="183" y="280">మొదటి user origin నుంచి తెస్తాడు, తర్వాత cache</text><rect class="n-acc" x="384" y="240" width="366" height="52" rx="4"/><text class="t-w mid" x="567" y="264">PUSH (pre-warm)</text><text class="t-w-sm mid" x="567" y="280">ముఖ్యమైన content ని ముందే edges కి పంపడం</text></svg>
+<div class="note">CDN కేవలం వేగం కోసం కాదు — ఇది <b>origin ని కాపాడుతుంది</b>. Cache hit ratio 90% నుంచి 95% కి పెరిగితే origin traffic <b>సగం</b> అవుతుంది. Video/image-heavy products lo ఇదే అతి పెద్ద ఖర్చు తగ్గింపు.</div>
+</div>
 
 ### ఎలా పనిచేస్తుంది
 
@@ -484,6 +519,12 @@ Database ఎంపిక HLD లో అతి ముఖ్య నిర్ణయ
 - **Reads** → Followers నుండి (read scaling!)
 - Leader fail → ఒక follower ని leader గా promote (failover)
 
+<div class="fig">
+<div class="cap">Replication · మూడు topologies</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">SINGLE LEADER — అత్యంత సాధారణం</text><rect class="n-acc" x="0" y="24" width="150" height="44" rx="4"/><text class="t-w mid" x="75" y="44">Leader</text><text class="t-w-sm mid" x="75" y="60">అన్ని writes</text><line class="ln" x1="154" y1="36" x2="208" y2="30" marker-end="url(#a)"/><line class="ln" x1="154" y1="56" x2="208" y2="72" marker-end="url(#a)"/><rect class="n-good" x="212" y="10" width="150" height="38" rx="4"/><text class="t mid" x="287" y="34">Follower 1</text><rect class="n-good" x="212" y="56" width="150" height="38" rx="4"/><text class="t mid" x="287" y="80">Follower 2</text><text class="t-sm" x="382" y="34">✓ Conflict లేదు · reads ని scale చేయొచ్చు</text><text class="t-sm" x="382" y="52">✗ Leader చస్తే writes ఆగుతాయి (failover కావాలి)</text><text class="t-acc" x="382" y="72">✗ Replication lag → follower నుంచి పాత data</text><text class="t-xs" x="0" y="122">MULTI-LEADER — multi-region కి</text><rect class="n-acc" x="0" y="132" width="170" height="44" rx="4"/><text class="t mid" x="85" y="152">Leader · India</text><text class="t-sm mid" x="85" y="168">t-w</text><rect class="n-acc" x="240" y="132" width="170" height="44" rx="4"/><text class="t mid" x="325" y="152">Leader · US</text><text class="t-sm mid" x="325" y="168">t-w</text><line class="ln-acc" x1="174" y1="146" x2="236" y2="146" marker-end="url(#aa)"/><line class="ln-acc" x1="236" y1="162" x2="174" y2="162" marker-end="url(#aa)"/><text class="t-sm" x="430" y="150">✓ ప్రతి region lo local writes → తక్కువ latency</text><text class="t-acc" x="430" y="170">✗ ఇద్దరూ ఒకే row రాస్తే — conflict resolution కావాలి</text><text class="t-xs" x="0" y="212">LEADERLESS (Dynamo style)</text><rect class="n" x="0" y="222" width="110" height="40" rx="4"/><text class="t mid" x="55" y="247">Node A</text><rect class="n" x="120" y="222" width="110" height="40" rx="4"/><text class="t mid" x="175" y="247">Node B</text><rect class="n" x="240" y="222" width="110" height="40" rx="4"/><text class="t mid" x="295" y="247">Node C</text><text class="t-sm" x="370" y="238">Client అనేక nodes కి రాస్తాడు, అనేకం నుంచి చదువుతాడు.</text><text class="t-sm" x="370" y="256">Quorum (§16) correctness ని నిర్ణయిస్తుంది. Leader లేడు కాబట్టి failover లేదు.</text></svg>
+<div class="note"><b>Replication lag</b> ప్రతి approach lo ఉంటుంది. "నేను profile update చేశాను కానీ refresh చేస్తే పాతది కనిపిస్తోంది" — ఇదే. పరిష్కారం: <b>read-your-writes consistency</b> — ఆ user reads ని కొంతసేపు leader నుంచే ఇవ్వడం.</div>
+</div>
+
 ### Sync vs Async Replication
 
 |               | **Synchronous**            | **Asynchronous**              |
@@ -522,6 +563,12 @@ Database ఎంపిక HLD లో అతి ముఖ్య నిర్ణయ
 ### Real-life Scenario
 
 > **ఒక పెద్ద library ని అనేక branches గా విభజించడం.** A-M పుస్తకాలు branch 1, N-Z branch 2. ఏ పుస్తకం ఎక్కడుందో తెలిస్తే నేరుగా అక్కడికి వెళ్తావు. ఒక branch నిండినా, మిగతావి ఖాళీ.
+
+<div class="fig">
+<div class="cap">Sharding · డేటాను ఎలా విభజించాలి</div>
+<svg viewBox="0 0 750 306"><text class="t-xs" x="0" y="14">RANGE — key విలువ ప్రకారం</text><rect class="n" x="0" y="24" width="240" height="40" rx="4"/><text class="t mid" x="120" y="42">A – H</text><text class="t-sm mid" x="120" y="58">Shard 1</text><rect class="n" x="250" y="24" width="240" height="40" rx="4"/><text class="t mid" x="370" y="42">I – P</text><text class="t-sm mid" x="370" y="58">Shard 2</text><rect class="n" x="500" y="24" width="250" height="40" rx="4"/><text class="t mid" x="625" y="42">Q – Z</text><text class="t-sm mid" x="625" y="58">Shard 3</text><text class="t-sm" x="0" y="80">✓ Range queries సులభం ("A తో మొదలయ్యే అందరూ")</text><text class="t-acc" x="380" y="80">✗ Hotspot — "S" పేర్లు ఎక్కువ ఉంటే shard 3 మునిగిపోతుంది</text><text class="t-xs" x="0" y="118">HASH — hash(key) % N</text><rect class="n-good" x="0" y="128" width="240" height="40" rx="4"/><text class="t mid" x="120" y="146">hash → 0</text><text class="t-sm mid" x="120" y="162">Shard 1</text><rect class="n-good" x="250" y="128" width="240" height="40" rx="4"/><text class="t mid" x="370" y="146">hash → 1</text><text class="t-sm mid" x="370" y="162">Shard 2</text><rect class="n-good" x="500" y="128" width="250" height="40" rx="4"/><text class="t mid" x="625" y="146">hash → 2</text><text class="t-sm mid" x="625" y="162">Shard 3</text><text class="t-sm" x="0" y="184">✓ సమానంగా పంపిణీ, hotspot అరుదు</text><text class="t-acc" x="380" y="184">✗ Range queries సాధ్యం కాదు · N మారితే అన్నీ కదులుతాయి → §15</text><text class="t-xs" x="0" y="222">DIRECTORY — ఒక lookup table</text><rect class="n-info" x="0" y="232" width="300" height="44" rx="4"/><text class="t mid" x="150" y="252">Lookup service</text><text class="t-sm mid" x="150" y="268">key → ఏ shard lo ఉందో చెప్తుంది</text><line class="ln" x1="304" y1="254" x2="360" y2="254" marker-end="url(#a)"/><rect class="n" x="364" y="232" width="120" height="44" rx="4"/><text class="t mid" x="424" y="259">Shard 1</text><rect class="n" x="494" y="232" width="120" height="44" rx="4"/><text class="t mid" x="554" y="259">Shard 2</text><rect class="n" x="624" y="232" width="126" height="44" rx="4"/><text class="t mid" x="687" y="259">Shard 3</text><text class="t-sm" x="0" y="296">✓ అత్యంత flexible — ఏ key నైనా ఎక్కడికైనా తరలించొచ్చు · ✗ lookup service ఒక SPOF అవుతుంది</text></svg>
+<div class="note"><b>అసలు కష్టం shard key ఎంచుకోవడం.</b> తప్పుగా ఎంచుకుంటే — hotspot, లేదా ప్రతి query అన్ని shards ని అడగాల్సి రావడం (scatter-gather). మంచి shard key: <i>అధిక cardinality + query pattern కి సరిపోయేది</i>.</div>
+</div>
 
 ### Sharding Strategies
 
@@ -567,6 +614,12 @@ Database ఎంపిక HLD లో అతి ముఖ్య నిర్ణయ
 ### Real-life Scenario
 
 > **పుస్తకం చివర index.** ఒక topic కోసం మొత్తం పుస్తకం చదవవు - index చూసి నేరుగా page కి వెళ్తావు. DB index అలానే rows ని వేగంగా కనుక్కుంటుంది.
+
+<div class="fig">
+<div class="cap">Indexing · B-tree ఎలా వెతుకుతుంది</div>
+<svg viewBox="0 0 750 322"><rect class="n-acc" x="300" y="10" width="150" height="40" rx="4"/><text class="t mid" x="375" y="28">Root</text><text class="t-sm mid" x="375" y="44">t-w</text><line class="ln" x1="340" y1="54" x2="180" y2="86" marker-end="url(#a)"/><line class="ln" x1="375" y1="54" x2="375" y2="86" marker-end="url(#a)"/><line class="ln" x1="410" y1="54" x2="570" y2="86" marker-end="url(#a)"/><rect class="n" x="90" y="90" width="180" height="40" rx="4"/><text class="t mid" x="180" y="115">< 100</text><rect class="n" x="310" y="90" width="180" height="40" rx="4"/><text class="t mid" x="400" y="115">100 – 500</text><rect class="n" x="510" y="90" width="180" height="40" rx="4"/><text class="t mid" x="600" y="115">> 500</text><line class="ln" x1="180" y1="134" x2="120" y2="166" marker-end="url(#a)"/><line class="ln" x1="400" y1="134" x2="400" y2="166" marker-end="url(#a)"/><rect class="n-good" x="30" y="170" width="180" height="38" rx="4"/><text class="t mid" x="120" y="194">leaf → row pointers</text><rect class="n-good" x="310" y="170" width="180" height="38" rx="4"/><text class="t mid" x="400" y="194">leaf → row pointers</text><text class="t-sm" x="530" y="186">3–4 hops lo కోట్ల rows lo</text><text class="t-acc" x="530" y="204">ఒక row దొరుకుతుంది</text><rect class="n-good" x="0" y="224" width="366" height="66" rx="4"/><text class="t mid" x="183" y="255">Index ఉంటే</text><text class="t-sm mid" x="183" y="271">O(log n) — 10 లక్షల rows కి ~20 comparisons</text><rect class="n-bad" x="384" y="224" width="366" height="66" rx="4"/><text class="t mid" x="567" y="255">Index లేకపోతే</text><text class="t-sm mid" x="567" y="271">O(n) full table scan — 10 లక్షల rows అన్నీ చదవాలి</text><text class="t-sm mid" x="375" y="312">కానీ ప్రతి index ఒక ఖరీదు: ప్రతి INSERT/UPDATE కి index ని కూడా update చేయాలి + disk space</text></svg>
+<div class="note"><b>Composite index lo క్రమం ముఖ్యం.</b> <code>(city, age)</code> index — "city = హైదరాబాద్" queries కి పని చేస్తుంది, "age = 25" మాత్రమే ఉన్న query కి పని చేయదు. ఇది ఒక టెలిఫోన్ డైరెక్టరీ లాంటిది: ఇంటిపేరు తెలిస్తే వేగం, మొదటి పేరు మాత్రమే తెలిస్తే వృథా.</div>
+</div>
 
 ### Trade-off
 
@@ -616,6 +669,12 @@ Database ఎంపిక HLD లో అతి ముఖ్య నిర్ణయ
 > - **CP:** "line వచ్చేదాకా ఆగండి" (consistent కానీ unavailable)
 > - **AP:** "ఇప్పటి బ్యాలెన్స్ (పాతది కావచ్చు) ఇస్తా" (available కానీ inconsistent)
 
+<div class="fig">
+<div class="cap">CAP Theorem · partition జరిగినప్పుడు ఏం వదులుకుంటారు</div>
+<svg viewBox="0 0 750 338"><polygon points="375,20 200,220 550,220" fill="none" stroke="#d9d3c6" stroke-width="2"/><circle cx="375" cy="20" r="8" fill="#e2653a"/><text class="t mid" x="375" y="10">C · Consistency</text><circle cx="200" cy="220" r="8" fill="#e2653a"/><text class="t mid" x="180" y="242">A · Availability</text><circle cx="550" cy="220" r="8" fill="#e2653a"/><text class="t mid" x="580" y="242">P · Partition tolerance</text><text class="t-acc mid" x="288" y="120">CP</text><text class="t-sm mid" x="288" y="136">MongoDB, HBase</text><text class="t-acc mid" x="462" y="120">AP</text><text class="t-sm mid" x="462" y="136">Cassandra, Dynamo</text><text class="t-sm mid" x="375" y="196">CA — distributed lo</text><text class="t-acc mid" x="375" y="212">అసాధ్యం</text><rect class="n-acc" x="0" y="264" width="750" height="64" rx="4"/><text class="t-w mid" x="375" y="294">నిజం ఏమిటంటే — CAP ఒక "మూడింటిలో రెండు" ఎంపిక కాదు</text><text class="t-w-sm mid" x="375" y="310">Network partition జరగడం మన చేతిలో లేదు, అది జరిగే తీరుతుంది. కాబట్టి P తప్పనిసరి. మిగిలిన ఏకైక ప్రశ్న: partition జరిగినప్పుడు C ని వదులుకుంటామా, A ని వదులుకుంటామా?</text></svg>
+<div class="note"><b>PACELC ఇంకా నిజాయితీగా చెప్తుంది:</b> Partition ఉంటే A vs C; <b>Else</b> (సాధారణ సమయంలో) Latency vs Consistency. అంటే partition లేకపోయినా trade-off ఉంటూనే ఉంటుంది — sync replication = consistent కానీ నెమ్మది.</div>
+</div>
+
 ### Partition ఉన్నప్పుడు ఎంపిక
 
 | ఎంపిక                 | అర్థం                                           | ఉదా                                |
@@ -655,6 +714,11 @@ Database ఎంపిక HLD లో అతి ముఖ్య నిర్ణయ
 | **Read-your-writes** | నీ సొంత writes నీకు వెంటనే కనిపిస్తాయి    | Profile edit                   |
 | **Eventual**         | కొంత సమయం తర్వాత అందరూ converge అవుతారు   | Likes count, DNS               |
 
+<div class="fig">
+<div class="cap">Consistency Models · బలమైనది నుంచి బలహీనమైనది వరకు</div>
+<svg viewBox="0 0 750 244"><line class="ln" x1="20" y1="60" x2="730" y2="60"/><circle cx="60" cy="60" r="7" fill="#e2653a"/><text class="t mid" x="60" y="42">Strong</text><circle cx="215" cy="60" r="7" fill="#e2653a"/><text class="t mid" x="215" y="42">Linearizable</text><circle cx="375" cy="60" r="7" fill="#e2653a"/><text class="t mid" x="375" y="42">Causal</text><circle cx="535" cy="60" r="7" fill="#e2653a"/><text class="t mid" x="535" y="42">Read-your-writes</text><circle cx="700" cy="60" r="7" fill="#e2653a"/><text class="t mid" x="700" y="42">Eventual</text><text class="t-sm" x="20" y="88">ఖరీదైనది · నెమ్మది</text><text class="t-sm end" x="730" y="88">చౌక · వేగం</text><rect class="n-good" x="0" y="110" width="366" height="72" rx="4"/><text class="t mid" x="183" y="144">ఎక్కడ STRONG కావాలి</text><text class="t-sm mid" x="183" y="160">Account balance · inventory · seat booking · payment</text><rect class="n-info" x="384" y="110" width="366" height="72" rx="4"/><text class="t mid" x="567" y="144">ఎక్కడ EVENTUAL చాలు</text><text class="t-sm mid" x="567" y="160">Likes count · view count · DNS · social feed · analytics</text><text class="t-sm mid" x="375" y="212">ఒకే system lo రెండూ ఉండొచ్చు — Amazon lo cart eventual, checkout strong</text><text class="t-acc mid" x="375" y="234">సరైన ప్రశ్న: "ఇక్కడ ఎంత పాత data భరించగలం?" — "consistency కావాలా?" కాదు</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Eventual consistency:** నువ్వు photo like చేస్తే, నీకు వెంటనే 101 likes కనిపిస్తుంది, కానీ friend కి కొన్ని seconds పాటు 100 కనిపించవచ్చు. చివరికి ఇద్దరికీ 101. Likes కి ఇది ఓకే - **bank balance కి కాదు**.
@@ -679,6 +743,11 @@ Database ఎంపిక HLD లో అతి ముఖ్య నిర్ణయ
 ### Real-life Scenario
 
 > **గుండ్రటి బల్ల చుట్టూ కూర్చున్న అతిథులు.** కొత్తవాడు వస్తే, పక్కవాడి భారంలో కొంతే తీసుకుంటాడు - మొత్తం arrangement మారదు. `%N` అయితే ప్రతి కొత్తవాడికీ అందరూ కుర్చీలు మారాలి.
+
+<div class="fig">
+<div class="cap">Consistent Hashing · node చేరినా, పోయినా 1/N keys మాత్రమే కదులుతాయి</div>
+<svg viewBox="0 0 750 260"><circle cx="180" cy="130" r="105" fill="none" stroke="#d9d3c6" stroke-width="2"/><circle cx="180" cy="25" r="10" fill="#17203a"/><text class="t-sm mid" x="180" y="7">Node A</text><circle cx="271" cy="182" r="10" fill="#17203a"/><text class="t-sm " x="299" y="188">Node B</text><circle cx="89" cy="182" r="10" fill="#17203a"/><text class="t-sm end" x="61" y="188">Node C</text><circle cx="255" cy="55" r="6" fill="#e2653a"/><text class="t-sm" x="266" y="50">key "x"</text><path class="ln-acc" d="M262 48 A 105 105 0 0 0 190 28" marker-end="url(#aa)"/><text class="t-sm mid" x="180" y="126">hash ring</text><text class="t-sm mid" x="180" y="142">0 → 2³²</text><rect class="n-good" x="320" y="20" width="430" height="66" rx="4"/><text class="t mid" x="535" y="51">నియమం</text><text class="t-sm mid" x="535" y="67">Key ని hash చేసి ring మీద పెట్టు. అక్కడి నుంచి సవ్య దిశలో మొదట కనిపించే node దాని యజమాని.</text><rect class="n-bad" x="320" y="96" width="430" height="72" rx="4"/><text class="t mid" x="535" y="130">సాధారణ hash తో పోలిస్తే</text><text class="t-sm mid" x="535" y="146">hash(key) % N — N మారితే దాదాపు అన్ని keys కదులుతాయి. ఒక node చేర్చడానికి మొత్తం cluster ని rebalance చేయాలి.</text><rect class="n-acc" x="320" y="178" width="430" height="72" rx="4"/><text class="t-w mid" x="535" y="212">Virtual nodes ఎందుకు తప్పనిసరి</text><text class="t-w-sm mid" x="535" y="228">ఒక్కో physical node ని ring మీద 100+ చోట్ల పెట్టడం. లేకపోతే పంపిణీ అసమానం, మరియు ఒక node పోతే దాని భారం మొత్తం ఒక్క పొరుగువాడి మీద పడుతుంది.</text></svg>
+</div>
 
 ### Code
 
@@ -775,6 +844,12 @@ Leaderless systems (Cassandra, Dynamo) లో data ని N nodes లో replica
 >
 > **W + R > N** అయితే → strong consistency (read ఎప్పుడూ latest write ని చూస్తుంది, overlap ఉంటుంది).
 
+<div class="fig">
+<div class="cap">Quorum · R + W &gt; N అయితే ఎందుకు తాజా data దొరుకుతుంది</div>
+<svg viewBox="0 0 750 276"><text class="t-xs" x="0" y="14">N = 3 · W = 2 · R = 2 · R + W = 4 &gt; 3 ✓</text><rect class="n-good" x="0" y="24" width="220" height="52" rx="4"/><text class="t mid" x="110" y="48">Replica 1</text><text class="t-sm mid" x="110" y="64">v2 (కొత్తది)</text><rect class="n-good" x="230" y="24" width="220" height="52" rx="4"/><text class="t mid" x="340" y="48">Replica 2</text><text class="t-sm mid" x="340" y="64">v2 (కొత్తది)</text><rect class="n-bad" x="460" y="24" width="220" height="52" rx="4"/><text class="t mid" x="570" y="48">Replica 3</text><text class="t-sm mid" x="570" y="64">v1 (పాతది)</text><text class="t-sm" x="0" y="98">Write v2 → replicas 1, 2 ack ఇచ్చాయి (W = 2 సరిపోయింది). Replica 3 ఇంకా చేరుకోలేదు.</text><rect class="n-info" x="0" y="116" width="366" height="60" rx="4"/><text class="t mid" x="183" y="144">Read ఏవైనా 2 నుంచి (R = 2)</text><text class="t-sm mid" x="183" y="160">3 lo ఏ 2 తీసుకున్నా — కనీసం ఒకటి v2 ఉన్నదే ఉంటుంది</text><rect class="n-acc" x="384" y="116" width="366" height="60" rx="4"/><text class="t-w mid" x="567" y="144">ఇదే pigeonhole principle</text><text class="t-w-sm mid" x="567" y="160">W nodes రాశాయి, R nodes చదువుతున్నాయి, R+W &gt; N → overlap తప్పనిసరి</text><text class="t-xs" x="0" y="204">TUNING</text><rect class="n" x="0" y="214" width="240" height="52" rx="4"/><text class="t mid" x="120" y="238">W=1, R=1</text><text class="t-sm mid" x="120" y="254">వేగం, కానీ పాత data రావొచ్చు</text><rect class="n" x="255" y="214" width="240" height="52" rx="4"/><text class="t mid" x="375" y="238">W=3, R=1</text><text class="t-sm mid" x="375" y="254">Read-heavy కి · ఒక node పోతే write ఆగుతుంది</text><rect class="n" x="510" y="214" width="240" height="52" rx="4"/><text class="t mid" x="630" y="238">W=1, R=3</text><text class="t-sm mid" x="630" y="254">Write-heavy కి · reads ఖరీదు</text></svg>
+<div class="note">ఇదే <b>tunable consistency</b> — ఒక్కో query కీ R, W ని మార్చొచ్చు. User profile చదవడానికి R=1 (వేగం), account balance కి R=2 (correctness). ఒకే database, రెండు రకాల హామీలు.</div>
+</div>
+
 ### Code
 
 ```javascript
@@ -823,6 +898,12 @@ console.log(quorumCheck(3, 3, 1)); // W+R=4 > 3 → Strong (write-slow, read-fas
 ### Real-life Scenario
 
 > **Restaurant లో order slips.** Waiter (producer) orders ని kitchen queue లో పెడతాడు. Cooks (consumers) వరుసగా తీసుకుంటారు. Waiter cook అయ్యేదాకా nిలబడడు - మరో order తీసుకుంటాడు. Rush వస్తే slips పేరుకుంటాయి (buffer), కానీ ఏదీ పోదు.
+
+<div class="fig">
+<div class="cap">Kafka · append-only log మరియు offsets</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">PARTITION = ఒక append-only log</text><rect class="n" x="0" y="24" width="66" height="40" rx="4"/><text class="t mid" x="33" y="49">msg 0</text><rect class="n" x="74" y="24" width="66" height="40" rx="4"/><text class="t mid" x="107" y="49">msg 1</text><rect class="n" x="148" y="24" width="66" height="40" rx="4"/><text class="t mid" x="181" y="49">msg 2</text><rect class="n" x="222" y="24" width="66" height="40" rx="4"/><text class="t mid" x="255" y="49">msg 3</text><rect class="n" x="296" y="24" width="66" height="40" rx="4"/><text class="t mid" x="329" y="49">msg 4</text><rect class="n" x="370" y="24" width="66" height="40" rx="4"/><text class="t mid" x="403" y="49">msg 5</text><rect class="n" x="444" y="24" width="66" height="40" rx="4"/><text class="t mid" x="477" y="49">msg 6</text><rect class="n-good" x="518" y="24" width="90" height="40" rx="4"/><text class="t mid" x="563" y="49">← append</text><text class="t-sm" x="618" y="49">కొత్తవి ఇక్కడ</text><line class="ln-acc" x1="210" y1="68" x2="210" y2="96" marker-end="url(#aa)"/><line class="ln-acc" x1="432" y1="68" x2="432" y2="96" marker-end="url(#aa)"/><rect class="n-acc" x="120" y="100" width="180" height="44" rx="4"/><text class="t-w mid" x="210" y="120">Consumer group A</text><text class="t-w-sm mid" x="210" y="136">offset = 3</text><rect class="n-info" x="340" y="100" width="190" height="44" rx="4"/><text class="t mid" x="435" y="120">Consumer group B</text><text class="t-sm mid" x="435" y="136">offset = 6</text><rect class="n-good" x="0" y="160" width="750" height="60" rx="4"/><text class="t mid" x="375" y="188">Broker ఏ consumer ఏం చదివాడో track చేయదు</text><text class="t-sm mid" x="375" y="204">అది consumer బాధ్యత. ఈ ఒక్క నిర్ణయం వల్ల broker దాదాపు stateless అవుతుంది — అందుకే ఇది ఇంత scale అవుతుంది.</text><text class="t-sm mid" x="375" y="242">Offset ని వెనక్కి పెట్టి మళ్ళీ చదవొచ్చు — bug fix చేశాక 3 రోజుల data ని reprocess చేయడం ఉచితం</text></svg>
+<div class="note"><b>Partition = parallelism యొక్క unit మరియు ordering యొక్క unit — రెండూ ఒకటే.</b> అందుకే partition key ఎంచుకోవడం అతి ముఖ్యమైన నిర్ణయం: <code>user_id</code> ఇస్తే ఒక user events క్రమంలో, వేరే users సమాంతరంగా.</div>
+</div>
 
 ### ఎందుకు వాడతారు
 
@@ -942,6 +1023,12 @@ Coordinator → అందరినీ అడుగుతుంది:
 
 - **సమస్య:** Coordinator fail అయితే అందరూ blocked (locks పట్టుకుని); slow, tight coupling
 
+<div class="fig">
+<div class="cap">Distributed Transactions · 2PC vs Saga</div>
+<svg viewBox="0 0 750 336"><text class="t-xs" x="0" y="14">2PC — అందరూ lock పట్టుకుని coordinator కోసం ఎదురుచూస్తారు</text><rect class="n-acc" x="280" y="24" width="190" height="40" rx="4"/><text class="t mid" x="375" y="42">Coordinator</text><text class="t-sm mid" x="375" y="58">t-w</text><line class="ln" x1="320" y1="68" x2="150" y2="100" marker-end="url(#a)"/><line class="ln" x1="375" y1="68" x2="375" y2="100" marker-end="url(#a)"/><line class="ln" x1="430" y1="68" x2="600" y2="100" marker-end="url(#a)"/><rect class="n" x="60" y="104" width="180" height="38" rx="4"/><text class="t mid" x="150" y="128">Service A · locked</text><rect class="n" x="285" y="104" width="180" height="38" rx="4"/><text class="t mid" x="375" y="128">Service B · locked</text><rect class="n" x="510" y="104" width="180" height="38" rx="4"/><text class="t mid" x="600" y="128">Service C · locked</text><text class="t-acc" x="0" y="164">Coordinator crash అయితే — అందరూ locks పట్టుకుని శాశ్వతంగా blocked. External API మీద అసలు సాధ్యం కాదు.</text><text class="t-xs" x="0" y="196">SAGA — ప్రతి అడుగు commit అవుతుంది, fail అయితే వెనక్కి తిప్పే చర్యలు</text><rect class="n-good" x="0" y="206" width="170" height="40" rx="4"/><text class="t mid" x="85" y="231">1 · Order created</text><line class="ln" x1="174" y1="226" x2="196" y2="226" marker-end="url(#a)"/><rect class="n-good" x="200" y="206" width="170" height="40" rx="4"/><text class="t mid" x="285" y="231">2 · Inventory held</text><line class="ln" x1="374" y1="226" x2="396" y2="226" marker-end="url(#a)"/><rect class="n-bad" x="400" y="206" width="170" height="40" rx="4"/><text class="t mid" x="485" y="231">3 · Payment ✗</text><line class="ln-acc" x1="485" y1="250" x2="485" y2="278" marker-end="url(#aa)"/><rect class="n-acc" x="230" y="282" width="340" height="40" rx="4"/><text class="t mid" x="400" y="300">COMPENSATE — వెనక్కి తిరగడం</text><text class="t-sm mid" x="400" y="316">t-w</text><line class="ln-acc" x1="230" y1="302" x2="180" y2="302" marker-end="url(#aa)"/><rect class="n-info" x="0" y="282" width="170" height="40" rx="4"/><text class="t mid" x="85" y="307">Inventory release</text><text class="t-sm" x="590" y="292">Rollback కాదు — ఇప్పటికే</text><text class="t-sm" x="590" y="308">commit అయినవాటిని రద్దు</text><text class="t-sm" x="590" y="324">చేసే కొత్త actions</text></svg>
+<div class="note"><b>Compensation ≠ rollback.</b> Payment already succeed అయి తర్వాతి step fail అయితే, charge ని "undo" చేయలేం — REFUND అనే కొత్త transaction రాస్తాం. అందుకే <b>డబ్బు తీసే step ని saga lo ఎప్పుడూ చివరన</b> పెట్టాలి.</div>
+</div>
+
 ### Saga Pattern (ఆధునిక పరిష్కారం)
 
 > **Saga** = పెద్ద transaction ని చిన్న local transactions గా విభజించడం. ఒక్కో step succeed అవుతూ వెళ్తుంది; ఏదైనా fail అయితే, ముందు జరిగిన వాటిని **compensating actions** తో undo చేస్తారు.
@@ -989,6 +1076,11 @@ Order Saga:
 ### Real-life Scenario
 
 > **Team lead election.** Team members vote వేసి ఒక lead ని ఎన్నుకుంటారు (majority). Lead మాట్లాడకపోతే (crash), కొత్త election. అందరూ ఒకే lead ని అంగీకరించడం = consensus.
+
+<div class="fig">
+<div class="cap">Raft · leader election మరియు majority ఎందుకు</div>
+<svg viewBox="0 0 750 226"><text class="t-xs" x="0" y="14">LEADER ELECTION</text><rect class="n" x="0" y="24" width="170" height="44" rx="4"/><text class="t mid" x="85" y="44">Follower</text><text class="t-sm mid" x="85" y="60">timeout ఎదురుచూపు</text><line class="ln-acc" x1="174" y1="46" x2="216" y2="46" marker-end="url(#aa)"/><rect class="n-info" x="220" y="24" width="190" height="44" rx="4"/><text class="t mid" x="315" y="44">Candidate</text><text class="t-sm mid" x="315" y="60">ఓట్లు అడుగుతుంది</text><line class="ln-acc" x1="414" y1="46" x2="456" y2="46" marker-end="url(#aa)"/><rect class="n-acc" x="460" y="24" width="190" height="44" rx="4"/><text class="t-w mid" x="555" y="44">Leader</text><text class="t-w-sm mid" x="555" y="60">మెజారిటీ ఓట్లు వచ్చాయి</text><path class="ln-dash" d="M555 72 L555 92 L85 92 L85 72" marker-end="url(#a)"/><text class="t-sm mid" x="320" y="108">ఎక్కువ term ఉన్నవాడు కనిపిస్తే తిరిగి follower</text><rect class="n-good" x="0" y="124" width="366" height="66" rx="4"/><text class="t mid" x="183" y="155">ఎందుకు MAJORITY (n/2 + 1)</text><text class="t-sm mid" x="183" y="171">5 nodes lo 3 ఓట్లు కావాలి. అప్పుడు రెండు leaders ఏకకాలంలో ఎన్నికవడం గణితపరంగా అసాధ్యం — ఎందుకంటే రెండు మెజారిటీలు తప్పనిసరిగా కలుస్తాయి.</text><rect class="n-bad" x="384" y="124" width="366" height="66" rx="4"/><text class="t mid" x="567" y="155">Split brain</text><text class="t-sm mid" x="567" y="171">Majority నియమం లేకపోతే — network partition జరిగినప్పుడు రెండు వైపులా ఒక్కో leader ఏర్పడి, రెండూ writes అంగీకరించి, data diverge అవుతుంది.</text><text class="t-sm mid" x="375" y="216">అందుకే cluster size ఎప్పుడూ <tspan class="t-acc">బేసి సంఖ్య</tspan> — 3, 5, 7. 4 nodes lo కూడా 3 ఓట్లే కావాలి, అంటే 4వ node వృథా.</text></svg>
+</div>
 
 ### Raft (సులభంగా)
 
@@ -1167,6 +1259,11 @@ Server నుండి client కి **realtime updates** (chat message, notific
 | **SSE** (Server-Sent Events) | Server → client one-way stream                  | Notifications, live feed (unidirectional)  |
 | **WebSocket**                | Full-duplex (రెండువైపులా) persistent connection | Chat, games, collaboration (bidirectional) |
 
+<div class="fig">
+<div class="cap">Realtime · నాలుగు మార్గాలు</div>
+<svg viewBox="0 0 750 326"><rect class="n-bad" x="0" y="8" width="200" height="52" rx="4"/><text class="t mid" x="100" y="39">Short polling</text><rect class="n" x="210" y="8" width="290" height="52" rx="4"/><text class="t-sm mid" x="355" y="39">ప్రతి 2s కి "ఏమైనా ఉందా?"</text><text class="t-sm" x="514" y="32">✗ భారీ వృథా traffic</text><text class="t-sm" x="514" y="50">✗ latency చెడ్డది</text><rect class="n-info" x="0" y="70" width="200" height="52" rx="4"/><text class="t mid" x="100" y="101">Long polling</text><rect class="n" x="210" y="70" width="290" height="52" rx="4"/><text class="t-sm mid" x="355" y="101">Request ని server పట్టుకుని, data వచ్చినప్పుడు జవాబు</text><text class="t-sm" x="514" y="94">⚠ పని చేస్తుంది</text><text class="t-sm" x="514" y="112">ప్రతి message తర్వాత reconnect</text><rect class="n-info" x="0" y="132" width="200" height="52" rx="4"/><text class="t mid" x="100" y="163">SSE</text><rect class="n" x="210" y="132" width="290" height="52" rx="4"/><text class="t-sm mid" x="355" y="163">Server → client ఒక దిక్కు stream</text><text class="t-sm" x="514" y="156">✓ సులభం</text><text class="t-sm" x="514" y="174">✗ ఒక దిక్కు మాత్రమే</text><rect class="n-good" x="0" y="194" width="200" height="52" rx="4"/><text class="t mid" x="100" y="225">WebSocket</text><rect class="n" x="210" y="194" width="290" height="52" rx="4"/><text class="t-sm mid" x="355" y="225">ఒకసారి handshake, తర్వాత full-duplex</text><text class="t-sm" x="514" y="218">✓ chat కి సరైనది</text><text class="t-sm" x="514" y="236">✗ servers stateful అవుతాయి</text><rect class="n-acc" x="0" y="264" width="750" height="52" rx="4"/><text class="t-w mid" x="375" y="288">WebSocket యొక్క దాచిన ఖరీదు</text><text class="t-w-sm mid" x="375" y="304">Servers ఇప్పుడు stateful — "user 42 ఏ server తో connect అయ్యాడు?" అని తెలియాలి. అందుకే ఒక session registry (Redis) కావాలి, మరియు gateway crash అయితే clients reconnect చేయాలి.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > - **Polling** = ప్రతి 5 నిమిషాలకి postman ని "ఉత్తరం వచ్చిందా?" అని అడగడం.
@@ -1191,6 +1288,12 @@ Server నుండి client కి **realtime updates** (chat message, notific
 ### Real-life Scenario
 
 > **Wedding.** Groom "పెళ్ళి అయింది" అని announce చేస్తాడు (event). Caterer, photographer, band - అందరూ react అవుతారు (వాళ్ళ పని మొదలుపెడతారు). Groom ప్రతి ఒక్కరినీ విడిగా పిలవడు.
+
+<div class="fig">
+<div class="cap">CQRS + Event Sourcing</div>
+<svg viewBox="0 0 750 368"><text class="t-xs" x="0" y="14">CQRS — writes మరియు reads వేరే దారులు</text><rect class="n" x="0" y="24" width="120" height="44" rx="4"/><text class="t mid" x="60" y="51">Client</text><line class="ln-acc" x1="124" y1="36" x2="176" y2="32" marker-end="url(#aa)"/><line class="ln" x1="124" y1="56" x2="176" y2="66" marker-end="url(#a)"/><rect class="n-acc" x="180" y="10" width="180" height="44" rx="4"/><text class="t-w mid" x="270" y="30">Command model</text><text class="t-w-sm mid" x="270" y="46">normalised, validated</text><rect class="n-info" x="180" y="66" width="180" height="44" rx="4"/><text class="t mid" x="270" y="86">Query model</text><text class="t-sm mid" x="270" y="102">denormalised, వేగం</text><path class="ln-dash" d="M270 54 L270 66" marker-end="url(#a)"/><text class="t-sm" x="380" y="34">Write model correctness కోసం —</text><text class="t-sm" x="380" y="50">constraints, transactions.</text><text class="t-sm" x="380" y="76">Read model వేగం కోసం — joins</text><text class="t-sm" x="380" y="92">ముందే చేసి, ఒకే పట్టికలో.</text><text class="t-xs" x="0" y="146">EVENT SOURCING — state కాదు, జరిగిన సంఘటనలు store చేయడం</text><rect class="n-good" x="0" y="156" width="175" height="44" rx="4"/><text class="t mid" x="87" y="183">OrderCreated</text><rect class="n-good" x="185" y="156" width="175" height="44" rx="4"/><text class="t mid" x="272" y="183">ItemAdded</text><rect class="n-good" x="370" y="156" width="175" height="44" rx="4"/><text class="t mid" x="457" y="183">Paid</text><rect class="n-good" x="555" y="156" width="195" height="44" rx="4"/><text class="t mid" x="652" y="183">Shipped</text><line class="ln-acc" x1="375" y1="204" x2="375" y2="232" marker-end="url(#aa)"/><rect class="n-acc" x="200" y="236" width="350" height="44" rx="4"/><text class="t mid" x="375" y="256">replay → current state</text><text class="t-sm mid" x="375" y="272">t-w</text><rect class="n-good" x="0" y="292" width="366" height="66" rx="4"/><text class="t mid" x="183" y="323">లాభాలు</text><text class="t-sm mid" x="183" y="339">పూర్తి audit trail · ఏ క్షణంలోనైనా state ని తిరిగి కట్టొచ్చు · "ఇది ఎందుకు ఇలా ఉంది" అనే ప్రశ్నకి ఎప్పుడూ జవాబు ఉంటుంది</text><rect class="n-bad" x="384" y="292" width="366" height="66" rx="4"/><text class="t mid" x="567" y="323">ఖరీదు</text><text class="t-sm mid" x="567" y="339">Event log ఎప్పటికీ పెరుగుతుంది (snapshots కావాలి) · "ప్రస్తుత state" query చేయడం కష్టం · schema మారితే పాత events ని ఎలా చదవాలి?</text></svg>
+<div class="note"><b>ఇవి రెండు వేర్వేరు ఆలోచనలు</b>, తరచుగా కలిపి వాడతారు కానీ విడిగా కూడా వాడొచ్చు. CQRS లేకుండా event sourcing చేయొచ్చు, event sourcing లేకుండా CQRS చేయొచ్చు. రెండూ ఒకేసారి పెడితే సంక్లిష్టత రెట్టింపు — నిజంగా అవసరమా అని ఆలోచించండి.</div>
+</div>
 
 ### CQRS (Command Query Responsibility Segregation)
 
@@ -1232,6 +1335,12 @@ Distributed systems లో failures **తప్పనిసరి**. ఒక serv
 ### Circuit Breaker
 
 > **Electrical fuse లాంటిది.** ఒక downstream service పదేపదే fail అవుతుంటే, circuit "open" అవుతుంది - ఆ service ని కొంతసేపు call చేయడం ఆపేస్తుంది (fail fast). కొంతసేపటికి "half-open" అయి test చేస్తుంది.
+
+<div class="fig">
+<div class="cap">Circuit Breaker · మూడు states</div>
+<svg viewBox="0 0 750 250"><rect class="n-good" x="30" y="60" width="200" height="52" rx="4"/><text class="t mid" x="130" y="84">CLOSED</text><text class="t-sm mid" x="130" y="100">అంతా సాధారణం · calls వెళ్తాయి</text><line class="ln-acc" x1="234" y1="72" x2="296" y2="58" marker-end="url(#aa)"/><text class="t-sm mid" x="265" y="46">వరుస failures</text><rect class="n-bad" x="300" y="40" width="200" height="52" rx="4"/><text class="t mid" x="400" y="64">OPEN</text><text class="t-sm mid" x="400" y="80">వెంటనే fail · call చేయదు</text><line class="ln-acc" x1="504" y1="66" x2="566" y2="66" marker-end="url(#aa)"/><text class="t-sm mid" x="535" y="52">30s తర్వాత</text><rect class="n-info" x="570" y="40" width="180" height="52" rx="4"/><text class="t mid" x="660" y="64">HALF-OPEN</text><text class="t-sm mid" x="660" y="80">ఒక test call</text><path class="ln-acc" d="M660 96 L660 140 L130 140 L130 116" marker-end="url(#aa)"/><text class="t-sm mid" x="395" y="134">విజయం → తిరిగి CLOSED</text><path class="ln" d="M700 96 L700 20 L400 20 L400 36" marker-end="url(#a)"/><text class="t-sm mid" x="550" y="16">వైఫల్యం → మళ్ళీ OPEN</text><rect class="n-bad" x="0" y="160" width="366" height="80" rx="4"/><text class="t mid" x="183" y="198">Breaker లేకపోతే</text><text class="t-sm mid" x="183" y="214">Downstream నెమ్మదిస్తే ప్రతి call 30s timeout కోసం ఎదురుచూస్తుంది. Threads అన్నీ ఇరుక్కుంటాయి. మన service కూడా చస్తుంది — ఇదే cascading failure.</text><rect class="n-good" x="384" y="160" width="366" height="80" rx="4"/><text class="t mid" x="567" y="198">Breaker ఉంటే</text><text class="t-sm mid" x="567" y="214">Fast-fail — వెంటనే error. Threads ఖాళీగా ఉంటాయి, మిగతా features పని చేస్తాయి. Downstream కి కోలుకునే సమయం దొరుకుతుంది.</text></svg>
+<div class="note">జతగా వాడాల్సినవి: <b>timeout</b> (ఎంతసేపు ఎదురుచూడాలి), <b>retry with jitter</b> (jitter లేకపోతే అందరూ ఒకేసారి తిరిగి కొడతారు), మరియు <b>bulkhead</b> (ఒక downstream కి thread pool ని పరిమితం చేయడం).</div>
+</div>
 
 ### Code
 
@@ -1325,6 +1434,11 @@ Inverted Index:
 
 Search "telugu" → వెంటనే [doc1, doc3]
 ```
+
+<div class="fig">
+<div class="cap">Inverted Index మరియు Bloom Filter</div>
+<svg viewBox="0 0 750 300"><text class="t-xs" x="0" y="14">INVERTED INDEX — పదం → ఏ documents lo ఉంది</text><rect class="n" x="0" y="24" width="340" height="40" rx="4"/><text class="t mid" x="170" y="49">doc1: "system design guide"</text><rect class="n" x="0" y="70" width="340" height="40" rx="4"/><text class="t mid" x="170" y="95">doc2: "design patterns guide"</text><line class="ln-acc" x1="344" y1="66" x2="396" y2="66" marker-end="url(#aa)"/><rect class="n-acc" x="400" y="24" width="350" height="86" rx="4"/><text class="t mid" x="575" y="65">"design" → [doc1, doc2]</text><text class="t-sm mid" x="575" y="81">t-w</text><text class="t-w-sm mid" x="575" y="76">"system" → [doc1]</text><text class="t-w-sm mid" x="575" y="94">"patterns" → [doc2]</text><text class="t-sm" x="0" y="130">Search = పదాన్ని lookup చేసి, జాబితాలను intersect చేయడం. Documents అన్నీ scan చేయము — అదే వేగానికి కారణం.</text><text class="t-xs" x="0" y="168">BLOOM FILTER — "ఇది ఖచ్చితంగా లేదు" అని O(1) lo చెప్పడం</text><rect class="n-good" x="0" y="178" width="366" height="86" rx="4"/><text class="t mid" x="183" y="219">"లేదు" అంటే — ఖచ్చితంగా లేదు</text><text class="t-sm mid" x="183" y="235">False negative ఎప్పుడూ రాదు. అందుకే "disk కి వెళ్ళాలా?" అనే ప్రశ్నకి ఇది సరైన filter.</text><rect class="n-bad" x="384" y="178" width="366" height="86" rx="4"/><text class="t mid" x="567" y="219">"ఉంది" అంటే — బహుశా ఉంది</text><text class="t-sm mid" x="567" y="235">False positive వస్తుంది. అప్పుడు నిజంగా చూడాలి. Bit array + k hash functions — memory చాలా తక్కువ.</text><text class="t-sm mid" x="375" y="290">వాడకం: LSM-tree read path (ఈ SSTable lo ఉందా?), web crawler URL dedupe, cache miss ముందు filter</text></svg>
+</div>
 
 ### Bloom Filter
 
@@ -1550,6 +1664,14 @@ Problem? → వెంటనే Blue కి తిరిగి switch (rollback)
 # Part 6 — Case Studies (System Design)
 
 > ఇప్పుడు నేర్చుకున్నవన్నీ కలిపి నిజమైన systems design చేద్దాం. ప్రతి case study: **Requirements → Estimation → API → Data Model → Architecture → Deep Dive → Bottlenecks**. ఇదే interview flow.
+
+
+<div class="box warn">
+<div class="lab">ఈ Part గురించి ఒక ముఖ్యమైన మాట</div>
+కింది case studies ఇక్కడ <b>సంక్షిప్తంగా</b> ఉన్నాయి — నేర్చుకున్న building blocks ని ఒక నిజమైన systemలో ఎలా కలుపుతారో చూపించడానికి.<br><br>
+ఇవే problems <b><code>HLD_Design_Problems_Telugu.pdf</code></b> lo చాలా లోతుగా ఉన్నాయి — ఒక్కో దానికి 6–11 పేజీలు: clarifying questions, పూర్తి capacity estimation, architecture diagrams, deep dive, failure analysis, మరియు <b>interview lo నోటితో చెప్పాల్సిన English script</b>.<br><br>
+<b>ఎలా వాడాలి:</b> ఈ document = <i>పరికరాల పెట్టె</i> (caching అంటే ఏమిటి, quorum అంటే ఏమిటి). ఆ book = <i>ఆ పరికరాలతో 18 నిజమైన problems ని ఎలా పరిష్కరించాలి</i>. ముందు ఇది, తర్వాత అది.
+</div>
 
 ---
 
@@ -1922,6 +2044,12 @@ Trips (DB): tripId | riderId | driverId | status | route
 
 > Data ని sorted tree లో **in-place** update చేస్తుంది. Read వేగం (O(log n), direct seek). కానీ write = random disk seek (నెమ్మది).
 
+<div class="fig">
+<div class="cap">Storage internals · LSM-tree vs B-tree</div>
+<svg viewBox="0 0 750 260"><text class="t-xs" x="0" y="14">LSM-TREE — writes అన్నీ sequential</text><rect class="n" x="0" y="24" width="130" height="40" rx="4"/><text class="t mid" x="65" y="49">put(k,v)</text><line class="ln" x1="134" y1="44" x2="166" y2="44" marker-end="url(#a)"/><rect class="n-bad" x="170" y="24" width="150" height="40" rx="4"/><text class="t mid" x="245" y="42">Commit log</text><text class="t-sm mid" x="245" y="58">durability</text><line class="ln" x1="324" y1="44" x2="356" y2="44" marker-end="url(#a)"/><rect class="n-acc" x="360" y="24" width="150" height="40" rx="4"/><text class="t-w mid" x="435" y="42">Memtable</text><text class="t-w-sm mid" x="435" y="58">in-memory</text><line class="ln-acc" x1="514" y1="44" x2="546" y2="44" marker-end="url(#aa)"/><rect class="n-good" x="550" y="24" width="200" height="40" rx="4"/><text class="t mid" x="650" y="42">SSTable → disk</text><text class="t-sm mid" x="650" y="58">sorted, immutable</text><text class="t-xs" x="0" y="94">B-TREE — ప్రతి write ఒక random page update</text><rect class="n" x="0" y="104" width="130" height="40" rx="4"/><text class="t mid" x="65" y="129">put(k,v)</text><line class="ln" x1="134" y1="124" x2="166" y2="124" marker-end="url(#a)"/><rect class="n-info" x="170" y="104" width="340" height="40" rx="4"/><text class="t mid" x="340" y="129">disk మీద సరైన page ని వెతికి, చదివి, మార్చి, తిరిగి రాయడం</text><line class="ln" x1="514" y1="124" x2="546" y2="124" marker-end="url(#a)"/><rect class="n" x="550" y="104" width="200" height="40" rx="4"/><text class="t mid" x="650" y="129">in-place update</text><rect class="n-good" x="0" y="164" width="366" height="86" rx="4"/><text class="t mid" x="183" y="205">LSM ఎప్పుడు</text><text class="t-sm mid" x="183" y="221">Write-heavy — logs, metrics, time-series, event streams. Cassandra, RocksDB, LevelDB. ఖరీదు: read amplification (పలు SSTables చూడాలి) → bloom filter + compaction</text><rect class="n-info" x="384" y="164" width="366" height="86" rx="4"/><text class="t mid" x="567" y="205">B-tree ఎప్పుడు</text><text class="t-sm mid" x="567" y="221">Read-heavy + range queries + transactions. PostgreSQL, MySQL InnoDB. ఖరీదు: random writes నెమ్మది, write amplification</text></svg>
+<div class="note">ఈ ఒక్క ఎంపిక database యొక్క వ్యక్తిత్వాన్ని నిర్ణయిస్తుంది. "Cassandra writes ఎందుకు ఇంత వేగం?" — ఎందుకంటే అది ఒక log కి append చేస్తోంది, disk మీద page ని వెతకడం లేదు.</div>
+</div>
+
 ### LSM-Tree (NoSQL - Cassandra, RocksDB, LevelDB)
 
 > Writes ని ముందు in-memory **memtable** లో (sequential, fast). నిండాక disk కి immutable **SSTable** గా flush. Read = memtable + SSTables వెతకడం (bloom filter సహాయం). Writes చాలా fast, reads కొంత నెమ్మది.
@@ -2049,6 +2177,11 @@ Topic 14 లో consistency models చూశాం. SSE level లో **database 
 | Latency | ఎక్కువ (గంటలు/రోజులు)   | తక్కువ (seconds)                      |
 | ఉదా     | Daily reports, ETL      | Real-time dashboards, fraud detection |
 | Tools   | Spark, Hadoop MapReduce | Flink, Kafka Streams, Spark Streaming |
+
+<div class="fig">
+<div class="cap">Batch vs Stream processing</div>
+<svg viewBox="0 0 750 310"><text class="t-xs" x="0" y="14">BATCH — పోగేసి, తర్వాత ఒకేసారి</text><rect class="n" x="0" y="24" width="200" height="44" rx="4"/><text class="t mid" x="100" y="44">రోజంతటి data</text><text class="t-sm mid" x="100" y="60">S3 lo పోగవుతుంది</text><line class="ln" x1="204" y1="46" x2="246" y2="46" marker-end="url(#a)"/><rect class="n-info" x="250" y="24" width="200" height="44" rx="4"/><text class="t mid" x="350" y="51">రాత్రి Spark job</text><line class="ln" x1="454" y1="46" x2="496" y2="46" marker-end="url(#a)"/><rect class="n-good" x="500" y="24" width="250" height="44" rx="4"/><text class="t mid" x="625" y="51">ఖచ్చితమైన report</text><text class="t-sm" x="0" y="90">✓ ఖచ్చితత్వం · ✓ మొత్తం data మీద reprocess చేయొచ్చు · ✗ ఫలితం గంటల ఆలస్యం</text><text class="t-xs" x="0" y="128">STREAM — వచ్చినప్పుడే</text><rect class="n" x="0" y="138" width="200" height="44" rx="4"/><text class="t mid" x="100" y="158">Events</text><text class="t-sm mid" x="100" y="174">నిరంతరం</text><line class="ln-acc" x1="204" y1="160" x2="246" y2="160" marker-end="url(#aa)"/><rect class="n-acc" x="250" y="138" width="200" height="44" rx="4"/><text class="t mid" x="350" y="158">Flink · windows</text><text class="t-sm mid" x="350" y="174">t-w</text><line class="ln-acc" x1="454" y1="160" x2="496" y2="160" marker-end="url(#aa)"/><rect class="n-good" x="500" y="138" width="250" height="44" rx="4"/><text class="t mid" x="625" y="165">నిమిషాల్లో dashboard</text><text class="t-sm" x="0" y="204">✓ తాజాదనం · ✗ late events, watermarks, exactly-once — అన్నీ కష్టమవుతాయి</text><rect class="n-acc" x="0" y="224" width="750" height="76" rx="4"/><text class="t-w mid" x="375" y="260">LAMBDA ARCHITECTURE — రెండూ కలిపి</text><text class="t-w-sm mid" x="375" y="276">Speed layer దాదాపు-సరైన సంఖ్యలని నిమిషాల్లో ఇస్తుంది (dashboard కి). Batch layer ఖచ్చితమైన సంఖ్యలని గంటకోసారి ఇస్తుంది (billing కి), మరియు speed layer ని దిద్దుతుంది. Raw events ని ఎప్పుడూ దాచుకుంటాం — bug fix చేశాక మళ్ళీ process చేయడానికి.</text></svg>
+</div>
 
 ### Windowing (streams లో సమయాన్ని విభజించడం)
 
@@ -2290,6 +2423,14 @@ SSE = system పనిచేస్తేనే కాదు, **cost-effective** 
 # Part 8 — Advanced Case Studies
 
 > SSE interviews లో అడిగే కష్టమైన, nuanced systems. వీటిలో correctness (money), realtime collaboration, latency (typeahead), reliability (scheduler) - deep trade-offs ఉంటాయి.
+
+
+<div class="box warn">
+<div class="lab">ఈ Part గురించి ఒక ముఖ్యమైన మాట</div>
+కింది case studies ఇక్కడ <b>సంక్షిప్తంగా</b> ఉన్నాయి — నేర్చుకున్న building blocks ని ఒక నిజమైన systemలో ఎలా కలుపుతారో చూపించడానికి.<br><br>
+ఇవే problems <b><code>HLD_Design_Problems_Telugu.pdf</code></b> lo చాలా లోతుగా ఉన్నాయి — ఒక్కో దానికి 6–11 పేజీలు: clarifying questions, పూర్తి capacity estimation, architecture diagrams, deep dive, failure analysis, మరియు <b>interview lo నోటితో చెప్పాల్సిన English script</b>.<br><br>
+<b>ఎలా వాడాలి:</b> ఈ document = <i>పరికరాల పెట్టె</i> (caching అంటే ఏమిటి, quorum అంటే ఏమిటి). ఆ book = <i>ఆ పరికరాలతో 18 నిజమైన problems ని ఎలా పరిష్కరించాలి</i>. ముందు ఇది, తర్వాత అది.
+</div>
 
 ---
 

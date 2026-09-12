@@ -1,4 +1,28 @@
-# DSA: Kadane, Bit Manipulation & Math - తెలుగు గైడ్ (LeetCode 150, SSE)
+<!-- style: editorial -->
+<!-- footer: DSA · Greedy, Bit Manipulation & Math · తెలుగు గైడ్ -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
+
+<div class="cover">
+<div class="cover-num">09</div>
+<div class="kicker">DSA · Greedy, Bit Manipulation &amp; Math</div>
+<div class="rule"></div>
+<div class="cover-title">Greedy, Bits<br>&amp; Math</div>
+<div class="lede">Greedy ఎప్పుడు పని చేస్తుంది, ఎప్పుడు చేయదు — ఆ తేడాయే అసలు నైపుణ్యం.</div>
+<div class="sub">ప్రతి problem కి: <b>ఏ pattern ఇది</b> → ఎందుకు ఆ pattern → dry run → optimal JavaScript code → complexity → edge cases. <code>DSA_Patterns_Telugu.pdf</code> pattern-first దృష్టి; ఈ file ఆ patterns ని నిజమైన LeetCode problems మీద అమలు చేస్తుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
+
 
 > ఈ document చదివిన తర్వాత Kadane (max subarray), **bit manipulation** (binary తో ఆట), మరియు **math tricks** (digits, gcd, fast power) — ఈ మూడు categories మళ్ళీ నిన్ను భయపెట్టవు. ప్రతి problem కి **ఎలా ఆలోచించాలి** (naive నుండి insight వరకు), ఏ **pattern** వాడాలి, real-life analogy, clean JavaScript solution, dry run (bit problems కి binary చూపిస్తూ), complexity, గుర్తుంచుకోవాల్సినది, మరియు సాధారణ తప్పులు — అన్నీ ఉంటాయి. లక్ష్యం: "ఒకసారి చదివితే మర్చిపోకూడదు."
 >
@@ -54,6 +78,11 @@ Kadane's algorithm అనేది **"maximum sum contiguous subarray"** (వర
 రెండో variable `maxSoFar` — ఇప్పటిదాకా చూసిన అన్ని subarrays లో **అత్యుత్తమమైనది** ని గుర్తుపెట్టుకుంటుంది (ఎందుకంటే best subarray ఎక్కడ ముగుస్తుందో మనకు ముందే తెలియదు).
 
 > **Real-life analogy:** నువ్వు ఒక road trip లో ఉన్నావు, ప్రతి town లో లాభమో నష్టమో అవుతుంది (profit/loss). నీ దగ్గర ఒక "running wallet" (`maxEndingHere`) ఉంది. ఒక town చేరేసరికి నీ wallet **అప్పులో (negative)** ఉంటే — ఆ అప్పుని మోసుకుని ముందుకు వెళ్ళడం మూర్ఖత్వం; wallet ని reset చేసి **ఈ town నుండి కొత్త trip** మొదలుపెట్టడం మేలు. కానీ ఇప్పటిదాకా నీవు చూసిన **అత్యధిక wallet value** (`maxSoFar`) ని మాత్రం మర్చిపోకుండా diary లో రాసిపెట్టుకుంటావు. ఇదే Kadane.
+
+<div class="fig">
+<div class="cap">Kadane's · ఒక్క pass, ఒక్క నిర్ణయం</div>
+<svg viewBox="0 0 750 336"><text class="t-xs" x="0" y="14">ప్రతి స్థానంలో ఒక్క నిర్ణయం</text><rect class="n" x="30" y="26" width="56" height="34" rx="3"/><text class="t mid" x="58" y="48">-2</text><text class="t-sm mid" x="58" y="75">0</text><rect class="n" x="89" y="26" width="56" height="34" rx="3"/><text class="t mid" x="117" y="48">1</text><text class="t-sm mid" x="117" y="75">1</text><rect class="n" x="148" y="26" width="56" height="34" rx="3"/><text class="t mid" x="176" y="48">-3</text><text class="t-sm mid" x="176" y="75">2</text><rect class="n" x="207" y="26" width="56" height="34" rx="3"/><text class="t mid" x="235" y="48">4</text><text class="t-sm mid" x="235" y="75">3</text><rect class="n" x="266" y="26" width="56" height="34" rx="3"/><text class="t mid" x="294" y="48">-1</text><text class="t-sm mid" x="294" y="75">4</text><rect class="n" x="325" y="26" width="56" height="34" rx="3"/><text class="t mid" x="353" y="48">2</text><text class="t-sm mid" x="353" y="75">5</text><rect class="n-acc" x="0" y="96" width="750" height="54" rx="4"/><text class="t-w mid" x="375" y="118">current = max(num, current + num)   ·   best = max(best, current)</text><text class="t-w-sm mid" x="375" y="140">"నేను ఒక్కడినే మొదలుపెడతానా, లేక ఇప్పటివరకటి దాంతో కలుస్తానా?"</text><rect class="n" x="30" y="164" width="56" height="34" rx="3"/><text class="t mid" x="58" y="186">-2</text><rect class="n" x="89" y="164" width="56" height="34" rx="3"/><text class="t mid" x="117" y="186">1</text><rect class="n" x="148" y="164" width="56" height="34" rx="3"/><text class="t mid" x="176" y="186">-2</text><rect class="n" x="207" y="164" width="56" height="34" rx="3"/><text class="t mid" x="235" y="186">4</text><rect class="n" x="266" y="164" width="56" height="34" rx="3"/><text class="t mid" x="294" y="186">3</text><rect class="n-acc" x="325" y="164" width="56" height="34" rx="3"/><text class="t-w mid" x="353" y="186">5</text><text class="t-sm" x="30" y="220">current విలువ ప్రతి స్థానంలో ↑</text><text class="t-acc" x="420" y="220">best = 5</text><rect class="n-good" x="0" y="240" width="750" height="86" rx="4"/><text class="t mid" x="375" y="262">ఎందుకు ఇది greedy గా సరైనది</text><text class="t-sm mid" x="375" y="284">ఇప్పటివరకటి sum ఋణాత్మకం అయితే — దాన్ని మోసుకెళ్ళడం ఎప్పటికీ సహాయం చేయదు.</text><text class="t-sm mid" x="375" y="300">వదిలేసి కొత్తగా మొదలుపెట్టడమే మేలు. ఈ ఒక్క వాదన మొత్తం algorithm ని నిరూపిస్తుంది.</text><text class="t-sm mid" x="375" y="316">ఇది నిజానికి అతి సరళమైన DP — dp array బదులు ఒక variable చాలు.</text></svg>
+</div>
 
 ### ఎలా గుర్తించాలి (recognition signals)
 
@@ -267,6 +296,11 @@ bit:          1   1   0   1     → 8 + 4 + 0 + 1 = 13
 | 8 | `1000` | bit 3 |
 
 **Bit position:** కుడివైపు నుండి 0 తో మొదలు (bit 0 = lowest = 1s place). Bit `i` యొక్క value = `2^i`.
+
+<div class="fig">
+<div class="cap">Bit Manipulation · ఐదు tricks</div>
+<svg viewBox="0 0 750 350"><text class="t-xs" x="0" y="14">తెలిస్తే చాలు — ఈ ఐదు</text><rect class="n-acc" x="0" y="26" width="200" height="36" rx="3"/><text class="t-w-sm mono mid" x="100" y="49">n &amp; 1</text><rect class="n" x="210" y="26" width="540" height="36" rx="3"/><text class="t-sm mid" x="480" y="49">చివరి bit — సరి/బేసి తెలుసుకోవడం</text><rect class="n-acc" x="0" y="70" width="200" height="36" rx="3"/><text class="t-w-sm mono mid" x="100" y="93">n &gt;&gt; 1</text><rect class="n" x="210" y="70" width="540" height="36" rx="3"/><text class="t-sm mid" x="480" y="93">2 తో భాగించడం (వేగం)</text><rect class="n-acc" x="0" y="114" width="200" height="36" rx="3"/><text class="t-w-sm mono mid" x="100" y="137">n &amp; (n − 1)</text><rect class="n" x="210" y="114" width="540" height="36" rx="3"/><text class="t-sm mid" x="480" y="137">కుడివైపు ఉన్న చివరి 1 ని తీసేయడం</text><rect class="n-acc" x="0" y="158" width="200" height="36" rx="3"/><text class="t-w-sm mono mid" x="100" y="181">n &amp; (−n)</text><rect class="n" x="210" y="158" width="540" height="36" rx="3"/><text class="t-sm mid" x="480" y="181">కుడివైపు చివరి 1 ని మాత్రమే ఉంచడం</text><rect class="n-acc" x="0" y="202" width="200" height="36" rx="3"/><text class="t-w-sm mono mid" x="100" y="225">a ^ a = 0</text><rect class="n" x="210" y="202" width="540" height="36" rx="3"/><text class="t-sm mid" x="480" y="225">XOR — జతలు రద్దవుతాయి</text><rect class="n-good" x="0" y="254" width="750" height="86" rx="4"/><text class="t mid" x="375" y="276">XOR trick — అత్యంత తరచుగా అడిగేది</text><text class="t-sm mid" x="375" y="298">"ఒక్కటి తప్ప అన్నీ జతలుగా ఉన్నాయి — ఒంటరిది ఏది?"</text><text class="t-sm mid" x="375" y="314">అన్నిటినీ XOR చేయడం. జతలు రద్దవుతాయి (a^a=0), ఒంటరిది మిగులుతుంది.</text><text class="t-sm mid" x="375" y="330">O(n) time, O(1) space — hash map అవసరం లేదు.</text></svg>
+</div>
 
 ### Bitwise Operators — ఐదు ఆయుధాలు
 
@@ -842,6 +876,11 @@ Math.floor(n / 10) = 123  (చివరి digit తొలగించాక)
 `n!` లో ఒక prime `p` ఎన్నిసార్లు factor గా వస్తుందో = `⌊n/p⌋ + ⌊n/p²⌋ + ⌊n/p³⌋ + ...` (Legendre's formula). Trailing zeros లాంటి problems కి కీలకం.
 
 > **Real-life analogy:** Fast exponentiation ను ఇలా అనుకో — నీకు `x` ను 16 సార్లు గుణించాలి. ఒక్కొక్కటిగా చేస్తే 16 గుణింపులు. కానీ నువ్వు తెలివిగా: `x·x = x²`, `x²·x² = x⁴`, `x⁴·x⁴ = x⁸`, `x⁸·x⁸ = x¹⁶` — కేవలం **4 గుణింపులు**! ప్రతిసారీ ఉన్నదాన్ని **రెట్టింపు** చేస్తూ పోవడం. ఇదే "repeated squaring" — logarithmic magic. (బట్టీ కొట్టడం vs concepts ను రెట్టింపు చేసుకుంటూ నేర్చుకోవడం లాంటిది.)
+
+<div class="fig">
+<div class="cap">Math · GCD, modulo, sieve, fast power</div>
+<svg viewBox="0 0 750 322"><text class="t-xs" x="0" y="14">తరచుగా వచ్చే math నమూనాలు</text><rect class="n-info" x="0" y="26" width="366" height="86" rx="4"/><text class="t mid" x="183" y="48">GCD — Euclid</text><text class="t-sm mid" x="183" y="70">gcd(a, b) = gcd(b, a % b)</text><text class="t-sm mid" x="183" y="86">b సున్నా అయ్యేదాకా. LCM = a × b / gcd</text><rect class="n-info" x="384" y="26" width="366" height="86" rx="4"/><text class="t mid" x="567" y="48">Modular arithmetic</text><text class="t-sm mid" x="567" y="70">(a + b) % m = ((a%m) + (b%m)) % m</text><text class="t-sm mid" x="567" y="86">పెద్ద సంఖ్యలు overflow కాకుండా</text><rect class="n-good" x="0" y="126" width="366" height="86" rx="4"/><text class="t mid" x="183" y="148">Sieve of Eratosthenes</text><text class="t-sm mid" x="183" y="170">n వరకు primes — O(n log log n)</text><text class="t-sm mid" x="183" y="186">ప్రతి prime యొక్క గుణిజాలని కొట్టేయడం</text><rect class="n-good" x="384" y="126" width="366" height="86" rx="4"/><text class="t mid" x="567" y="148">Fast power</text><text class="t-sm mid" x="567" y="170">x^n ని O(log n) lo</text><text class="t-sm mid" x="567" y="186">n సరి అయితే (x²)^(n/2)</text><rect class="n-acc" x="0" y="226" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="248">Interview lo గుర్తుంచుకోవాల్సినది</text><text class="t-w-sm mid" x="375" y="270">Math problems lo overflow మరియు negative సంఖ్యలే అసలు ఉచ్చులు.</text><text class="t-w-sm mid" x="375" y="286">JavaScript lo సంఖ్యలు 2⁵³ దాటితే ఖచ్చితత్వం పోతుంది — BigInt గురించి ప్రస్తావించండి.</text><text class="t-w-sm mid" x="375" y="302">Modulo తో negative: ((a % m) + m) % m — ఇది తప్పకుండా గుర్తుంచుకోవాలి.</text></svg>
+</div>
 
 ### ఎలా గుర్తించాలి (recognition signals)
 

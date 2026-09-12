@@ -1,4 +1,28 @@
-# DSA: Binary Search & Heap - తెలుగు గైడ్ (LeetCode 150, SSE)
+<!-- style: editorial -->
+<!-- footer: DSA · Binary Search & Heap · తెలుగు గైడ్ -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
+
+<div class="cover">
+<div class="cover-num">08</div>
+<div class="kicker">DSA · Binary Search &amp; Heap</div>
+<div class="rule"></div>
+<div class="cover-title">Binary Search &amp; Heap</div>
+<div class="lede">Binary search అంటే sorted array lo వెతకడం మాత్రమే కాదు — "జవాబు మీద" search చేయడం.</div>
+<div class="sub">ప్రతి problem కి: <b>ఏ pattern ఇది</b> → ఎందుకు ఆ pattern → dry run → optimal JavaScript code → complexity → edge cases. <code>DSA_Patterns_Telugu.pdf</code> pattern-first దృష్టి; ఈ file ఆ patterns ని నిజమైన LeetCode problems మీద అమలు చేస్తుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
+
 
 > ఈ document చదివిన తర్వాత Binary Search మరియు Heap problems మళ్ళీ నిన్ను భయపెట్టవు. ప్రతి problem కి — **ఎలా ఆలోచించాలి** (naive నుండి insight వరకు), ఏ **pattern** వాడాలి, ఒక vivid real-life analogy, clean commented JavaScript solution, పెన్సిల్‌తో గీసినట్టు dry run (lo/hi/mid లేదా heap operations), complexity reasoning, గుర్తుంచుకోవాల్సినది, మరియు సాధారణ తప్పులు (off-by-one, mid overflow, empty) — అన్నీ ఉంటాయి. లక్ష్యం: **"ఒకసారి చదివితే మర్చిపోకూడదు."**
 >
@@ -47,6 +71,12 @@
 - **Invariant** — loop మొత్తం మీద ఎప్పుడూ నిజంగా ఉండే నియమం: "**answer ఎప్పుడూ ప్రస్తుత range లోపలే ఉంటుంది**". ఈ invariant ని strict గా పాటిస్తే off-by-one bugs మాయమవుతాయి.
 
 **అతి ముఖ్యమైన idea — "binary search on answer":** Binary search అంటే కేవలం array లో వెతకడం కాదు. ఏదైనా **monotonic** (ఒక threshold దాటాక answer "yes → no" లేదా "no → yes" గా మారే) property ఉంటే, ఆ **answer values పరిధి మీదే** binary search చేయవచ్చు. "కనిష్ఠ capacity ఎంత?", "కనిష్ఠ speed ఎంత?" లాంటి optimization problems ఇలా solve అవుతాయి — array sorted కాకపోయినా!
+
+<div class="fig">
+<div class="cap">Binary Search · template మరియు "జవాబు మీద search"</div>
+<svg viewBox="0 0 750 368"><text class="t-xs" x="0" y="14">INVARIANT — mid ని నమ్మవద్దు, పరిధిని నమ్మండి</text><rect class="n-acc" x="30" y="26" width="54" height="34" rx="3"/><text class="t-w mid" x="57" y="48">1</text><text class="t-sm mid" x="57" y="75">0</text><rect class="n" x="87" y="26" width="54" height="34" rx="3"/><text class="t mid" x="114" y="48">3</text><text class="t-sm mid" x="114" y="75">1</text><rect class="n" x="144" y="26" width="54" height="34" rx="3"/><text class="t mid" x="171" y="48">5</text><text class="t-sm mid" x="171" y="75">2</text><rect class="n" x="201" y="26" width="54" height="34" rx="3"/><text class="t mid" x="228" y="48">7</text><text class="t-sm mid" x="228" y="75">3</text><rect class="n" x="258" y="26" width="54" height="34" rx="3"/><text class="t mid" x="285" y="48">9</text><text class="t-sm mid" x="285" y="75">4</text><rect class="n-acc" x="315" y="26" width="54" height="34" rx="3"/><text class="t-w mid" x="342" y="48">11</text><text class="t-sm mid" x="342" y="75">5</text><text class="t-acc mid" x="57" y="90">lo</text><text class="t-acc mid" x="342" y="90">hi</text><rect class="n-acc" x="0" y="106" width="750" height="58" rx="4"/><text class="t-w mid" x="375" y="128">while (lo &lt; hi) — mid ని జవాబుగా return చేయకుండా పరిధిని కుదించడం</text><text class="t-w-sm mid" x="375" y="150">if (condition(mid)) hi = mid;  else lo = mid + 1;    ← lo == hi అయినప్పుడు అదే జవాబు</text><text class="t-xs" x="0" y="190">BINARY SEARCH ON ANSWER — array మీద కాదు, జవాబుల పరిధి మీద</text><rect class="n-bad" x="30" y="204" width="330" height="26" rx="3"/><text class="t-sm mid" x="195" y="221">false · false · false</text><rect class="n-good" x="360" y="204" width="360" height="26" rx="3"/><text class="t-sm mid" x="540" y="221">true · true · true</text><text class="t-acc mid" x="360" y="254">↑ మొదటి true = జవాబు</text><rect class="n-good" x="0" y="272" width="750" height="86" rx="4"/><text class="t mid" x="375" y="294">షరతు — predicate MONOTONIC గా ఉండాలి</text><text class="t-sm mid" x="375" y="316">ఒకసారి true అయ్యాక ఆ తర్వాత ఎప్పుడూ true గానే ఉండాలి.</text><text class="t-sm mid" x="375" y="332">"10 kg మోయగలిగితే 9 kg కూడా మోయగలడు" — ఈ లక్షణం లేకపోతే binary search పని చేయదు.</text><text class="t-sm mid" x="375" y="348">రెండు పనులే: (1) పరిధి lo, hi ఏమిటి? (2) canDo(x) ఎలా check చేయాలి?</text></svg>
+<div class="note"><b>Constraint 10⁹ కనిపిస్తే</b> binary search అనుమానించండి — log₂(10⁹) ≈ 30 అడుగులు మాత్రమే. "కనిష్ఠ గరిష్ఠం" / "minimum capacity" / "ఎన్ని రోజుల్లో" అనే మాటలు దాదాపు ఎప్పుడూ binary-search-on-answer.</div>
+</div>
 
 ### Real-life Scenario
 
@@ -348,7 +378,12 @@ return 5 ✅  (nums[5]=6, neighbors 5 & 4 కంటే పెద్దది →
 - **`>=` వాడటం:** పక్కపక్క distinct కాబట్టి `<` చాలు; కానీ duplicates ఉన్న variant లో slope logic విఫలం.
 - **అన్ని peaks కావాలి అనుకోవడం:** problem **ఏదైనా ఒక** peak అడిగింది. అన్ని peaks కావాలంటే O(n) linear scan తప్పనిసరి — అప్పుడు binary search కుదరదు.
 
----
+---<div class="fig">
+<div class="cap">Rotated sorted array · ఒక సగం ఎప్పుడూ sorted</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">ROTATED SORTED ARRAY — ఒక సగం ఎప్పుడూ sorted</text><rect class="n" x="30" y="26" width="54" height="34" rx="3"/><text class="t mid" x="57" y="48">4</text><text class="t-sm mid" x="57" y="75">0</text><rect class="n" x="87" y="26" width="54" height="34" rx="3"/><text class="t mid" x="114" y="48">5</text><text class="t-sm mid" x="114" y="75">1</text><rect class="n" x="144" y="26" width="54" height="34" rx="3"/><text class="t mid" x="171" y="48">6</text><text class="t-sm mid" x="171" y="75">2</text><rect class="n-acc" x="201" y="26" width="54" height="34" rx="3"/><text class="t-w mid" x="228" y="48">7</text><text class="t-sm mid" x="228" y="75">3</text><rect class="n" x="258" y="26" width="54" height="34" rx="3"/><text class="t mid" x="285" y="48">0</text><text class="t-sm mid" x="285" y="75">4</text><rect class="n" x="315" y="26" width="54" height="34" rx="3"/><text class="t mid" x="342" y="48">1</text><text class="t-sm mid" x="342" y="75">5</text><rect class="n" x="372" y="26" width="54" height="34" rx="3"/><text class="t mid" x="399" y="48">2</text><text class="t-sm mid" x="399" y="75">6</text><text class="t-acc mid" x="219" y="90">mid</text><rect class="n-good" x="0" y="110" width="366" height="102" rx="4"/><text class="t mid" x="183" y="132">ఎడమ సగం sorted అయితే</text><text class="t-sm mid" x="183" y="154">nums[lo] ≤ nums[mid]</text><text class="t-sm mid" x="183" y="170">target ఆ పరిధిలో ఉందా? → ఎడమకి</text><text class="t-sm mid" x="183" y="186">లేకపోతే → కుడికి</text><rect class="n-info" x="384" y="110" width="366" height="102" rx="4"/><text class="t mid" x="567" y="132">కుడి సగం sorted అయితే</text><text class="t-sm mid" x="567" y="154">nums[mid] ≤ nums[hi]</text><text class="t-sm mid" x="567" y="170">target ఆ పరిధిలో ఉందా? → కుడికి</text><text class="t-sm mid" x="567" y="186">లేకపోతే → ఎడమకి</text><rect class="n-acc" x="0" y="232" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="254">కీలకమైన అంతర్దృష్టి</text><text class="t-w-sm mid" x="375" y="276">Rotated array ని మధ్యలో కోస్తే — <tspan class="t-acc">కనీసం ఒక సగం ఎప్పుడూ sorted</tspan> గా ఉంటుంది.</text><text class="t-w-sm mid" x="375" y="292">ఆ sorted సగంలో target ఉందో లేదో O(1) lo చెప్పొచ్చు (రెండు comparisons).</text><text class="t-w-sm mid" x="375" y="308">అందుకే binary search ఇక్కడ ఇంకా పని చేస్తుంది — O(log n).</text></svg>
+</div>
+
+
 ## 4. Search in Rotated Sorted Array (LeetCode #33) — Medium
 
 **సమస్య:** ఒక ascending sorted array ని ఏదో ఒక **pivot** దగ్గర **rotate** (తిప్పి) చేశారు — ఉదా. `[0,1,2,4,5,6,7]` ని rotate చేస్తే `[4,5,6,7,0,1,2]`. ఈ rotated array `nums` (distinct values) మరియు `target` ఇస్తారు. target ఉంటే దాని index, లేకపోతే `-1` return చెయ్యి. **O(log n)** లో చెయ్యాలి.
@@ -709,6 +744,11 @@ lo=1, hi=1
 
 > **JavaScript లో built-in Priority Queue లేదు!** (Java `PriorityQueue`, C++ `priority_queue`, Python `heapq` ఉన్నాయి — JS కి లేదు.) కాబట్టి interview లో **మనమే ఒక heap class రాయాలి**. కింద ఇచ్చిన reusable class ని కంఠతా పెట్టుకో — Problems 8–11 అన్నీ దీనిమీదే ఆధారపడతాయి.
 
+<div class="fig">
+<div class="cap">Heap · size-K కిటికీ</div>
+<svg viewBox="0 0 750 316"><text class="t-xs" x="0" y="14">TOP-K · అతి పెద్ద 3 కావాలంటే — MIN-heap ని size 3 తో ఉంచడం</text><rect class="n" x="30" y="26" width="56" height="34" rx="3"/><text class="t mid" x="58" y="48">3</text><text class="t-sm mid" x="58" y="75">0</text><rect class="n" x="89" y="26" width="56" height="34" rx="3"/><text class="t mid" x="117" y="48">1</text><text class="t-sm mid" x="117" y="75">1</text><rect class="n" x="148" y="26" width="56" height="34" rx="3"/><text class="t mid" x="176" y="48">5</text><text class="t-sm mid" x="176" y="75">2</text><rect class="n" x="207" y="26" width="56" height="34" rx="3"/><text class="t mid" x="235" y="48">12</text><text class="t-sm mid" x="235" y="75">3</text><rect class="n" x="266" y="26" width="56" height="34" rx="3"/><text class="t mid" x="294" y="48">2</text><text class="t-sm mid" x="294" y="75">4</text><rect class="n" x="325" y="26" width="56" height="34" rx="3"/><text class="t mid" x="353" y="48">11</text><text class="t-sm mid" x="353" y="75">5</text><line class="ln-acc" x1="210" y1="80" x2="210" y2="110" marker-end="url(#aa)"/><rect class="n-acc" x="120" y="116" width="300" height="60" rx="4"/><text class="t-w mid" x="270" y="138">Min-heap · size = 3</text><text class="t-w-sm mid" x="270" y="160">పైన ఉన్నది వీటిలో అతి చిన్నది</text><text class="t-sm" x="450" y="140">కొత్తది &gt; heap top → pop చేసి push</text><text class="t-acc" x="450" y="158">లేకపోతే వదిలేయడం</text><rect class="n-bad" x="0" y="196" width="366" height="86" rx="4"/><text class="t mid" x="183" y="218">Sort చేస్తే</text><text class="t-sm mid" x="183" y="240">O(n log n) — అన్నిటినీ క్రమపరుస్తాం,</text><text class="t-sm mid" x="183" y="256">కానీ కావలసినవి K మాత్రమే.</text><text class="t-sm mid" x="183" y="272">Streaming data కి sort అసలు కుదరదు.</text><rect class="n-good" x="384" y="196" width="366" height="86" rx="4"/><text class="t mid" x="567" y="218">Heap తో</text><text class="t-sm mid" x="567" y="240">O(n log K) — K చిన్నదైతే చాలా వేగం.</text><text class="t-sm mid" x="567" y="256">Memory కూడా O(K) మాత్రమే.</text><text class="t-sm mid" x="375" y="306">ఎందుకు min-heap: అతి పెద్ద K ని ఉంచాలంటే — బయటికి పంపాల్సినది వాటిలో అతి <tspan class="t-acc">చిన్నది</tspan></text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Hospital emergency room (triage).** రోగులు వచ్చిన వరుసలో కాదు — **తీవ్రత (severity)** ప్రకారం చూస్తారు. గుండెపోటు వచ్చినవాడు, జలుబు వచ్చినవాడి కంటే ముందు. కొత్త రోగి వచ్చినప్పుడు అతన్ని severity ప్రకారం సరైన చోట చేర్చుతారు (O(log n)), తర్వాతి రోగిని పిలవాలంటే **అత్యంత తీవ్రమైనవాడు** వెంటనే తెలుస్తాడు (O(1)). మొత్తం రోగులను severity ప్రకారం పూర్తిగా sort చేయాల్సిన అవసరం లేదు — "టాప్ ఎవరు" మాత్రమే ముఖ్యం. అదే max-heap. Min-heap అంటే — "అతి తక్కువ severity" ముందు (ఉదా. tokens పంచడం).
@@ -890,7 +930,12 @@ peek() = 5  ✅   (heap లో {5,6}, top = min = 5 = 2nd largest)
 - **Distinct k-th అనుకోవడం:** duplicates లెక్కలోకి వస్తాయి. distinct k-th కావాలంటే Set వాడాలి (వేరే problem).
 - **Empty heap మీద peek:** `k <= nums.length` guaranteed కాబట్టి safe, కానీ generic గా empty check మంచిది.
 
----
+---<div class="fig">
+<div class="cap">Merge k sorted · min-heap</div>
+<svg viewBox="0 0 750 370"><text class="t-xs" x="0" y="14">MERGE K SORTED LISTS — min-heap తో</text><rect class="n" x="0" y="26" width="200" height="36" rx="3"/><text class="t mid" x="100" y="49">list 1</text><rect class="n" x="0" y="70" width="200" height="36" rx="3"/><text class="t mid" x="100" y="93">list 2</text><rect class="n" x="0" y="114" width="200" height="36" rx="3"/><text class="t mid" x="100" y="137">list 3</text><line class="ln-acc" x1="204" y1="80" x2="260" y2="80" marker-end="url(#aa)"/><rect class="n-acc" x="270" y="52" width="200" height="58" rx="4"/><text class="t-w mid" x="370" y="74">Min-heap (size k)</text><text class="t-w-sm mid" x="370" y="96">ప్రతి list యొక్క head</text><line class="ln-acc" x1="474" y1="80" x2="530" y2="80" marker-end="url(#aa)"/><rect class="n-good" x="540" y="62" width="210" height="36" rx="3"/><text class="t mid" x="645" y="85">sorted output</text><rect class="n-bad" x="0" y="172" width="366" height="102" rx="4"/><text class="t mid" x="183" y="194">అమాయక విధానం</text><text class="t-sm mid" x="183" y="216">అన్నీ కలిపి sort చేయడం</text><text class="t-sm mid" x="183" y="232">O(N log N), N = మొత్తం nodes</text><text class="t-sm mid" x="183" y="248">Streaming data కి కుదరదు</text><rect class="n-good" x="384" y="172" width="366" height="102" rx="4"/><text class="t mid" x="567" y="194">Heap తో</text><text class="t-sm mid" x="567" y="216">O(N log <tspan class="t-acc">k</tspan>) — k lists సంఖ్య</text><text class="t-sm mid" x="567" y="232">Heap lo ఎప్పుడూ k elements మాత్రమే</text><text class="t-sm mid" x="567" y="248">k చిన్నదైతే గణనీయమైన తేడా</text><rect class="n-acc" x="0" y="294" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="316">ప్రత్యామ్నాయం — divide and conquer</text><text class="t-w-sm mid" x="375" y="338">Lists ని జతలుగా merge చేస్తూ పోవడం — అదే O(N log k), కానీ heap అవసరం లేదు.</text><text class="t-w-sm mid" x="375" y="354">Merge sort యొక్క merge step ని log k సార్లు వాడటం.</text></svg>
+</div>
+
+
 ## 9. IPO (LeetCode #502) — Hard
 
 **సమస్య:** నీ దగ్గర మొదట `w` capital (డబ్బు) ఉంది. **గరిష్ఠంగా `k` projects** ఎంచుకోవచ్చు. ప్రతి project `i` కి — దాన్ని మొదలుపెట్టడానికి `capital[i]` కావాలి (ప్రస్తుత capital ≥ దీనికి ఉండాలి), పూర్తయితే `profits[i]` **లాభం** (అది capital కి కలుస్తుంది). ఒక project ఒకసారే చేయగలవు. **k projects తర్వాత గరిష్ఠ capital** ఎంత? (ఇది "IPO ముందు లాభం maximize చేయడం" scenario.)

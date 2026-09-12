@@ -1,4 +1,28 @@
-# DSA: Graphs & Trie - తెలుగు గైడ్ (LeetCode 150, SSE)
+<!-- style: editorial -->
+<!-- footer: DSA · Graphs & Trie · తెలుగు గైడ్ -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
+
+<div class="cover">
+<div class="cover-num">06</div>
+<div class="kicker">DSA · Graphs &amp; Trie</div>
+<div class="rule"></div>
+<div class="cover-title">Graphs &amp; Trie</div>
+<div class="lede">BFS, DFS, topological sort, union-find. చాలా problems మారువేషంలో ఉన్న graph problems.</div>
+<div class="sub">ప్రతి problem కి: <b>ఏ pattern ఇది</b> → ఎందుకు ఆ pattern → dry run → optimal JavaScript code → complexity → edge cases. <code>DSA_Patterns_Telugu.pdf</code> pattern-first దృష్టి; ఈ file ఆ patterns ని నిజమైన LeetCode problems మీద అమలు చేస్తుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
+
 
 > ఈ document చదివిన తర్వాత Graph మరియు Trie problems మళ్ళీ జీవితంలో మర్చిపోకూడదు. ప్రతి problem కి — ఎలా ఆలోచించాలి (intuition first), ఒక vivid real-life analogy, ఇచ్చిన input ని **graph గా ఎలా చూడాలి** (nodes ఏవి, edges ఏవి), naive నుండి optimal వరకు thought process, clean commented JavaScript solution, పెన్సిల్‌తో గీసినట్టు dry run, complexity reasoning (V, E terms లో), pattern takeaway, మరియు edge cases (disconnected components, cycles, visited-marking) — అన్నీ ఉంటాయి.
 >
@@ -55,6 +79,11 @@ Graph తో మనం చేసే మొదటి పని ఎప్పుడ
 
 - **DFS (Depth-First Search):** ఒక దారి పట్టుకుని **చివరిదాకా లోతుగా** వెళ్ళు, dead-end వచ్చాక వెనక్కి వచ్చి (backtrack) వేరే దారి చూడు. Recursion (లేదా stack) తో చేస్తాం.
 - **BFS (Breadth-First Search):** ప్రస్తుత node నుండి **దగ్గరి neighbors ని అందరినీ** ముందు చూడు, తర్వాత వాళ్ళ neighbors ని — ring by ring, level by level. Queue తో చేస్తాం. **Unweighted graph లో shortest path** కావాలంటే BFS దే రాజ్యం.
+
+<div class="fig">
+<div class="cap">Graph traversal · DFS మరియు BFS</div>
+<svg viewBox="0 0 750 320"><text class="t-xs" x="0" y="14">DFS — ఒక దారిలో చివరిదాకా · BFS — స్థాయి స్థాయిగా</text><circle cx="120" cy="60" r="20" fill="#17203a"/><text class="t-w mid" x="120" y="65">A</text><circle cx="60" cy="124" r="20" fill="#17203a"/><text class="t-w mid" x="60" y="129">B</text><circle cx="180" cy="124" r="20" fill="#17203a"/><text class="t-w mid" x="180" y="129">C</text><circle cx="60" cy="188" r="20" fill="#17203a"/><text class="t-w mid" x="60" y="193">D</text><line class="ln" x1="107" y1="76" x2="73" y2="108"/><line class="ln" x1="133" y1="76" x2="167" y2="108"/><line class="ln" x1="60" y1="144" x2="60" y2="168"/><rect class="n-info" x="250" y="30" width="240" height="86" rx="4"/><text class="t mid" x="370" y="52">DFS · Stack / recursion</text><text class="t-sm mid" x="370" y="74">A → B → D → (వెనక్కి) → C</text><text class="t-sm mid" x="370" y="90">లోతుగా వెళ్ళి, ఆగిపోతే వెనక్కి</text><rect class="n-acc" x="510" y="30" width="240" height="86" rx="4"/><text class="t-w mid" x="630" y="52">BFS · Queue</text><text class="t-w-sm mid" x="630" y="74">A → B, C → D</text><text class="t-w-sm mid" x="630" y="90">దగ్గరివి ముందు — shortest path</text><rect class="n-good" x="0" y="224" width="366" height="86" rx="4"/><text class="t mid" x="183" y="246">ఏది ఎప్పుడు</text><text class="t-sm mid" x="183" y="268">"అతి తక్కువ అడుగులు" → BFS (unweighted)</text><text class="t-sm mid" x="183" y="284">"అన్ని దారులు / connected component" → DFS</text><text class="t-sm mid" x="183" y="300">"Cycle ఉందా" → రెండూ పని చేస్తాయి</text><rect class="n-bad" x="384" y="224" width="366" height="86" rx="4"/><text class="t mid" x="567" y="246">visited మర్చిపోతే</text><text class="t-sm mid" x="567" y="268">Graph lo cycle ఉంటే — అనంత loop.</text><text class="t-sm mid" x="567" y="284">Tree lo visited అవసరం లేదు (cycle ఉండదు),</text><text class="t-sm mid" x="567" y="300">graph lo తప్పనిసరి. ఇదే అతి పెద్ద తేడా.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -607,6 +636,11 @@ query ["a","a"]: graph.has("a") true, src===dst → 1  ✅
 - ప్రతి node కి 3 states: **white** (చూడలేదు), **gray** (ప్రస్తుత DFS path లో ఉంది), **black** (పూర్తయింది). 
 - DFS లో ఒక **gray** node ను మళ్ళీ కలిస్తే → **back edge → cycle!** 
 - Node పూర్తయ్యాక (అన్ని neighbors చూశాక) దాన్ని ఒక stack/list లో push. చివర్లో ఆ list ను **reverse** చేస్తే topological order (post-order reversed).
+
+<div class="fig">
+<div class="cap">Topological Sort · dependencies క్రమం</div>
+<svg viewBox="0 0 750 260"><text class="t-xs" x="0" y="14">COURSE SCHEDULE · A → B అంటే A ముందు చేయాలి</text><circle cx="80" cy="70" r="20" fill="#17203a"/><text class="t-w mid" x="80" y="75">A</text><circle cx="220" cy="70" r="20" fill="#17203a"/><text class="t-w mid" x="220" y="75">B</text><circle cx="360" cy="70" r="20" fill="#17203a"/><text class="t-w mid" x="360" y="75">C</text><line class="ln" x1="102" y1="70" x2="196" y2="70" marker-end="url(#a)"/><line class="ln" x1="242" y1="70" x2="336" y2="70" marker-end="url(#a)"/><text class="t-acc mid" x="80" y="112">indegree 0</text><text class="t-sm mid" x="220" y="112">indegree 1</text><text class="t-sm mid" x="360" y="112">indegree 1</text><rect class="n-acc" x="440" y="36" width="310" height="110" rx="4"/><text class="t-w mid" x="595" y="58">Kahn's algorithm</text><text class="t-w-sm mid" x="595" y="80">1 · indegree = 0 ఉన్నవాటిని queue lo</text><text class="t-w-sm mid" x="595" y="96">2 · pop → ఫలితంలో చేర్చు</text><text class="t-w-sm mid" x="595" y="112">3 · పొరుగుల indegree −1</text><text class="t-w-sm mid" x="595" y="128">4 · 0 అయితే queue lo చేర్చు</text><rect class="n-bad" x="0" y="164" width="750" height="86" rx="4"/><text class="t mid" x="375" y="186">Cycle detection ఉచితంగా వస్తుంది</text><text class="t-sm mid" x="375" y="208">ఫలితంలో nodes సంఖ్య &lt; మొత్తం nodes అయితే — cycle ఉంది.</text><text class="t-sm mid" x="375" y="224">ఎందుకంటే cycle lo ఉన్న nodes యొక్క indegree ఎప్పటికీ 0 కాదు.</text><text class="t-sm mid" x="375" y="240">Course Schedule I = cycle ఉందా? · II = క్రమం ఏమిటి? — ఒకే algorithm.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -1214,6 +1248,11 @@ Layer level=5: "cog"===end → return 5 ✅
 - **insert(word)** — root నుండి, ప్రతి అక్షరానికి child లేకపోతే create చేస్తూ దిగు; చివరి node కి `isEnd = true`.
 - **search(word)** — అక్షరాలు follow అవుతూ దిగు; ఏదైనా అక్షరం missing అయితే false; చివర్లో `isEnd` true అయితేనే word ఉంది.
 - **startsWith(prefix)** — search లాంటిదే కానీ చివర్లో `isEnd` చూడనవసరం లేదు; path ఉంటే చాలు.
+
+<div class="fig">
+<div class="cap">Trie · ఉమ్మడి prefix ని ఒకసారే నిల్వ చేయడం</div>
+<svg viewBox="0 0 750 382"><text class="t-xs" x="0" y="14">TRIE · "cat", "car", "dog" — ఉమ్మడి prefix ఒకేసారి</text><circle cx="375" cy="44" r="24" fill="#17203a"/><text class="t-w mid" x="375" y="49">root</text><line class="ln" x1="360" y1="60" x2="250" y2="92"/><line class="ln" x1="392" y1="60" x2="500" y2="92"/><circle cx="235" cy="110" r="20" fill="#17203a"/><text class="t-w mid" x="235" y="115">c</text><circle cx="515" cy="110" r="20" fill="#17203a"/><text class="t-w mid" x="515" y="115">d</text><line class="ln" x1="235" y1="130" x2="235" y2="158"/><line class="ln" x1="515" y1="130" x2="515" y2="158"/><circle cx="235" cy="178" r="20" fill="#17203a"/><text class="t-w mid" x="235" y="183">a</text><circle cx="515" cy="178" r="20" fill="#17203a"/><text class="t-w mid" x="515" y="183">o</text><line class="ln" x1="222" y1="196" x2="175" y2="224"/><line class="ln" x1="248" y1="196" x2="295" y2="224"/><line class="ln" x1="515" y1="198" x2="515" y2="224"/><circle cx="160" cy="244" r="20" fill="#e2653a"/><text class="t-w mid" x="160" y="249">t</text><circle cx="310" cy="244" r="20" fill="#e2653a"/><text class="t-w mid" x="310" y="249">r</text><circle cx="515" cy="244" r="20" fill="#e2653a"/><text class="t-w mid" x="515" y="249">g</text><text class="t-acc" x="560" y="250">నారింజ = ఒక పదం ఇక్కడ ముగుస్తుంది</text><rect class="n-good" x="0" y="286" width="366" height="86" rx="4"/><text class="t mid" x="183" y="308">ఎందుకు Trie</text><text class="t-sm mid" x="183" y="330">"ఈ prefix తో మొదలయ్యే పదాలు" → O(prefix length)</text><text class="t-sm mid" x="183" y="346">HashSet తో ఇది సాధ్యం కాదు —</text><text class="t-sm mid" x="183" y="362">set కి prefix అనే భావనే లేదు.</text><rect class="n-info" x="384" y="286" width="366" height="86" rx="4"/><text class="t mid" x="567" y="308">ఎక్కడ వాడతారు</text><text class="t-sm mid" x="567" y="330">Autocomplete · spell check · IP routing</text><text class="t-sm mid" x="567" y="346">Word Search II (trie + backtracking)</text><text class="t-sm mid" x="567" y="362">ఖరీదు: ప్రతి node కి 26 pointers — memory ఎక్కువ</text></svg>
+</div>
 
 ### Real-life Scenario
 

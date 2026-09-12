@@ -1,17 +1,27 @@
-# HLD (High-Level Design) in Go - పూర్తి తెలుగు గైడ్ (SDE2 & SSE)
+<!-- style: editorial -->
+<!-- footer: High-Level Design in Go · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత **Go లో production backend systems ఎలా design & scale చేయాలో** మళ్ళీ మర్చిపోలేవు. ప్రతి concept కి real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, idiomatic runnable Go code, trade-offs, ASCII diagram, మరియు interview దృష్టి ఉంటాయి.
->
-> **Focus:** production Go services (net/http, gRPC, database/sql, worker pools, graceful shutdown) + distributed-systems building blocks (load balancing, caching, replication, sharding, CAP, consensus) - అన్నీ **Go lens** తో. అంటే "concept ఏమిటి" మాత్రమే కాదు, "**Go లో దీన్ని ఎలా implement/use చేస్తాం**" అని.
->
-> **సోదర documents:**
-> - [`GO_Telugu.md`](./GO_Telugu.md) - Go language basics (goroutines, channels, interfaces). **ఇది ముందు చదువు** - ముఖ్యంగా concurrency chapter. HLD-in-Go అర్థం కావాలంటే goroutines/channels/context పునాది కావాలి.
-> - [`LLD_Go_Telugu.md`](./LLD_Go_Telugu.md) - Low-Level Design in Go (interfaces, patterns, clean architecture).
-> - [`SystemDesign_Go_Telugu.md`](./SystemDesign_Go_Telugu.md) - full case studies (URL shortener, chat, feed) Go implementations తో.
->
-> **లక్ష్యం:** SDE2 (mid-level) మరియు SSE (Senior Software Engineer) rounds ని confident గా clear చేయడం - "Go ఎందుకు cloud-native king" అనేది నీ ఎముకల్లో నాటుకునేలా.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">HLD</div>
+<div class="kicker">High-Level Design in Go</div>
+<div class="rule"></div>
+<div class="cover-title">HLD in Go</div>
+<div class="lede">Go తో services కట్టడం — concurrency patterns, worker pools, context, graceful shutdown.</div>
+<div class="sub">భావనలకి <code>HLD_Telugu.pdf</code> · interview problems కి <code>HLD_Design_Problems_Telugu.pdf</code>. ఇది వాటిని Go lo ఎలా అమలు చేయాలో.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -151,6 +161,11 @@ main() goroutine
 ---
 
 ## 2. Anatomy of a production Go service — layout, config, 12-factor
+
+<div class="fig">
+<div class="cap">Go service layout · cmd, internal, pkg</div>
+<svg viewBox="0 0 750 348"><text class="t-xs" x="0" y="14">PRODUCTION GO SERVICE — layout</text><rect class="n-acc" x="0" y="26" width="160" height="36" rx="3"/><text class="t-w mid" x="80" y="49">cmd/</text><text class="t-sm" x="176" y="49">main.go — entry point మాత్రమే</text><rect class="n-acc" x="0" y="70" width="160" height="36" rx="3"/><text class="t-w mid" x="80" y="93">internal/</text><text class="t-sm" x="176" y="93">నిజమైన code · బయటి packages import చేయలేవు</text><rect class="n" x="0" y="114" width="160" height="36" rx="3"/><text class="t mid" x="80" y="137">pkg/</text><text class="t-sm" x="176" y="137">ఇతరులు వాడగల public code (జాగ్రత్తగా)</text><rect class="n" x="0" y="158" width="160" height="36" rx="3"/><text class="t mid" x="80" y="181">api/</text><text class="t-sm" x="176" y="181">protobuf / OpenAPI definitions</text><rect class="n" x="0" y="202" width="160" height="36" rx="3"/><text class="t mid" x="80" y="225">configs/</text><text class="t-sm" x="176" y="225">config files, defaults</text><rect class="n-acc" x="0" y="252" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="274">internal/ ఎందుకు శక్తివంతం</text><text class="t-w-sm mid" x="375" y="296">ఇది Go compiler <tspan class="t-acc">అమలు చేసే</tspan> నియమం — convention కాదు.</text><text class="t-w-sm mid" x="375" y="312">internal/ లోపలివి ఆ module బయట నుంచి import చేయలేరు.</text><text class="t-w-sm mid" x="375" y="328">దీంతో "ఇది public API, ఇది కాదు" అనేది code lo నే స్పష్టం.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -296,6 +311,11 @@ func main() {
 ---
 
 ## 3. Graceful startup & shutdown — signals, context, draining, health/readiness
+
+<div class="fig">
+<div class="cap">Graceful shutdown · ఆగే క్రమం</div>
+<svg viewBox="0 0 750 358"><text class="t-xs" x="0" y="14">GRACEFUL SHUTDOWN — traffic ని పోగొట్టకుండా ఆగడం</text><rect class="n-acc" x="0" y="26" width="250" height="38" rx="3"/><text class="t-w mid" x="125" y="50">SIGTERM వచ్చింది</text><text class="t-sm" x="266" y="50">Kubernetes / systemd పంపుతుంది</text><rect class="n-acc" x="0" y="72" width="250" height="38" rx="3"/><text class="t-w mid" x="125" y="96">Readiness probe fail</text><text class="t-sm" x="266" y="96">కొత్త traffic రావడం ఆగుతుంది</text><rect class="n-acc" x="0" y="118" width="250" height="38" rx="3"/><text class="t-w mid" x="125" y="142">server.Shutdown(ctx)</text><text class="t-sm" x="266" y="142">కొత్త connections తిరస్కరణ, పాతవి పూర్తి</text><rect class="n" x="0" y="164" width="250" height="38" rx="3"/><text class="t mid" x="125" y="188">Background workers ఆగడం</text><text class="t-sm" x="266" y="188">context cancel · WaitGroup.Wait()</text><rect class="n" x="0" y="210" width="250" height="38" rx="3"/><text class="t mid" x="125" y="234">DB pool, files మూయడం</text><text class="t-sm" x="266" y="234">defer cleanup</text><rect class="n-bad" x="0" y="262" width="750" height="86" rx="4"/><text class="t mid" x="375" y="284">ఇది లేకపోతే ఏమవుతుంది</text><text class="t-sm mid" x="375" y="306">Deploy చేసిన ప్రతిసారీ — నడుస్తున్న requests మధ్యలో తెగిపోతాయి.</text><text class="t-sm mid" x="375" y="322">User కి 502. Payment మధ్యలో ఉంటే — డబ్బు పోయి order రాకపోవడం.</text><text class="t-sm mid" x="375" y="338">Timeout పెట్టడం ముఖ్యం — శాశ్వతంగా వేచి ఉండకూడదు (ఉదా. 30 సెకన్లు).</text></svg>
+</div>
 
 ### వివరణ
 
@@ -466,6 +486,11 @@ func main() {
 ---
 
 ## 4. net/http deep — server, ServeMux, handlers, middleware, timeouts
+
+<div class="fig">
+<div class="cap">net/http · mux, middleware, timeouts</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">net/http — server, mux, handler</text><rect class="n" x="0" y="26" width="130" height="44" rx="3"/><text class="t mid" x="65" y="53">Request</text><line class="ln-acc" x1="134" y1="48" x2="176" y2="48" marker-end="url(#aa)"/><rect class="n-acc" x="180" y="26" width="150" height="44" rx="3"/><text class="t-w mid" x="255" y="46">ServeMux</text><text class="t-w-sm mid" x="255" y="62">pattern match</text><line class="ln-acc" x1="334" y1="48" x2="376" y2="48" marker-end="url(#aa)"/><rect class="n-acc" x="380" y="26" width="170" height="44" rx="3"/><text class="t-w mid" x="465" y="52">Middleware chain</text><line class="ln-acc" x1="554" y1="48" x2="596" y2="48" marker-end="url(#aa)"/><rect class="n-good" x="600" y="26" width="150" height="44" rx="3"/><text class="t mid" x="675" y="53">Handler</text><rect class="n-bad" x="0" y="96" width="750" height="102" rx="4"/><text class="t mid" x="375" y="118">Production lo తప్పనిసరి — default server ప్రమాదకరం</text><text class="t-sm mid" x="375" y="140">http.ListenAndServe() — <tspan class="t-acc">timeouts లేవు</tspan>. నెమ్మది client connections ని శాశ్వతంగా</text><text class="t-sm mid" x="375" y="156">పట్టుకోగలడు (slowloris).</text><text class="t-sm mid" x="375" y="172">&amp;http.Server{ ReadTimeout, WriteTimeout, IdleTimeout, ReadHeaderTimeout } — ఇవి పెట్టాలి.</text><text class="t-sm mid" x="375" y="188">MaxHeaderBytes కూడా — లేకపోతే భారీ header తో memory దాడి.</text><rect class="n-good" x="0" y="196" width="750" height="70" rx="4"/><text class="t mid" x="375" y="218">Go 1.22+ lo మెరుగుదల</text><text class="t-sm mid" x="375" y="240">ServeMux ఇప్పుడు method మరియు path values support చేస్తుంది: "GET /users/{id}".</text><text class="t-sm mid" x="375" y="256">చిన్న services కి third-party router అవసరం లేకుండా పోయింది.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -1165,6 +1190,11 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 
 ## 9. database/sql deep — pool tuning, prepared statements, context
 
+<div class="fig">
+<div class="cap">database/sql · connection pool tuning</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">DATABASE CONNECTION POOL — tuning</text><rect class="n-acc" x="0" y="26" width="240" height="110" rx="4"/><text class="t-w mid" x="120" y="48">MaxOpenConns</text><text class="t-w-sm mid" x="120" y="70">ఏకకాలంలో గరిష్ఠ connections</text><text class="t-w-sm mid" x="120" y="86">DB యొక్క max_connections కంటే తక్కువ</text><text class="t-w-sm mid" x="120" y="102">Replicas × pods ని లెక్కించాలి</text><rect class="n-info" x="255" y="26" width="240" height="110" rx="4"/><text class="t mid" x="375" y="48">MaxIdleConns</text><text class="t-sm mid" x="375" y="70">ఖాళీగా ఉంచేవి</text><text class="t-sm mid" x="375" y="86">తక్కువైతే — పదే పదే కొత్త connection</text><text class="t-sm mid" x="375" y="102">సాధారణంగా MaxOpen కి సమానం</text><rect class="n-good" x="510" y="26" width="240" height="110" rx="4"/><text class="t mid" x="630" y="48">ConnMaxLifetime</text><text class="t-sm mid" x="630" y="70">Connection ని recycle చేయడం</text><text class="t-sm mid" x="630" y="86">Load balancer, DNS మార్పులకి</text><text class="t-sm mid" x="630" y="102">~5 నిమిషాలు సాధారణం</text><rect class="n-bad" x="0" y="156" width="750" height="86" rx="4"/><text class="t mid" x="375" y="178">అత్యంత సాధారణమైన production సమస్య</text><text class="t-sm mid" x="375" y="200">10 pods × MaxOpenConns 100 = <tspan class="t-acc">1000 connections</tspan> — Postgres default 100.</text><text class="t-sm mid" x="375" y="216">ఫలితం: "too many connections" errors, cascading failure.</text><text class="t-sm mid" x="375" y="232">లెక్క: MaxOpenConns × replicas ≤ DB limit × 0.8 (మిగతాది admin, migrations కి).</text></svg>
+</div>
+
 ### వివరణ
 
 Go stdlib `database/sql` = SQL DB access కి **generic interface + connection pool**. Actual DB driver వేరుగా import చేస్తావ్ (pgx for Postgres, mysql). ముఖ్యమైన విషయం: `*sql.DB` **ఒక్క connection కాదు - ఒక pool** (thread-safe, long-lived, share చేయాలి). ప్రతి request కి కొత్త `sql.Open` **చేయకూడదు** - app జీవితకాలం ఒక్కసారి create చేసి share చేయాలి.
@@ -1398,6 +1428,11 @@ u2, err := queries.GetUserByEmail(ctx, "a@b.com")
 ---
 
 ## 11. Caching in Go — in-process, Redis, singleflight
+
+<div class="fig">
+<div class="cap">singleflight · cache stampede నివారణ</div>
+<svg viewBox="0 0 750 312"><text class="t-xs" x="0" y="14">SINGLEFLIGHT — cache stampede ని ఆపడం</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">లేకపోతే</text><text class="t-sm mid" x="183" y="70">Cache expire అయిన క్షణంలో</text><text class="t-sm mid" x="183" y="86">1000 requests అన్నీ DB కి</text><text class="t-sm mid" x="183" y="102">DB కూలిపోతుంది — thundering herd</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">singleflight తో</text><text class="t-sm mid" x="567" y="70">ఒకే key కి ఒకే call మాత్రమే</text><text class="t-sm mid" x="567" y="86">మిగతా 999 ఆ ఫలితం కోసం వేచి</text><text class="t-sm mid" x="567" y="102">DB మీద 1 query</text><rect class="n" x="0" y="156" width="180" height="40" rx="3"/><text class="t mid" x="90" y="181">1000 requests</text><line class="ln-acc" x1="184" y1="176" x2="226" y2="176" marker-end="url(#aa)"/><rect class="n-acc" x="230" y="156" width="200" height="40" rx="3"/><text class="t-w mid" x="330" y="180">singleflight.Group</text><line class="ln-acc" x1="434" y1="176" x2="476" y2="176" marker-end="url(#aa)"/><rect class="n-good" x="480" y="156" width="120" height="40" rx="3"/><text class="t mid" x="540" y="181">1 DB query</text><rect class="n-acc" x="0" y="216" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="238">ఇది cache కాదు — deduplication</text><text class="t-w-sm mid" x="375" y="260">singleflight ఫలితాన్ని <tspan class="t-acc">store చేయదు</tspan> — అది కేవలం ఏకకాల duplicate calls ని కలుపుతుంది.</text><text class="t-w-sm mid" x="375" y="276">Cache + singleflight కలిపి వాడాలి: cache miss → singleflight → DB → cache set.</text><text class="t-w-sm mid" x="375" y="292">golang.org/x/sync/singleflight — standard library కి దగ్గరి package.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -2438,6 +2473,11 @@ func ProductPage(ctx context.Context, id string) (*PageData, error) {
 
 ## 18. Resilience patterns — timeouts, retries, circuit breaker, bulkhead, rate limiting
 
+<div class="fig">
+<div class="cap">Resilience patterns · timeout, retry, breaker, bulkhead</div>
+<svg viewBox="0 0 750 316"><text class="t-xs" x="0" y="14">RESILIENCE — నాలుగు పొరలు, ఈ క్రమంలో</text><rect class="n-acc" x="0" y="26" width="220" height="38" rx="3"/><text class="t-w mid" x="110" y="50">1 · Timeout</text><text class="t-sm" x="236" y="50">ఎంతసేపు వేచి ఉండాలి — ఇది లేకపోతే మిగతావి పనికిరావు</text><rect class="n-acc" x="0" y="72" width="220" height="38" rx="3"/><text class="t-w mid" x="110" y="96">2 · Retry + backoff</text><text class="t-sm" x="236" y="96">తాత్కాలిక వైఫల్యానికి · jitter తప్పనిసరి</text><rect class="n-info" x="0" y="118" width="220" height="38" rx="3"/><text class="t mid" x="110" y="142">3 · Circuit breaker</text><text class="t-sm" x="236" y="142">వరుస వైఫల్యాలకి — fast fail</text><rect class="n-good" x="0" y="164" width="220" height="38" rx="3"/><text class="t mid" x="110" y="188">4 · Bulkhead</text><text class="t-sm" x="236" y="188">ఒక downstream కి thread/goroutine పరిమితి</text><rect class="n-bad" x="0" y="220" width="750" height="86" rx="4"/><text class="t mid" x="375" y="242">క్రమం ఎందుకు ముఖ్యం</text><text class="t-sm mid" x="375" y="264">Timeout లేకుండా retry — ప్రతి attempt శాశ్వతంగా వేలాడొచ్చు, అది ఇంకా ఘోరం.</text><text class="t-sm mid" x="375" y="280">Jitter లేకుండా retry — అందరూ ఒకేసారి తిరిగి కొట్టి downstream ని మళ్ళీ కూల్చుతారు.</text><text class="t-sm mid" x="375" y="296">Retry చేసేముందు: "ఈ operation idempotent నా?" — కాకపోతే retry ప్రమాదకరం.</text></svg>
+</div>
+
 ### వివరణ
 
 Distributed systems లో failures **normal** (network, slow deps, overload). Resilient service = failures ని gracefully handle. Go లో core patterns:
@@ -2696,6 +2736,11 @@ func ProductPageDegraded(ctx context.Context, id string) *PageData {
 ---
 
 ## 20. Structured logging (slog, zap, zerolog), correlation IDs
+
+<div class="fig">
+<div class="cap">Observability · logs, metrics, traces</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">OBSERVABILITY — మూడు స్తంభాలు + correlation</text><rect class="n-acc" x="0" y="26" width="240" height="110" rx="4"/><text class="t-w mid" x="120" y="48">Logs</text><text class="t-w-sm mid" x="120" y="70">ఏం జరిగింది — వివరంగా</text><text class="t-w-sm mid" x="120" y="86">slog / zap — structured</text><text class="t-w-sm mid" x="120" y="102">ఖరీదు: ఎక్కువ · sampling కావాలి</text><rect class="n-info" x="255" y="26" width="240" height="110" rx="4"/><text class="t mid" x="375" y="48">Metrics</text><text class="t-sm mid" x="375" y="70">ఎంత, ఎంత వేగం — aggregate</text><text class="t-sm mid" x="375" y="86">Prometheus · RED / USE</text><text class="t-sm mid" x="375" y="102">చౌక · cardinality జాగ్రత్త</text><rect class="n-good" x="510" y="26" width="240" height="110" rx="4"/><text class="t mid" x="630" y="48">Traces</text><text class="t-sm mid" x="630" y="70">ఎక్కడ సమయం పోయింది</text><text class="t-sm mid" x="630" y="86">OpenTelemetry · spans</text><text class="t-sm mid" x="630" y="102">Sampling తప్పనిసరి</text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">వీటిని కలిపేది — correlation ID</text><text class="t-w-sm mid" x="375" y="200">ప్రతి request కి ఒక trace ID, అది context ద్వారా అన్ని services కి ప్రయాణిస్తుంది.</text><text class="t-w-sm mid" x="375" y="216">ఆ ID ని <tspan class="t-acc">ప్రతి log line lo</tspan> కూడా రాయాలి — అప్పుడే log నుంచి trace కి దూకగలం.</text><text class="t-w-sm mid" x="375" y="232">Go lo: context.WithValue(ctx, traceKey, id) + slog.With("trace_id", id).</text></svg>
+</div>
 
 ### వివరణ
 

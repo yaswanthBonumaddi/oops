@@ -1,12 +1,27 @@
-# Linux, Shell & Git - తెలుగు గైడ్ (SSE Fundamentals)
+<!-- style: editorial -->
+<!-- footer: Linux, Shell & Git · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత Linux, Shell scripting, మరియు Git — ఈ మూడు daily tools ని మళ్ళీ జీవితంలో మర్చిపోలేవు. Terminal అంటే భయపడే self-taught MERN developer ని — ZERO నుండి — server మీద Node app deploy చేసే, production లో logs వెతికే, Git conflicts confident గా resolve చేసే **Senior Software Engineer (SSE)** స్థాయికి తీసుకెళ్లడమే లక్ష్యం.
->
-> **ఎందుకు ఇది తప్పనిసరి?** College లో CS చదవని వాళ్ళకి LeetCode, React, Node వచ్చుంటాయి — కానీ interview లో "server కి ssh చేసి ఈ process ని ఎలా kill చేస్తావ్?", "ఈ git rebase conflict ఎలా resolve చేస్తావ్?" అంటే తడబడతారు. ఈ tools అందరూ "నీకు తెలుసు" అని assume చేస్తారు — ఎవరూ నేర్పరు. ఇదే gap ని ఈ guide పూరిస్తుంది.
->
-> **విధానం:** ప్రతి command కి — ఏమిటి / ఎందుకు / ఎప్పుడు, common flags, real output, gotchas, మరియు MERN workflow తో link (npm, pm2, nginx, ssh to EC2). Best-teacher style — analogy first, తర్వాత hands-on. కాపీ చేసి terminal లో type చేస్తూ నేర్చుకో. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">SH</div>
+<div class="kicker">Linux, Shell &amp; Git</div>
+<div class="rule"></div>
+<div class="cover-title">Linux, Shell<br>&amp; Git</div>
+<div class="lede">రోజువారీ పనిముట్లు — permissions, processes, pipes, మరియు Git యొక్క నిజమైన నమూనా (commits ఒక graph).</div>
+<div class="sub">CS fundamentals — self-taught / non-CS background నుంచి వచ్చినవారికి SSE interview lo అడిగే లోతు వరకు. ప్రతి concept ని MERN / JavaScript ప్రపంచంతో ముడిపెట్టి.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -161,6 +176,11 @@ A: GUI RAM/CPU వాడుతుంది, security surface పెంచుత�
 
 ---
 ## 2. Filesystem Hierarchy — Linux file system ఎలా organized
+
+<div class="fig">
+<div class="cap">Linux filesystem · ఏది ఎక్కడ ఉంటుంది</div>
+<svg viewBox="0 0 750 354"><text class="t-xs" x="0" y="14">FILESYSTEM HIERARCHY — ఏది ఎక్కడ</text><rect class="n-acc" x="0" y="26" width="200" height="34" rx="3"/><text class="t-w-sm mono mid" x="100" y="48">/bin, /usr/bin</text><text class="t-sm" x="216" y="48">executables — ls, grep, node</text><rect class="n-acc" x="0" y="68" width="200" height="34" rx="3"/><text class="t-w-sm mono mid" x="100" y="90">/etc</text><text class="t-sm" x="216" y="90">config files</text><rect class="n-acc" x="0" y="110" width="200" height="34" rx="3"/><text class="t-w-sm mono mid" x="100" y="132">/var</text><text class="t-sm" x="216" y="132">మారే data — logs, cache</text><rect class="n" x="0" y="152" width="200" height="34" rx="3"/><text class="t-sm mono mid" x="100" y="174">/home</text><text class="t-sm" x="216" y="174">user files</text><rect class="n" x="0" y="194" width="200" height="34" rx="3"/><text class="t-sm mono mid" x="100" y="216">/tmp</text><text class="t-sm" x="216" y="216">తాత్కాలికం — reboot కి పోతుంది</text><rect class="n" x="0" y="236" width="200" height="34" rx="3"/><text class="t-sm mono mid" x="100" y="258">/proc</text><text class="t-sm" x="216" y="258">kernel యొక్క virtual view</text><rect class="n-acc" x="0" y="278" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="300">/proc ఒక నిజమైన ఫైల్‌సిస్టం కాదు</text><text class="t-w-sm mid" x="375" y="322">అది kernel memory యొక్క ఒక దృశ్యం. <code>cat /proc/cpuinfo</code>, <code>/proc/[pid]/status</code>.</text><text class="t-w-sm mid" x="375" y="338">Disk మీద ఏమీ లేదు — చదివినప్పుడు kernel ఆ క్షణం సమాధానం తయారు చేస్తుంది.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -496,6 +516,11 @@ Linux ఒక **multi-user** system — ఒకే server మీద చాలా�
 
 అంటే `-rwxr-xr--`: owner అన్నీ చేయవచ్చు, group read+run చేయవచ్చు కానీ మార్చలేరు, others కేవలం read.
 
+<div class="fig">
+<div class="cap">Linux permissions · rwx మరియు సంఖ్యలు</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">rwx — మూడు గుంపులకి మూడేసి అనుమతులు</text><rect class="n-acc" x="0" y="26" width="120" height="44" rx="3"/><text class="t-w mid" x="60" y="53">- rwx r-x r--</text><line class="ln" x1="124" y1="48" x2="166" y2="48" marker-end="url(#a)"/><rect class="n" x="170" y="26" width="140" height="44" rx="3"/><text class="t mid" x="240" y="46">owner: rwx</text><text class="t-sm mid" x="240" y="62">7</text><rect class="n" x="320" y="26" width="140" height="44" rx="3"/><text class="t mid" x="390" y="46">group: r-x</text><text class="t-sm mid" x="390" y="62">5</text><rect class="n" x="470" y="26" width="140" height="44" rx="3"/><text class="t mid" x="540" y="46">others: r--</text><text class="t-sm mid" x="540" y="62">4</text><text class="t-acc mid" x="630" y="54">chmod 754</text><rect class="n-good" x="0" y="90" width="366" height="86" rx="4"/><text class="t mid" x="183" y="112">సంఖ్యలు</text><text class="t-sm mid" x="183" y="134">r = 4 · w = 2 · x = 1</text><text class="t-sm mid" x="183" y="150">కలిపితే: rwx = 7, r-x = 5, r-- = 4</text><text class="t-sm mid" x="183" y="166">chmod 644 = సాధారణ file · 755 = script</text><rect class="n-info" x="384" y="90" width="366" height="86" rx="4"/><text class="t mid" x="567" y="112">Directory మీద x అంటే</text><text class="t-sm mid" x="567" y="134">చదవడం కాదు — <tspan class="t-acc">లోపలికి వెళ్ళడం</tspan> (cd).</text><text class="t-sm mid" x="567" y="150">x లేకపోతే — లోపల ఏముందో తెలిసినా చేరలేరు.</text><rect class="n-acc" x="0" y="196" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="218">తరచుగా వచ్చే ఉచ్చు</text><text class="t-w-sm mid" x="375" y="240">chmod 777 ఎప్పుడూ వాడకండి — "పని చేయడం లేదు" అనే సమస్యకి అది పరిష్కారం కాదు, ప్రమాదం.</text><text class="t-w-sm mid" x="375" y="256">సరైన ప్రశ్న: "ఏ user ఈ process ని నడుపుతోంది?" — అది సరిచేస్తే permission సమస్య పోతుంది.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Permissions = ఒక office building లో access cards.**
@@ -776,6 +801,11 @@ A: `nohup node server.js &` (basic), కానీ production లో `pm2` లే
 
 ---
 ## 6. Text Processing Power Tools — pipes, grep, sed, awk, find
+
+<div class="fig">
+<div class="cap">Pipes · చిన్న సాధనాలని కలపడం</div>
+<svg viewBox="0 0 750 284"><text class="t-xs" x="0" y="14">PIPES — ఒక program యొక్క output, తర్వాతి దానికి input</text><rect class="n" x="0" y="26" width="140" height="44" rx="3"/><text class="t mid" x="70" y="53">cat log.txt</text><line class="ln-acc" x1="144" y1="48" x2="180" y2="48" marker-end="url(#aa)"/><text class="t-acc mid" x="162" y="40">|</text><rect class="n-acc" x="190" y="26" width="140" height="44" rx="3"/><text class="t-w mid" x="260" y="52">grep ERROR</text><line class="ln-acc" x1="334" y1="48" x2="370" y2="48" marker-end="url(#aa)"/><text class="t-acc mid" x="352" y="40">|</text><rect class="n-acc" x="380" y="26" width="140" height="44" rx="3"/><text class="t-w mid" x="450" y="52">sort</text><line class="ln-acc" x1="524" y1="48" x2="560" y2="48" marker-end="url(#aa)"/><text class="t-acc mid" x="542" y="40">|</text><rect class="n-good" x="570" y="26" width="180" height="44" rx="3"/><text class="t mid" x="660" y="53">uniq -c</text><rect class="n-good" x="0" y="86" width="366" height="102" rx="4"/><text class="t mid" x="183" y="108">Unix తత్వం</text><text class="t-sm mid" x="183" y="130">ఒక్కో program ఒక్క పని — దాన్ని బాగా</text><text class="t-sm mid" x="183" y="146">Text ద్వారా మాట్లాడటం</text><text class="t-sm mid" x="183" y="162">కలపడం ద్వారా శక్తి</text><rect class="n-info" x="384" y="86" width="366" height="102" rx="4"/><text class="t mid" x="567" y="108">మూడు streams</text><text class="t-sm mid" x="567" y="130">stdin (0) · stdout (1) · stderr (2)</text><text class="t-sm mid" x="567" y="146">2&gt;&amp;1 — errors ని కూడా pipe lo</text><text class="t-sm mid" x="567" y="162">&gt; overwrite · &gt;&gt; append</text><rect class="n-acc" x="0" y="208" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="230">తరచుగా అవసరమయ్యే కలయిక</text><text class="t-w-sm mid" x="375" y="252"><code>grep -r "TODO" . | wc -l</code> — ఎన్ని TODOs ఉన్నాయి</text><text class="t-w-sm mid" x="375" y="268"><code>ps aux | grep node | awk '{print $2}' | xargs kill</code> — అన్ని node processes ని ఆపడం</text></svg>
+</div>
 
 ### వివరణ
 
@@ -1358,6 +1388,11 @@ A: Environment ప్రకారం config మారుతుంది (dev DB 
 
 ## 9. Shell Scripting — automation యొక్క గుండె
 
+<div class="fig">
+<div class="cap">Shell scripting · set -euo pipefail</div>
+<svg viewBox="0 0 750 340"><text class="t-xs" x="0" y="14">SHELL SCRIPT — safety header</text><rect class="n-acc" x="0" y="26" width="750" height="58" rx="4"/><text class="t-w mid" x="375" y="48">set -euo pipefail</text><text class="t-w-sm mono mid" x="375" y="70">ప్రతి production script మొదటి line — ఇది లేకపోతే తప్పులు నిశ్శబ్దంగా దాటిపోతాయి</text><rect class="n-info" x="0" y="100" width="140" height="36" rx="3"/><text class="t-sm mono mid" x="70" y="123">-e</text><text class="t-sm" x="156" y="123">ఏదైనా command fail అయితే వెంటనే ఆగడం</text><rect class="n-info" x="0" y="144" width="140" height="36" rx="3"/><text class="t-sm mono mid" x="70" y="167">-u</text><text class="t-sm" x="156" y="167">నిర్వచించని variable వాడితే error</text><rect class="n-info" x="0" y="188" width="140" height="36" rx="3"/><text class="t-sm mono mid" x="70" y="211">-o pipefail</text><text class="t-sm" x="156" y="211">pipe lo ఏ భాగం fail అయినా మొత్తం fail</text><rect class="n-bad" x="0" y="244" width="750" height="86" rx="4"/><text class="t mid" x="375" y="266">ఇది లేకపోతే ఏమవుతుంది</text><text class="t-sm mid" x="375" y="288"><code>cd /nonexistent; rm -rf *</code> — cd fail అయినా rm నడుస్తుంది. మీ ప్రస్తుత directory lo.</text><text class="t-sm mid" x="375" y="304"><code>echo "$UNDEFINED_VAR"</code> — ఖాళీ string, script పని చేసినట్టే కనిపిస్తుంది.</text><text class="t-sm mid" x="375" y="320">ఈ ఒక్క line చాలా విపత్తులని ఆపుతుంది.</text></svg>
+</div>
+
 ### వివరణ
 
 **Shell script** = ఒక file లో వరుసగా రాసిన shell commands + logic (conditions, loops, variables). దాన్ని run చేస్తే, commands ఒక్కొక్కటి execute అవుతాయి. మనిషి type చేయాల్సిన repetitive పనిని ఒకసారి రాసి పదేపదే run చేయవచ్చు — errors తగ్గుతాయి, వేగం పెరుగుతుంది.
@@ -1779,6 +1814,11 @@ A: Git ప్రతి commit కి full snapshot తీస్తుంది (
 ---
 ## 11. Git Basics — init, clone, add, commit, status, log, diff
 
+<div class="fig">
+<div class="cap">Git · working dir, staging, repo</div>
+<svg viewBox="0 0 750 268"><text class="t-xs" x="0" y="14">GIT యొక్క మూడు ప్రాంతాలు</text><rect class="n" x="0" y="26" width="170" height="50" rx="3"/><text class="t mid" x="85" y="49">Working dir</text><text class="t-sm mid" x="85" y="65">మీ files</text><line class="ln-acc" x1="174" y1="51" x2="216" y2="51" marker-end="url(#aa)"/><text class="t-sm mid" x="195" y="42">add</text><rect class="n-acc" x="220" y="26" width="170" height="50" rx="3"/><text class="t-w mid" x="305" y="49">Staging area</text><text class="t-w-sm mid" x="305" y="65">తర్వాతి commit lo ఏముంటుందో</text><line class="ln-acc" x1="394" y1="51" x2="436" y2="51" marker-end="url(#aa)"/><text class="t-sm mid" x="415" y="42">commit</text><rect class="n-good" x="440" y="26" width="170" height="50" rx="3"/><text class="t mid" x="525" y="49">Local repo</text><text class="t-sm mid" x="525" y="65">.git</text><line class="ln-acc" x1="614" y1="51" x2="656" y2="51" marker-end="url(#aa)"/><text class="t-sm mid" x="635" y="42">push</text><rect class="n-info" x="660" y="26" width="90" height="50" rx="3"/><text class="t mid" x="705" y="56">Remote</text><rect class="n-acc" x="0" y="92" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="114">Staging area ఎందుకు ఉంది</text><text class="t-w-sm mid" x="375" y="136">ఇదే git ని ఇతర VCS నుంచి వేరు చేస్తుంది — commit ని <tspan class="t-acc">ఆకృతి చేయడానికి</tspan> అవకాశం.</text><text class="t-w-sm mid" x="375" y="152">ఒక file lo 3 మార్పులు చేసి, రెండింటిని మాత్రం commit చేయొచ్చు (<code>git add -p</code>).</text><text class="t-w-sm mid" x="375" y="168">దీంతో commits చిన్నగా, తార్కికంగా, review చేయదగినవిగా ఉంటాయి.</text><rect class="n-bad" x="0" y="192" width="750" height="70" rx="4"/><text class="t mid" x="375" y="214">వెనక్కి తీసుకోవడం — ఏది దేన్ని తాకుతుంది</text><text class="t-sm mid" x="375" y="236"><code>git restore &lt;file&gt;</code> — working dir · <code>git restore --staged</code> — staging</text><text class="t-sm mid" x="375" y="252"><code>git reset --soft</code> — commit మాత్రం · <code>--mixed</code> — + staging · <code>--hard</code> — + working dir (ప్రమాదకరం)</text></svg>
+</div>
+
 ### వివరణ
 
 ఇవి Git లో నీ రోజువారీ 90% commands. కొత్త project మొదలుపెట్టడం (`init`), ఉన్నదాన్ని తెచ్చుకోవడం (`clone`), మార్పులు record చేయడం (`add` → `commit`), ఏం జరిగిందో చూడటం (`status`, `log`, `diff`), వద్దనుకున్న files ని ignore చేయడం (`.gitignore`). ఒక్కొక్కటి flags సహా చూద్దాం.
@@ -2103,6 +2143,11 @@ A: Fast-forward merge లో feature commits linear history లో కలిస�
 ### వివరణ
 
 Feature branch ని up-to-date చేయడానికి, లేదా main లోకి integrate చేయడానికి **రెండు మార్గాలు**: `merge` (branches ని కలిపి merge commit create) లేదా `rebase` (నీ commits ని target branch చివర "మళ్ళీ apply" చేయడం). ఇది interview లో అత్యంత అడిగే git topic. తర్వాత — ఇద్దరు ఒకే line మార్చినప్పుడు వచ్చే **conflict** ని ఎలా resolve చేయాలో step-by-step.
+
+<div class="fig">
+<div class="cap">Git · commits ఒక graph, merge vs rebase</div>
+<svg viewBox="0 0 750 348"><text class="t-xs" x="0" y="14">GIT = commits యొక్క ఒక GRAPH — ఇది అర్థమైతే git అంతా అర్థమవుతుంది</text><circle cx="80" cy="80" r="20" fill="#17203a"/><text class="t-w mid" x="80" y="85">A</text><circle cx="190" cy="80" r="20" fill="#17203a"/><text class="t-w mid" x="190" y="85">B</text><circle cx="300" cy="80" r="20" fill="#17203a"/><text class="t-w mid" x="300" y="85">C</text><line class="ln" x1="102" y1="80" x2="168" y2="80" marker-end="url(#a)"/><line class="ln" x1="212" y1="80" x2="278" y2="80" marker-end="url(#a)"/><circle cx="410" cy="40" r="20" fill="#17203a"/><text class="t-w mid" x="410" y="45">D</text><circle cx="520" cy="40" r="20" fill="#17203a"/><text class="t-w mid" x="520" y="45">E</text><line class="ln" x1="318" y1="70" x2="390" y2="50" marker-end="url(#a)"/><line class="ln" x1="432" y1="40" x2="498" y2="40" marker-end="url(#a)"/><text class="t-acc mid" x="300" y="120">main</text><text class="t-acc mid" x="520" y="20">feature</text><text class="t-sm" x="600" y="50">branch = ఒక commit కి</text><text class="t-acc" x="600" y="68">ఉన్న pointer మాత్రమే</text><text class="t-sm" x="600" y="94">HEAD = నువ్వు ఎక్కడ</text><text class="t-sm" x="600" y="112">ఉన్నావో చూపే pointer</text><rect class="n-good" x="0" y="150" width="366" height="102" rx="4"/><text class="t mid" x="183" y="172">MERGE</text><text class="t-sm mid" x="183" y="194">రెండు చరిత్రలని కలిపి ఒక కొత్త commit</text><text class="t-sm mid" x="183" y="210">చరిత్ర నిజాయితీగా ఉంటుంది (branching కనిపిస్తుంది)</text><text class="t-sm mid" x="183" y="226">Shared branches కి ఇదే సురక్షితం</text><rect class="n-info" x="384" y="150" width="366" height="102" rx="4"/><text class="t mid" x="567" y="172">REBASE</text><text class="t-sm mid" x="567" y="194">నా commits ని కొత్త base మీద మళ్ళీ రాయడం</text><text class="t-sm mid" x="567" y="210">చరిత్ర సరళరేఖగా, శుభ్రంగా ఉంటుంది</text><text class="t-sm mid" x="567" y="226">⚠ push అయిన commits ని ఎప్పుడూ rebase చేయొద్దు</text><rect class="n-acc" x="0" y="272" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="294">బంగారు నియమం</text><text class="t-w-sm mid" x="375" y="316"><tspan class="t-acc">నీ సొంత local branch</tspan> — rebase చేసుకో, చరిత్ర శుభ్రంగా ఉంటుంది.</text><text class="t-w-sm mid" x="375" y="332"><tspan class="t-acc">ఇతరులు కూడా వాడుతున్న branch</tspan> — merge మాత్రమే. Rebase వాళ్ళ చరిత్రని విరగ్గొడుతుంది.</text></svg>
+</div>
 
 ### Real-life Scenario
 

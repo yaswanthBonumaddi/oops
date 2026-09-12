@@ -1,14 +1,27 @@
-# DBMS (Databases) - తెలుగు గైడ్ (SSE Fundamentals)
+<!-- style: editorial -->
+<!-- footer: Databases · SSE Fundamentals · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత database concepts మళ్ళీ జీవితంలో మర్చిపోలేవు. Database theory అస్సలు తెలియని వ్యక్తిని — ZERO నుండి — Senior Software Engineer (SSE) interview crack చేసే స్థాయికి తీసుకెళ్లడమే లక్ష్యం. ప్రతి concept కి ఒక vivid real-life analogy, ఎందుకు/ఎప్పుడు వాడాలి, internal working, trade-offs, gotchas, మరియు runnable **SQL** code — అన్నీ ఉంటాయి. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> **నీ background:** నువ్వు self-taught MERN developer — MongoDB/Mongoose తెలుసు, కొంచెం SQL చూసి ఉండొచ్చు, కానీ **database theory (relational model, normalization, transactions, indexing, ACID) అస్సలు తెలియదు.** Non-CS background. ఈ guide అదే gap ని పూరిస్తుంది. నీకు Mongo తెలుసు కాబట్టి, ప్రతి చోట **relational vs document, SQL vs NoSQL** connections చూపిస్తా — దీంతో కొత్త concept నీ existing knowledge కి అతుక్కుంటుంది.
->
-> **లక్ష్యం:** Best-teacher style — intuition first, formalism తర్వాత. Absolute basics నుండి SSE interview depth వరకు. SQL నేర్చుకోవడానికి ఉత్తమ మార్గం *చేసి చూడటం* — అందుకే ప్రతి చోట runnable SQL ఇచ్చాను, నువ్వు [db-fiddle.com](https://db-fiddle.com) లేదా local PostgreSQL/MySQL లో paste చేసి run చేయవచ్చు.
->
-> Scaling (replication, sharding, CAP) లోతుగా `HLD_Go_Telugu.md` / `SystemDesign_Go_Telugu.md` లలో ఉంది; ఇక్కడ database-centric view ఇస్తా.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">DB</div>
+<div class="kicker">Databases · SSE Fundamentals</div>
+<div class="rule"></div>
+<div class="cover-title">Database<br>Management</div>
+<div class="lede">Normalisation, ACID, indexes, transactions, locking — query నెమ్మదిగా ఎందుకు ఉందో అర్థం చేసుకోవడానికి కావలసినదంతా.</div>
+<div class="sub">CS fundamentals — self-taught / non-CS background నుంచి వచ్చినవారికి SSE interview lo అడిగే లోతు వరకు. ప్రతి concept ని MERN / JavaScript ప్రపంచంతో ముడిపెట్టి.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -353,6 +366,11 @@ A: సొంతగా unique గా identify అవ్వలేని entity. �
 2. Column values **atomic** (indivisible) గా ఉండాలి — ఒక cell లో list/array కాదు (ఇది 1NF).
 3. Rows/columns యొక్క **order matter చేయదు** — set లాంటిది.
 4. ప్రతి column కి unique పేరు, ఒక domain (type).
+
+<div class="fig">
+<div class="cap">Keys · super, candidate, primary, foreign</div>
+<svg viewBox="0 0 750 358"><text class="t-xs" x="0" y="14">KEYS — ఏది ఏమిటి</text><rect class="n" x="0" y="26" width="200" height="38" rx="3"/><text class="t mid" x="100" y="50">Super key</text><text class="t-sm" x="216" y="50">ఒక row ని ప్రత్యేకంగా గుర్తించే ఏ కలయిక అయినా</text><rect class="n-info" x="0" y="72" width="200" height="38" rx="3"/><text class="t mid" x="100" y="96">Candidate key</text><text class="t-sm" x="216" y="96">కనిష్ఠ super key (అనవసర columns లేవు)</text><rect class="n-acc" x="0" y="118" width="200" height="38" rx="3"/><text class="t-w mid" x="100" y="142">Primary key</text><text class="t-sm" x="216" y="142">ఎంచుకున్న candidate key · NULL ఉండకూడదు</text><rect class="n-acc" x="0" y="164" width="200" height="38" rx="3"/><text class="t-w mid" x="100" y="188">Foreign key</text><text class="t-sm" x="216" y="188">వేరే table యొక్క primary key ని చూపేది</text><rect class="n" x="0" y="210" width="200" height="38" rx="3"/><text class="t mid" x="100" y="234">Composite key</text><text class="t-sm" x="216" y="234">పలు columns కలిపి ఒక key</text><rect class="n-acc" x="0" y="262" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="284">Foreign key ఏం హామీ ఇస్తుంది</text><text class="t-w-sm mid" x="375" y="306">Referential integrity — లేని row ని చూపే reference ఉండదు.</text><text class="t-w-sm mid" x="375" y="322">ON DELETE CASCADE / RESTRICT / SET NULL — parent పోతే child కి ఏం జరగాలో.</text><text class="t-w-sm mid" x="375" y="338">Index ఆటోమేటిక్ గా రాదు (చాలా DBs lo) — join వేగం కావాలంటే మీరే వేయాలి.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -830,6 +848,11 @@ A: Leading wildcard (`%` ముందు) ఉంటే B-tree index prefix మ�
 
 **Mongo తో pole:** Mongo లో joins బలహీనం (అందుకే data ని embed చేస్తారు — order document లోపలే customer info పెడతారు). `$lookup` aggregation stage ఒక join లాంటిది కానీ SQL joins అంత powerful/optimized కాదు. **ఇదే SQL vs NoSQL లో ముఖ్యమైన తేడా** — relational DB joins కి designed, document DB embedding కి designed.
 
+<div class="fig">
+<div class="cap">Joins · ఏది ఏం తెస్తుంది</div>
+<svg viewBox="0 0 750 260"><text class="t-xs" x="0" y="14">నాలుగు JOIN రకాలు</text><circle cx="62" cy="70" r="34" fill="none" stroke="#d9d3c6" stroke-width="2"/><circle cx="112" cy="70" r="34" fill="none" stroke="#d9d3c6" stroke-width="2"/><path d="M87 42 A 34 34 0 0 1 87 98 A 34 34 0 0 1 87 42" fill="#e2653a" opacity="0.85" transform="translate(0,0)"/><text class="t mid" x="87" y="124">INNER JOIN</text><text class="t-sm mid" x="87" y="142">రెండింటిలోనూ ఉన్నవి మాత్రమే</text><circle cx="252" cy="70" r="34" fill="none" stroke="#d9d3c6" stroke-width="2"/><circle cx="302" cy="70" r="34" fill="none" stroke="#d9d3c6" stroke-width="2"/><text class="t mid" x="277" y="124">LEFT JOIN</text><text class="t-sm mid" x="277" y="142">ఎడమవి అన్నీ + సరిపోయిన కుడివి</text><circle cx="442" cy="70" r="34" fill="none" stroke="#d9d3c6" stroke-width="2"/><circle cx="492" cy="70" r="34" fill="none" stroke="#d9d3c6" stroke-width="2"/><text class="t mid" x="467" y="124">RIGHT JOIN</text><text class="t-sm mid" x="467" y="142">కుడివి అన్నీ + సరిపోయిన ఎడమవి</text><circle cx="632" cy="70" r="34" fill="none" stroke="#d9d3c6" stroke-width="2"/><circle cx="682" cy="70" r="34" fill="none" stroke="#d9d3c6" stroke-width="2"/><text class="t mid" x="657" y="124">FULL OUTER</text><text class="t-sm mid" x="657" y="142">రెండింటిలోనూ అన్నీ</text><rect class="n-acc" x="0" y="164" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="186">ఆచరణలో గుర్తుంచుకోవాల్సినది</text><text class="t-w-sm mid" x="375" y="208">95% సందర్భాల్లో మీకు కావలసినది INNER లేదా LEFT.</text><text class="t-w-sm mid" x="375" y="224">LEFT JOIN తర్వాత WHERE right.col IS NOT NULL రాస్తే — అది INNER JOIN అయిపోతుంది.</text><text class="t-w-sm mid" x="375" y="240">ఆ filter ని ON clause lo పెట్టాలి, WHERE lo కాదు. ఇది అతి సాధారణమైన SQL bug.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Join = రెండు registers ని match చేయడం.**
@@ -1282,6 +1305,11 @@ enrollments (ప్రతిదీ ఒకే table లో — un-normalized)
 
 **Redundancy** (Prof. Rao, 99999 అనేక సార్లు) అనేది ఈ anomalies అన్నిటికీ మూలం. Normalization ఈ redundancy ని తీసేస్తుంది.
 
+<div class="fig">
+<div class="cap">Normalization · 1NF → 2NF → 3NF</div>
+<svg viewBox="0 0 750 278"><text class="t-xs" x="0" y="14">NORMALIZATION · అడుగడుగునా repetition ని తీసేయడం</text><rect class="n-bad" x="0" y="26" width="240" height="44" rx="3"/><text class="t mid" x="120" y="46">Unnormalised</text><text class="t-sm mid" x="120" y="62">ఒకే cell lo పలు విలువలు</text><line class="ln-acc" x1="244" y1="48" x2="286" y2="48" marker-end="url(#aa)"/><rect class="n" x="290" y="26" width="220" height="44" rx="3"/><text class="t mid" x="400" y="46">1NF</text><text class="t-sm mid" x="400" y="62">ప్రతి cell lo ఒకే విలువ</text><line class="ln-acc" x1="514" y1="48" x2="556" y2="48" marker-end="url(#aa)"/><rect class="n" x="560" y="26" width="190" height="44" rx="3"/><text class="t mid" x="655" y="46">2NF</text><text class="t-sm mid" x="655" y="62">పాక్షిక ఆధారం లేదు</text><line class="ln-acc" x1="375" y1="74" x2="375" y2="96" marker-end="url(#aa)"/><rect class="n-good" x="250" y="100" width="250" height="44" rx="3"/><text class="t mid" x="375" y="120">3NF</text><text class="t-sm mid" x="375" y="136">transitive ఆధారం లేదు</text><rect class="n-good" x="0" y="166" width="366" height="102" rx="4"/><text class="t mid" x="183" y="188">3NF ఎప్పుడూ చాలు</text><text class="t-sm mid" x="183" y="210">ప్రతి non-key column నేరుగా, పూర్తిగా,</text><text class="t-sm mid" x="183" y="226">కేవలం primary key మీద ఆధారపడాలి.</text><text class="t-sm mid" x="183" y="242">"The key, the whole key, and nothing</text><text class="t-sm mid" x="183" y="258">but the key" — ఇదే మొత్తం నియమం.</text><rect class="n-bad" x="384" y="166" width="366" height="102" rx="4"/><text class="t mid" x="567" y="188">కానీ — denormalisation కూడా అవసరం</text><text class="t-sm mid" x="567" y="210">Joins ఖరీదు. Read-heavy systems lo</text><text class="t-sm mid" x="567" y="226">ఉద్దేశపూర్వకంగా data ని duplicate చేస్తారు.</text><text class="t-sm mid" x="567" y="242">Normalise for correctness,</text><text class="t-sm mid" x="567" y="258">denormalise for performance.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Normalization = వస్తువులను సరైన అరల్లో పెట్టడం.**
@@ -1479,6 +1507,11 @@ UPDATE accounts SET balance = balance + 1000 WHERE id = 2;   -- Sita credit
 COMMIT;                    -- రెండూ success → permanent. మధ్యలో fail → ROLLBACK (ఏదీ జరగదు)
 ```
 
+<div class="fig">
+<div class="cap">ACID · నాలుగు హామీలు</div>
+<svg viewBox="0 0 750 312"><text class="t-xs" x="0" y="14">ACID</text><rect class="n-acc" x="0" y="26" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="51" style="font-size:17px;font-weight:800">A</text><rect class="n" x="52" y="26" width="698" height="38" rx="4"/><text class="t" x="66" y="43">Atomicity</text><text class="t-sm" x="66" y="58">అంతా జరగాలి, లేదా ఏదీ జరగకూడదు</text><rect class="n-acc" x="0" y="72" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="97" style="font-size:17px;font-weight:800">C</text><rect class="n" x="52" y="72" width="698" height="38" rx="4"/><text class="t" x="66" y="89">Consistency</text><text class="t-sm" x="66" y="104">నియమాలు (constraints) ఎప్పుడూ నిజం</text><rect class="n-acc" x="0" y="118" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="143" style="font-size:17px;font-weight:800">I</text><rect class="n" x="52" y="118" width="698" height="38" rx="4"/><text class="t" x="66" y="135">Isolation</text><text class="t-sm" x="66" y="150">ఏకకాల transactions ఒకదాన్నొకటి చూడవు</text><rect class="n-acc" x="0" y="164" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="189" style="font-size:17px;font-weight:800">D</text><rect class="n" x="52" y="164" width="698" height="38" rx="4"/><text class="t" x="66" y="181">Durability</text><text class="t-sm" x="66" y="196">commit అయ్యాక — power పోయినా ఉంటుంది</text><rect class="n-acc" x="0" y="216" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="238">ఇవి ఎలా అమలవుతాయి — ఇది చెప్తే మీరు లోతుగా చదివారని అర్థం</text><text class="t-w-sm mid" x="375" y="260">Atomicity + Durability → <tspan class="t-acc">WAL (write-ahead log)</tspan>. మార్పు చేసేముందు log lo రాయడం.</text><text class="t-w-sm mid" x="375" y="276">Isolation → <tspan class="t-acc">locks లేదా MVCC</tspan>. ప్రతి transaction కి ఒక snapshot.</text><text class="t-w-sm mid" x="375" y="292">Consistency → constraints + పైన మూడూ కలిసి ఇచ్చే ఫలితం.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Transaction = ATM లో డబ్బు తీయడం.**
@@ -1585,6 +1618,11 @@ A: **COMMIT** transaction changes ని permanent చేస్తుంది. 
 ఒకేసారి (concurrently) చాలా transactions run అయినప్పుడు, అవి ఒకే data ని touch చేస్తే **సమస్యలు** వస్తాయి. **Concurrency control** = ఈ transactions ని safe గా, correct results ఇచ్చేలా manage చేసే mechanism. ఇది ACID లోని **Isolation** ని అమలు చేసే విభాగం.
 
 **ఎందుకు ముఖ్యం?** Isolation ని 100% పాటిస్తే (transactions వరుసగా run) — correct కానీ **నెమ్మది** (no parallelism). Isolation ని loosen చేస్తే — **వేగం** కానీ కొన్ని anomalies వస్తాయి. ఈ trade-off ని control చేసేదే **isolation levels.**
+
+<div class="fig">
+<div class="cap">Isolation Levels · ఏ anomaly ఎక్కడ ఆగుతుంది</div>
+<svg viewBox="0 0 750 308"><text class="t-xs" x="0" y="14">ISOLATION LEVELS · బలహీనం → బలం (ఖరీదు పెరుగుతూ)</text><rect class="n-soft" x="0" y="26" width="180" height="30" rx="3"/><text class="t-sm mid" x="90" y="46">Level</text><rect class="n-soft" x="187" y="26" width="180" height="30" rx="3"/><text class="t-sm mid" x="277" y="46">Dirty read</text><rect class="n-soft" x="374" y="26" width="180" height="30" rx="3"/><text class="t-sm mid" x="464" y="46">Non-repeatable</text><rect class="n-soft" x="561" y="26" width="180" height="30" rx="3"/><text class="t-sm mid" x="651" y="46">Phantom</text><rect class="n-acc" x="0" y="60" width="180" height="30" rx="3"/><text class="t-w-sm mid" x="90" y="80">Read Uncommitted</text><rect class="n-bad" x="187" y="60" width="180" height="30" rx="3"/><text class="t-sm mid" x="277" y="80">వస్తుంది</text><rect class="n-bad" x="374" y="60" width="180" height="30" rx="3"/><text class="t-sm mid" x="464" y="80">వస్తుంది</text><rect class="n-bad" x="561" y="60" width="180" height="30" rx="3"/><text class="t-sm mid" x="651" y="80">వస్తుంది</text><rect class="n-acc" x="0" y="96" width="180" height="30" rx="3"/><text class="t-w-sm mid" x="90" y="116">Read Committed</text><rect class="n-good" x="187" y="96" width="180" height="30" rx="3"/><text class="t-sm mid" x="277" y="116">✗</text><rect class="n-bad" x="374" y="96" width="180" height="30" rx="3"/><text class="t-sm mid" x="464" y="116">వస్తుంది</text><rect class="n-bad" x="561" y="96" width="180" height="30" rx="3"/><text class="t-sm mid" x="651" y="116">వస్తుంది</text><rect class="n-acc" x="0" y="132" width="180" height="30" rx="3"/><text class="t-w-sm mid" x="90" y="152">Repeatable Read</text><rect class="n-good" x="187" y="132" width="180" height="30" rx="3"/><text class="t-sm mid" x="277" y="152">✗</text><rect class="n-good" x="374" y="132" width="180" height="30" rx="3"/><text class="t-sm mid" x="464" y="152">✗</text><rect class="n-bad" x="561" y="132" width="180" height="30" rx="3"/><text class="t-sm mid" x="651" y="152">వస్తుంది</text><rect class="n-acc" x="0" y="168" width="180" height="30" rx="3"/><text class="t-w-sm mid" x="90" y="188">Serializable</text><rect class="n-good" x="187" y="168" width="180" height="30" rx="3"/><text class="t-sm mid" x="277" y="188">✗</text><rect class="n-good" x="374" y="168" width="180" height="30" rx="3"/><text class="t-sm mid" x="464" y="188">✗</text><rect class="n-good" x="561" y="168" width="180" height="30" rx="3"/><text class="t-sm mid" x="651" y="188">✗</text><rect class="n-acc" x="0" y="212" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="234">ఆచరణలో</text><text class="t-w-sm mid" x="375" y="256">PostgreSQL default = Read Committed · MySQL InnoDB default = Repeatable Read</text><text class="t-w-sm mid" x="375" y="272">Serializable ఖచ్చితమైనది కానీ throughput చంపుతుంది — నిజంగా అవసరమైన చోట మాత్రమే.</text><text class="t-w-sm mid" x="375" y="288">చాలా bugs "default level ఏమిటో తెలియకపోవడం" వల్లే వస్తాయి.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -1861,6 +1899,11 @@ A: **Detection** — deadlocks అరుదు అనుకుంటే (most OL
 ### వివరణ
 
 **Index** = ఒక table లో data ని వేగంగా వెతకడానికి database maintain చేసే separate data structure. Index లేకపోతే, ఒక row వెతకాలంటే database **మొత్తం table ని scan** చేయాలి (full table scan — O(n)). Index ఉంటే, నేరుగా వెళ్తుంది (O(log n)). ఇది databases performance లో అత్యంత high-impact concept — interview లో దాదాపు తప్పనిసరి.
+
+<div class="fig">
+<div class="cap">Indexing · B-tree lookup</div>
+<svg viewBox="0 0 750 340"><text class="t-xs" x="0" y="14">INDEX — B-tree ఎలా వెతుకుతుంది</text><rect class="n-acc" x="300" y="26" width="150" height="36" rx="3"/><text class="t-w mid" x="375" y="48">Root</text><line class="ln-acc" x1="340" y1="66" x2="180" y2="96" marker-end="url(#aa)"/><line class="ln-acc" x1="375" y1="66" x2="375" y2="96" marker-end="url(#aa)"/><line class="ln-acc" x1="410" y1="66" x2="570" y2="96" marker-end="url(#aa)"/><rect class="n" x="100" y="100" width="160" height="36" rx="3"/><text class="t mid" x="180" y="123">&lt; 100</text><rect class="n" x="295" y="100" width="160" height="36" rx="3"/><text class="t mid" x="375" y="123">100–500</text><rect class="n" x="490" y="100" width="160" height="36" rx="3"/><text class="t mid" x="570" y="123">&gt; 500</text><line class="ln-acc" x1="180" y1="140" x2="140" y2="170" marker-end="url(#aa)"/><rect class="n-good" x="60" y="174" width="180" height="36" rx="3"/><text class="t mid" x="150" y="197">leaf → row pointers</text><text class="t-acc" x="280" y="194">3–4 hops lo కోట్ల rows lo ఒక row</text><rect class="n-good" x="0" y="228" width="366" height="102" rx="4"/><text class="t mid" x="183" y="250">ఎప్పుడు index సహాయం చేస్తుంది</text><text class="t-sm mid" x="183" y="272">WHERE, JOIN, ORDER BY lo వాడే columns</text><text class="t-sm mid" x="183" y="288">అధిక cardinality (చాలా విభిన్న విలువలు)</text><text class="t-sm mid" x="183" y="304">Read-heavy tables</text><rect class="n-bad" x="384" y="228" width="366" height="102" rx="4"/><text class="t mid" x="567" y="250">ఎప్పుడు నష్టం</text><text class="t-sm mid" x="567" y="272">ప్రతి INSERT/UPDATE కి index కూడా update</text><text class="t-sm mid" x="567" y="288">తక్కువ cardinality (gender, boolean) — పనికిరాదు</text><text class="t-sm mid" x="567" y="304">అనవసర indexes = నెమ్మది writes + disk</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -2180,6 +2223,11 @@ A: Parent records 1 query లో తెచ్చి, తర్వాత ప్�
 **NoSQL ("Not Only SQL") databases** — non-relational, flexible schema, horizontal scaling కి designed. Data ని documents/key-value/columns/graphs గా store చేస్తాయి. ఉదా: **MongoDB (document)**, Redis (key-value), Cassandra (wide-column), Neo4j (graph).
 
 **నీ MERN world లో:** M = **MongoDB** = NoSQL document DB. నువ్వు ఇప్పటివరకు NoSQL వాడావు. ఈ topic నీకు "relational world ఎందుకు, ఎప్పుడు better" అని చూపిస్తుంది — interview లో "SQL vs NoSQL, ఎప్పుడు ఏది" అనేది దాదాపు guaranteed question.
+
+<div class="fig">
+<div class="cap">SQL vs NoSQL · access pattern ప్రకారం</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">SQL vs NoSQL — access pattern ప్రకారం ఎంచుకోవడం</text><rect class="n-acc" x="0" y="26" width="366" height="130" rx="4"/><text class="t-w mid" x="183" y="48">SQL ఎప్పుడు</text><text class="t-w-sm mid" x="183" y="70">సంబంధాలు, joins ముఖ్యం</text><text class="t-w-sm mid" x="183" y="86">Transactions (ACID) కావాలి</text><text class="t-w-sm mid" x="183" y="102">Schema స్థిరం</text><text class="t-w-sm mid" x="183" y="118">Ad-hoc queries — ముందే తెలియవు</text><rect class="n-info" x="384" y="26" width="366" height="130" rx="4"/><text class="t mid" x="567" y="48">NoSQL ఎప్పుడు</text><text class="t-sm mid" x="567" y="70">Access pattern ముందే తెలుసు</text><text class="t-sm mid" x="567" y="86">భారీ write throughput</text><text class="t-sm mid" x="567" y="102">Schema మారుతూ ఉంటుంది</text><text class="t-sm mid" x="567" y="118">Horizontal scaling ప్రధానం</text><rect class="n-bad" x="0" y="176" width="750" height="86" rx="4"/><text class="t mid" x="375" y="198">అతి సాధారణమైన తప్పు</text><text class="t-sm mid" x="375" y="220">"NoSQL వేగం" అనుకుని ఎంచుకోవడం — అది నిజం కాదు, అది <tspan class="t-acc">వేరే trade-off</tspan>.</text><text class="t-sm mid" x="375" y="236">NoSQL lo joins లేవు → data ని duplicate చేయాలి → update చేసేటప్పుడు అన్ని చోట్లా.</text><text class="t-sm mid" x="375" y="252">సరైన ప్రశ్న: "నా queries ఏమిటి?" — DB ని ఆ queries చుట్టూ ఎంచుకోవాలి.</text></svg>
+</div>
 
 ### Real-life Scenario
 

@@ -450,11 +450,21 @@ svg text { fill: var(--ink); }
 .t-sm   { font-size: 9.6px;  font-weight: 500; fill: #6f7889; }
 .t-xs   { font-size: 7.6px; font-weight: 700; fill: #6f7889; letter-spacing: 0.1em; }
 .t-w    { font-size: 12px; font-weight: 600; fill: #ffffff; }
-.t-w-sm { font-size: 9.2px; font-weight: 500; fill: #c3cbdb; }
+/* Light enough to stay legible on the orange fill (.n-acc), still visibly
+   dimmer than a white title on the navy fill (.n-dark). */
+.t-w-sm { font-size: 9.2px; font-weight: 500; fill: #e8ecf4; }
 .t-acc  { font-size: 10px; font-weight: 700; fill: #e2653a; }
 .mid    { text-anchor: middle; }
 .end    { text-anchor: end; }
 .mono   { font-family: "SF Mono", Menlo, monospace; font-size: 9px; }
+
+
+/* Emphasis inside dark/accent-filled shapes: orange-on-orange is invisible,
+   so emphasised spans go white+bold instead of accent-coloured. */
+.t-w .t-acc, .t-w-sm .t-acc, .t-w tspan.t-acc, .t-w-sm tspan.t-acc {
+  fill: #ffffff;
+  font-weight: 700;
+}
 
 .ln      { stroke: #a9b0be; stroke-width: 1.3; fill: none; }
 .ln-acc  { stroke: #e2653a; stroke-width: 1.5; fill: none; }

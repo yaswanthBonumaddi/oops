@@ -1,14 +1,27 @@
-# React - పూర్తి తెలుగు గైడ్ (End-to-End, SDE2 & SSE)
+<!-- style: editorial -->
+<!-- footer: React · End-to-End · SDE2 & SSE · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత React మళ్ళీ జీవితంలో మర్చిపోలేవు. ప్రతి concept కి ఒక real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, trade-offs, gotchas (సాధారణ తప్పులు), లోపల ఏం జరుగుతుంది (internals — Virtual DOM, Fiber, reconciliation, hooks linked list, batching, concurrent rendering, hydration), మరియు interview దృష్టి — అన్నీ ఉంటాయి.
->
-> **లక్ష్యం:** JavaScript తెలిసిన engineer ని React లో absolute basics నుండి React 19 / RSC / Next.js App Router / performance internals వరకు తీసుకెళ్లడం — **SDE2 & SSE (Senior Software Engineer) interview level**. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> ఇది **React 19** (latest stable) ఆధారంగా రాయబడింది, కానీ React 16.8 → 18 → 19 మధ్య తేడాలు అన్నీ స్పష్టంగా చూపించాను — ఎందుకంటే interview లో "React 18 లో ఏం మారింది?" అని అడుగుతారు, మరియు మీ company codebase పాత version లో ఉండవచ్చు.
->
-> **Companion docs:** `JavaScript_Telugu.md` (భాష మొత్తం — closures, event loop, promises — React అర్థం కావాలంటే ఇవి తప్పనిసరి), `OOPS_Telugu.md` (design patterns), `HLD_Telugu.md` / `SystemDesign_Go_Telugu.md` (frontend system design కి పునాది), `Security_Telugu.md` (XSS/CSRF).
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">⚛</div>
+<div class="kicker">React · End-to-End · SDE2 &amp; SSE</div>
+<div class="rule"></div>
+<div class="cover-title">React</div>
+<div class="lede">Fiber, reconciliation, hooks, RSC, React 19 — "ఇది ఎందుకు re-render అవుతోంది?" అనే ప్రశ్నకి నిజమైన జవాబు.</div>
+<div class="sub">Hooks ని గుర్తుపెట్టుకోవడం కాదు — rendering model ని అర్థం చేసుకోవడం. అప్పుడు ప్రతి hook తనంతట తానే అర్థమవుతుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -410,6 +423,11 @@ src/
 ---
 ## 3. JSX Deep
 
+<div class="fig">
+<div class="cap">JSX · Babel ఏం చేస్తుంది</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">JSX ఒక syntax మాత్రమే — Babel దీన్ని function call గా మారుస్తుంది</text><rect class="n" x="0" y="26" width="340" height="86" rx="4"/><text class="t mid" x="170" y="48">మనం రాసేది</text><text class="t-sm mono mid" x="170" y="70">&lt;h1 className="x"&gt;Hi&lt;/h1&gt;</text><line class="ln-acc" x1="344" y1="64" x2="406" y2="64" marker-end="url(#aa)"/><rect class="n-acc" x="410" y="26" width="340" height="86" rx="4"/><text class="t-w mid" x="580" y="48">Babel ఇచ్చేది</text><text class="t-w-sm mono mid" x="580" y="70">jsx("h1", { className: "x",</text><text class="t-w-sm mono mid" x="580" y="86">      children: "Hi" })</text><line class="ln-acc" x1="580" y1="116" x2="580" y2="146" marker-end="url(#aa)"/><rect class="n-info" x="410" y="150" width="340" height="86" rx="4"/><text class="t mid" x="580" y="172">ఫలితం — ఒక plain object</text><text class="t-sm mono mid" x="580" y="194">{ type: "h1", props: {…} }</text><text class="t-sm mono mid" x="580" y="210">ఇదే "React element"</text><rect class="n-good" x="0" y="150" width="366" height="86" rx="4"/><text class="t mid" x="183" y="172">దీని పరిణామాలు</text><text class="t-sm mid" x="183" y="194">className ఎందుకు (class కాదు) — object key</text><text class="t-sm mid" x="183" y="210">పెద్ద అక్షరం = component, చిన్నది = HTML tag</text><text class="t-sm mid" x="183" y="226">JSX lo expressions {} మాత్రమే, statements కాదు</text><rect class="n-acc" x="0" y="256" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="278">ఎందుకు ఇది తెలియాలి</text><text class="t-w-sm mid" x="375" y="300">JSX ఒక object ని <tspan class="t-acc">వర్ణిస్తుంది</tspan> — DOM ని సృష్టించదు. అది render సమయంలో జరుగుతుంది.</text><text class="t-w-sm mid" x="375" y="316">అందుకే JSX ని variable lo పెట్టొచ్చు, array lo పెట్టొచ్చు, function నుంచి return చేయొచ్చు.</text></svg>
+</div>
+
 ### వివరణ
 
 **JSX = JavaScript XML.** ఇది JavaScript లో HTML లాంటి syntax రాయనిచ్చే **syntax extension**. Browser కి JSX అర్థం కాదు — **Babel** (లేదా Vite లోని esbuild/SWC) దాన్ని సాధారణ JavaScript function calls గా మారుస్తుంది.
@@ -594,6 +612,11 @@ function Row() { return <><td>A</td><td>B</td></>; }
 
 ## 4. Components & Props
 
+<div class="fig">
+<div class="cap">Props · ఒక దిక్కు data flow</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">PROPS కిందికి ప్రవహిస్తాయి — ఎప్పుడూ పైకి కాదు</text><circle cx="375" cy="50" r="26" fill="#17203a"/><text class="t-w mid" x="375" y="55">App</text><line class="ln-acc" x1="352" y1="70" x2="250" y2="96" marker-end="url(#aa)"/><line class="ln-acc" x1="398" y1="70" x2="500" y2="96" marker-end="url(#aa)"/><circle cx="230" cy="116" r="30" fill="#17203a"/><text class="t-w mid" x="230" y="121">Header</text><circle cx="520" cy="116" r="26" fill="#17203a"/><text class="t-w mid" x="520" y="121">List</text><line class="ln-acc" x1="520" y1="146" x2="520" y2="176" marker-end="url(#aa)"/><circle cx="520" cy="200" r="26" fill="#17203a"/><text class="t-w mid" x="520" y="205">Item</text><text class="t-acc" x="20" y="120">props ↓</text><line class="ln-acc" x1="490" y1="196" x2="420" y2="74" marker-end="url(#aa)"/><text class="t-sm" x="300" y="150">callback ↑ — data కాదు, <tspan class="t-acc">function</tspan></text><rect class="n-good" x="0" y="236" width="366" height="86" rx="4"/><text class="t mid" x="183" y="258">"State ని పైకి ఎత్తడం"</text><text class="t-sm mid" x="183" y="280">ఇద్దరు siblings ఒకే data వాడాలంటే —</text><text class="t-sm mid" x="183" y="296">వాళ్ళ ఉమ్మడి parent lo state పెట్టడం.</text><rect class="n-bad" x="384" y="236" width="366" height="86" rx="4"/><text class="t mid" x="567" y="258">Prop drilling</text><text class="t-sm mid" x="567" y="280">3+ స్థాయిలు props ని కేవలం దాటిస్తుంటే —</text><text class="t-sm mid" x="567" y="296">Context లేదా composition ఆలోచించాలి.</text></svg>
+</div>
+
 ### వివరణ
 
 **Component = ఒక JavaScript function, ఇది props తీసుకొని JSX return చేస్తుంది.** ఇదే React లో UI యొక్క ప్రాథమిక unit — ఒక LEGO ముక్క.
@@ -753,6 +776,11 @@ function Card({ title, count = 0, variant, onSelect, children }: CardProps) { /*
 ---
 ## 5. Rendering, Virtual DOM & Reconciliation
 
+<div class="fig">
+<div class="cap">Render vs Commit · ఎందుకు components pure గా ఉండాలి</div>
+<svg viewBox="0 0 750 302"><text class="t-xs" x="0" y="14">RENDER యొక్క రెండు దశలు — ఇది తెలిస్తే చాలా clear అవుతుంది</text><rect class="n-acc" x="0" y="26" width="366" height="50" rx="3"/><text class="t-w mid" x="183" y="49">1 · RENDER phase</text><text class="t-w-sm mid" x="183" y="65">component function నడుస్తుంది · pure గా ఉండాలి</text><line class="ln-acc" x1="370" y1="51" x2="410" y2="51" marker-end="url(#aa)"/><rect class="n-good" x="414" y="26" width="336" height="50" rx="3"/><text class="t mid" x="582" y="49">2 · COMMIT phase</text><text class="t-sm mid" x="582" y="65">DOM కి మార్పులు · refs, effects</text><rect class="n-bad" x="0" y="96" width="366" height="110" rx="4"/><text class="t mid" x="183" y="118">Render phase lo చేయకూడనివి</text><text class="t-sm mid" x="183" y="140">setState నేరుగా (అనంత loop)</text><text class="t-sm mid" x="183" y="156">DOM ని ముట్టుకోవడం</text><text class="t-sm mid" x="183" y="172">API calls, subscriptions</text><rect class="n-good" x="384" y="96" width="366" height="110" rx="4"/><text class="t mid" x="567" y="118">ఎందుకు pure గా ఉండాలి</text><text class="t-sm mid" x="567" y="140">React render ని <tspan class="t-acc">ఆపి, పారేసి, మళ్ళీ</tspan> నడపొచ్చు</text><text class="t-sm mid" x="567" y="156">StrictMode dev lo రెండుసార్లు నడిపి ఇది test చేస్తుంది</text><text class="t-sm mid" x="567" y="172">Side effect ఉంటే — అది రెండుసార్లు జరుగుతుంది</text><rect class="n-acc" x="0" y="226" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="248">StrictMode double-render ఒక bug కాదు</text><text class="t-w-sm mid" x="375" y="270">అది ఒక <tspan class="t-acc">పరీక్ష</tspan> — "నీ component నిజంగా pure నా?" అని. Production lo ఒకసారే నడుస్తుంది.</text><text class="t-w-sm mid" x="375" y="286">Double-render వల్ల bug కనిపిస్తే — ఆ bug నిజంగా ఉంది, StrictMode దాన్ని బయటపెట్టింది.</text></svg>
+</div>
+
 ### వివరణ
 
 React లో "render" అంటే **screen మీద గీయడం కాదు** — అది కేవలం *"నీ component function ని React call చేయడం, తిరిగి వచ్చిన element tree ని తీసుకోవడం."* అసలు DOM మార్పు తర్వాతి దశ.
@@ -885,6 +913,11 @@ function Child() {
 ---
 
 ## 6. State & useState
+
+<div class="fig">
+<div class="cap">useState · batching మరియు functional updates</div>
+<svg viewBox="0 0 750 360"><text class="t-xs" x="0" y="14">useState — ఎందుకు batching ఉంది</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">Batching లేకపోతే</text><text class="t-sm mid" x="183" y="70">setA(1) → re-render</text><text class="t-sm mid" x="183" y="86">setB(2) → re-render</text><text class="t-sm mid" x="183" y="102">setC(3) → re-render</text><text class="t-sm mid" x="183" y="118">ఒక handler lo 3 renders!</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">React 18 batching</text><text class="t-sm mid" x="567" y="70">setA, setB, setC — అన్నీ queue lo</text><text class="t-sm mid" x="567" y="86">handler ముగిశాక <tspan class="t-acc">ఒకే</tspan> re-render</text><text class="t-sm mid" x="567" y="102">Promise, timeout lo కూడా (automatic)</text><text class="t-xs" x="0" y="166">FUNCTIONAL UPDATE ఎప్పుడు తప్పనిసరి</text><rect class="n-bad" x="0" y="178" width="366" height="86" rx="4"/><text class="t mid" x="183" y="200">count + 1 (stale)</text><text class="t-sm mid" x="183" y="222">setCount(count + 1); setCount(count + 1);</text><text class="t-sm mid" x="183" y="238">→ ఫలితం +1 మాత్రమే. count ఆ render lo స్థిరం.</text><rect class="n-good" x="384" y="178" width="366" height="86" rx="4"/><text class="t mid" x="567" y="200">c =&gt; c + 1</text><text class="t-sm mid" x="567" y="222">setCount(c =&gt; c+1); setCount(c =&gt; c+1);</text><text class="t-sm mid" x="567" y="238">→ +2. React తాజా విలువని ఇస్తుంది.</text><rect class="n-acc" x="0" y="284" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="306">మానసిక నమూనా</text><text class="t-w-sm mid" x="375" y="328">ప్రతి render ఒక <tspan class="t-acc">ఫోటో</tspan> — ఆ render lo state ఒక స్థిరమైన విలువ, అది మారదు.</text><text class="t-w-sm mid" x="375" y="344">కొత్త విలువ కావాలంటే కొత్త render కావాలి. అందుకే closure lo పాత విలువ కనిపిస్తుంది.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -1334,6 +1367,11 @@ function renderBody(status) {
 ---
 
 ## 9. Lists & Keys (Deep)
+
+<div class="fig">
+<div class="cap">Reconciliation · keys ఎందుకు అంత ముఖ్యం</div>
+<svg viewBox="0 0 750 352"><text class="t-xs" x="0" y="14">RECONCILIATION — React ఏం మారిందో ఎలా కనుక్కుంటుంది</text><rect class="n" x="0" y="26" width="340" height="110" rx="4"/><text class="t mid" x="170" y="48">పాత Virtual DOM</text><text class="t-sm mono mid" x="170" y="70">&lt;ul&gt;</text><text class="t-sm mono mid" x="170" y="86">  &lt;li key="a"&gt;A&lt;/li&gt;</text><text class="t-sm mono mid" x="170" y="102">  &lt;li key="b"&gt;B&lt;/li&gt;</text><rect class="n-acc" x="410" y="26" width="340" height="110" rx="4"/><text class="t-w mid" x="580" y="48">కొత్త Virtual DOM</text><text class="t-w-sm mono mid" x="580" y="70">&lt;ul&gt;</text><text class="t-w-sm mono mid" x="580" y="86">  &lt;li key="b"&gt;B&lt;/li&gt;</text><text class="t-w-sm mono mid" x="580" y="102">  &lt;li key="a"&gt;A&lt;/li&gt;</text><line class="ln-acc" x1="344" y1="80" x2="406" y2="80" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="72">diff</text><rect class="n-good" x="0" y="156" width="750" height="86" rx="4"/><text class="t mid" x="375" y="178">కీలకమైన రెండు అంచనాలు (heuristics)</text><text class="t-sm mid" x="375" y="200">1 · వేరే <tspan class="t-acc">type</tspan> ఉన్న elements వేరే trees — పాతదాన్ని పూర్తిగా పడేసి కొత్తది కట్టడం.</text><text class="t-sm mid" x="375" y="216">2 · <tspan class="t-acc">key</tspan> ఒకటే అయితే అదే element — దాన్ని కదిలించడం, మళ్ళీ కట్టడం కాదు.</text><text class="t-sm mid" x="375" y="232">ఈ రెండింటి వల్ల O(n³) diff సమస్య O(n) అవుతుంది.</text><rect class="n-bad" x="0" y="256" width="750" height="86" rx="4"/><text class="t mid" x="375" y="278">index ని key గా వాడితే ఏమవుతుంది</text><text class="t-sm mid" x="375" y="300">List మధ్యలో ఒకటి తీసేస్తే — అన్ని indices జరుగుతాయి.</text><text class="t-sm mid" x="375" y="316">React "key 2 ఇప్పుడు వేరే data" అనుకుని <tspan class="t-acc">DOM ని తప్పుగా reuse</tspan> చేస్తుంది.</text><text class="t-sm mid" x="375" y="332">ఫలితం: input lo టైప్ చేసినది తప్పు row కి జారడం. ఇది అత్యంత సాధారణమైన React bug.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -1824,6 +1862,11 @@ export default [{
 
 ---
 ## 12. useEffect Deep
+
+<div class="fig">
+<div class="cap">useEffect · ఎప్పుడు నడుస్తుంది, cleanup ఎందుకు</div>
+<svg viewBox="0 0 750 322"><text class="t-xs" x="0" y="14">useEffect యొక్క జీవితచక్రం</text><rect class="n-acc" x="0" y="26" width="200" height="44" rx="3"/><text class="t-w mid" x="100" y="46">Render</text><text class="t-w-sm mid" x="100" y="62">DOM కి commit</text><line class="ln-acc" x1="204" y1="48" x2="246" y2="48" marker-end="url(#aa)"/><rect class="n" x="250" y="26" width="200" height="44" rx="3"/><text class="t mid" x="350" y="46">Effect నడుస్తుంది</text><text class="t-sm mid" x="350" y="62">browser paint తర్వాత</text><line class="ln-acc" x1="454" y1="48" x2="496" y2="48" marker-end="url(#aa)"/><rect class="n-info" x="500" y="26" width="250" height="44" rx="3"/><text class="t mid" x="625" y="46">deps మారాయా?</text><text class="t-sm mid" x="625" y="62">లేదు → ఏమీ చేయదు</text><line class="ln-acc" x1="625" y1="74" x2="625" y2="104" marker-end="url(#aa)"/><rect class="n-bad" x="450" y="108" width="300" height="44" rx="3"/><text class="t mid" x="600" y="128">Cleanup నడుస్తుంది</text><text class="t-sm mid" x="600" y="144">తర్వాత effect మళ్ళీ</text><rect class="n-acc" x="0" y="96" width="366" height="110" rx="4"/><text class="t-w mid" x="183" y="118">deps array యొక్క మూడు రూపాలు</text><text class="t-w-sm mono mid" x="183" y="140">లేకపోతే     → ప్రతి render కి</text><text class="t-w-sm mono mid" x="183" y="156">[]           → ఒక్కసారే (mount)</text><text class="t-w-sm mono mid" x="183" y="172">[a, b]       → a లేదా b మారితే</text><rect class="n-bad" x="0" y="226" width="750" height="86" rx="4"/><text class="t mid" x="375" y="248">Cleanup ఎందుకు తప్పనిసరి</text><text class="t-sm mid" x="375" y="270">Subscription, timer, event listener — cleanup లేకపోతే <tspan class="t-acc">memory leak</tspan>.</text><text class="t-sm mid" x="375" y="286">పైగా race condition: పాత fetch ఆలస్యంగా వచ్చి కొత్త దాన్ని తొక్కేస్తుంది.</text><text class="t-sm mid" x="375" y="302">పరిష్కారం: cleanup lo ఒక <code>cancelled</code> flag లేదా AbortController.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -2569,6 +2612,11 @@ npm install -D babel-plugin-react-compiler
 
 ## 17. React.memo & Re-render Mental Model
 
+<div class="fig">
+<div class="cap">Re-render mental model · ఎప్పుడు, ఎందుకు</div>
+<svg viewBox="0 0 750 432"><text class="t-xs" x="0" y="14">ఒక component ఎప్పుడు RE-RENDER అవుతుంది</text><rect class="n-acc" x="0" y="26" width="240" height="38" rx="3"/><text class="t-w mid" x="120" y="50">State మారితే</text><text class="t-sm" x="256" y="50">useState / useReducer setter</text><rect class="n-acc" x="0" y="72" width="240" height="38" rx="3"/><text class="t-w mid" x="120" y="96">Props మారితే</text><text class="t-sm" x="256" y="96">parent కొత్త props ఇస్తే</text><rect class="n-bad" x="0" y="118" width="240" height="38" rx="3"/><text class="t mid" x="120" y="142">Parent re-render అయితే</text><text class="t-sm" x="256" y="142">props మారకపోయినా! ← ఇదే ఆశ్చర్యం</text><rect class="n-info" x="0" y="164" width="240" height="38" rx="3"/><text class="t mid" x="120" y="188">Context విలువ మారితే</text><text class="t-sm" x="256" y="188">ఆ context వాడే అన్ని consumers</text><rect class="n-good" x="0" y="216" width="366" height="102" rx="4"/><text class="t mid" x="183" y="238">React.memo ఎప్పుడు</text><text class="t-sm mid" x="183" y="260">Props నిజంగా మారనప్పుడు మాత్రమే ఆపుతుంది</text><text class="t-sm mid" x="183" y="276">⚠ object/function props ప్రతిసారీ కొత్తవి —</text><text class="t-sm mid" x="183" y="292">అప్పుడు memo పనికిరాదు. useMemo/useCallback తోడు కావాలి.</text><rect class="n-bad" x="384" y="216" width="366" height="102" rx="4"/><text class="t mid" x="567" y="238">ఎప్పుడు వద్దు</text><text class="t-sm mid" x="567" y="260">Re-render ఎప్పుడూ చెడ్డది కాదు — React వేగం.</text><text class="t-sm mid" x="567" y="276">Memo కూడా ఒక ఖర్చు (comparison + memory).</text><text class="t-sm mid" x="567" y="292">ముందు కొలవండి, తర్వాత optimise చేయండి.</text><rect class="n-acc" x="0" y="338" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="360">సరైన మానసిక నమూనా</text><text class="t-w-sm mid" x="375" y="382">Re-render ≠ DOM update. React component function ని మళ్ళీ నడిపి, kotta virtual DOM ని</text><text class="t-w-sm mid" x="375" y="398">diff చేస్తుంది.</text><text class="t-w-sm mid" x="375" y="414">నిజంగా మారినది మాత్రమే DOM కి వెళ్తుంది. అందుకే చాలా re-renders నిజానికి చౌక.</text></svg>
+</div>
+
 ### వివరణ
 
 **`React.memo(Component)`** — ఒక HOC. Props **shallow equal** అయితే re-render ని skip చేసి, పాత render ఫలితాన్ని reuse చేస్తుంది.
@@ -2697,6 +2745,11 @@ function App() {
 
 ---
 ## 18. useContext & Context API
+
+<div class="fig">
+<div class="cap">Context · ఎప్పుడు, ఎందుకు జాగ్రత్త</div>
+<svg viewBox="0 0 750 352"><text class="t-xs" x="0" y="14">CONTEXT — prop drilling కి పరిష్కారం, కానీ ఒక ఖరీదుతో</text><rect class="n" x="0" y="26" width="340" height="86" rx="4"/><text class="t mid" x="170" y="48">Provider value మారితే</text><text class="t-sm mid" x="170" y="70">ఆ context వాడే <tspan class="t-acc">అన్ని</tspan> consumers</text><text class="t-sm mid" x="170" y="86">re-render అవుతాయి — memo అయినా సరే</text><line class="ln-acc" x1="344" y1="64" x2="406" y2="64" marker-end="url(#aa)"/><rect class="n-bad" x="410" y="26" width="340" height="86" rx="4"/><text class="t mid" x="580" y="48">సమస్య</text><text class="t-sm mid" x="580" y="70">value ఒక object అయితే —</text><text class="t-sm mid" x="580" y="86">ప్రతి render కి కొత్త reference</text><text class="t-xs" x="0" y="142">పరిష్కారాలు</text><rect class="n-good" x="0" y="154" width="240" height="102" rx="4"/><text class="t mid" x="120" y="176">1 · useMemo</text><text class="t-sm mid" x="120" y="198">value ని memo చేయడం</text><text class="t-sm mid" x="120" y="214">deps సరిగ్గా ఇవ్వడం</text><rect class="n-good" x="255" y="154" width="240" height="102" rx="4"/><text class="t mid" x="375" y="176">2 · Context ని విడగొట్టడం</text><text class="t-sm mid" x="375" y="198">State context + Dispatch context</text><text class="t-sm mid" x="375" y="214">Dispatch ఎప్పుడూ మారదు</text><rect class="n-good" x="510" y="154" width="240" height="102" rx="4"/><text class="t mid" x="630" y="176">3 · Selector library</text><text class="t-sm mid" x="630" y="198">use-context-selector</text><text class="t-sm mid" x="630" y="214">లేదా Zustand/Jotai</text><rect class="n-acc" x="0" y="276" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="298">Context ఏం కాదు</text><text class="t-w-sm mid" x="375" y="320">Context ఒక <tspan class="t-acc">state management library కాదు</tspan> — అది ఒక dependency injection యంత్రాంగం.</text><text class="t-w-sm mid" x="375" y="336">తరచుగా మారే data కి (form input) Context తప్పు ఎంపిక — అది అందరినీ re-render చేస్తుంది.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -3372,6 +3425,11 @@ function BlogPost({ post }) {
 
 ## 23. Custom Hooks (Production Library)
 
+<div class="fig">
+<div class="cap">Custom Hooks · logic reuse, state reuse కాదు</div>
+<svg viewBox="0 0 750 308"><text class="t-xs" x="0" y="14">CUSTOM HOOK — logic ని పంచుకోవడం, state ని కాదు</text><rect class="n" x="0" y="26" width="200" height="86" rx="4"/><text class="t mid" x="100" y="48">Component A</text><text class="t-sm mid" x="100" y="70">useCounter()</text><rect class="n-acc" x="275" y="26" width="200" height="86" rx="4"/><text class="t-w mid" x="375" y="48">useCounter</text><text class="t-w-sm mid" x="375" y="70">useState + logic</text><rect class="n" x="550" y="26" width="200" height="86" rx="4"/><text class="t mid" x="650" y="48">Component B</text><text class="t-sm mid" x="650" y="70">useCounter()</text><line class="ln-acc" x1="204" y1="64" x2="271" y2="64" marker-end="url(#aa)"/><line class="ln-acc" x1="546" y1="64" x2="479" y2="64" marker-end="url(#aa)"/><rect class="n-bad" x="0" y="132" width="750" height="86" rx="4"/><text class="t mid" x="375" y="154">కీలకమైన అపోహ</text><text class="t-sm mid" x="375" y="176">Custom hook state ని <tspan class="t-acc">పంచుకోదు</tspan> — ప్రతి component కి తన సొంత కాపీ వస్తుంది.</text><text class="t-sm mid" x="375" y="192">A lo count పెంచితే B lo మారదు. అది logic reuse మాత్రమే.</text><text class="t-sm mid" x="375" y="208">నిజంగా పంచుకోవాలంటే — Context లేదా బయటి store కావాలి.</text><rect class="n-good" x="0" y="232" width="750" height="70" rx="4"/><text class="t mid" x="375" y="254">మంచి custom hook లక్షణాలు</text><text class="t-sm mid" x="375" y="276">"use" తో మొదలు · ఒక్క పని చేస్తుంది · state కాకుండా <tspan class="t-acc">ఒక API</tspan> ని return చేస్తుంది</text><text class="t-sm mid" x="375" y="292">Component ఎలా render చేయాలో నిర్ణయించదు — దాన్ని component కి వదిలేస్తుంది.</text></svg>
+</div>
+
 ### వివరణ
 
 **Custom hook = `use` తో మొదలయ్యే function, ఇది ఇతర hooks ని వాడుతుంది.** ఇది React లో **stateful logic reuse** చేసే ప్రామాణిక మార్గం (HOC/render props స్థానంలో).
@@ -3785,6 +3843,11 @@ setUser((u) => ({ ...u, name: "x" }));           // ✅ manual merge
 ---
 
 ## 25. Error Boundaries
+
+<div class="fig">
+<div class="cap">Error Boundaries · పరిధి</div>
+<svg viewBox="0 0 750 342"><text class="t-xs" x="0" y="14">ERROR BOUNDARY ఏం పట్టుకుంటుంది, ఏం పట్టుకోదు</text><rect class="n-good" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">✓ పట్టుకుంటుంది</text><text class="t-sm mid" x="183" y="70">Render సమయంలో వచ్చే errors</text><text class="t-sm mid" x="183" y="86">Lifecycle methods lo errors</text><text class="t-sm mid" x="183" y="102">Children యొక్క constructors lo</text><rect class="n-bad" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">✗ పట్టుకోదు</text><text class="t-sm mid" x="567" y="70">Event handlers (onClick lo throw)</text><text class="t-sm mid" x="567" y="86">async code (setTimeout, fetch .then)</text><text class="t-sm mid" x="567" y="102">Server-side rendering · boundary దానిలోనే</text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">ఎందుకు ఈ తేడా</text><text class="t-w-sm mid" x="375" y="200">Error boundary React యొక్క <tspan class="t-acc">render tree</tspan> ని మాత్రమే కాపాడుతుంది.</text><text class="t-w-sm mid" x="375" y="216">Event handler React tree బయట నడుస్తుంది — అక్కడ సాధారణ try/catch వాడాలి.</text><text class="t-w-sm mid" x="375" y="232">Async కి — .catch() లేదా error state. React 19 lo కొన్ని మెరుగుదలలు వచ్చాయి.</text><rect class="n-bad" x="0" y="256" width="750" height="70" rx="4"/><text class="t mid" x="375" y="278">ఇంకా class component మాత్రమే</text><text class="t-sm mid" x="375" y="300">Hooks తో error boundary రాయలేం — <code>getDerivedStateFromError</code> కి class కావాలి.</text><text class="t-sm mid" x="375" y="316">ఆచరణలో: <code>react-error-boundary</code> package వాడటం.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -4339,6 +4402,11 @@ const { getInputProps, getMenuProps, getItemProps, isOpen } = useCombobox({ item
 
 ## 29. Fiber Architecture Deep
 
+<div class="fig">
+<div class="cap">Fiber · ఆపగలిగే rendering</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">FIBER — ఎందుకు React ని తిరిగి రాశారు</text><rect class="n-bad" x="0" y="26" width="366" height="102" rx="4"/><text class="t mid" x="183" y="48">పాత Stack reconciler</text><text class="t-sm mid" x="183" y="70">ఒకసారి మొదలైతే <tspan class="t-acc">ఆపలేం</tspan> — recursive.</text><text class="t-sm mid" x="183" y="86">పెద్ద tree = main thread స్తంభిస్తుంది.</text><text class="t-sm mid" x="183" y="102">User type చేస్తున్నా UI స్పందించదు.</text><rect class="n-good" x="384" y="26" width="366" height="102" rx="4"/><text class="t mid" x="567" y="48">Fiber</text><text class="t-sm mid" x="567" y="70">Tree ని ఒక <tspan class="t-acc">linked list</tspan> గా మార్చడం.</text><text class="t-sm mid" x="567" y="86">ప్రతి unit తర్వాత "ఇంకా సమయం ఉందా?" అని చూడటం.</text><text class="t-sm mid" x="567" y="102">లేకపోతే ఆగి, browser కి దారి ఇచ్చి, తర్వాత కొనసాగడం.</text><text class="t-xs" x="0" y="156">రెండు దశలు</text><rect class="n-acc" x="0" y="168" width="366" height="50" rx="3"/><text class="t-w mid" x="183" y="191">RENDER phase</text><text class="t-w-sm mid" x="183" y="207">ఆపొచ్చు · మళ్ళీ మొదలుపెట్టొచ్చు · పారేయొచ్చు</text><line class="ln-acc" x1="370" y1="193" x2="410" y2="193" marker-end="url(#aa)"/><rect class="n-good" x="414" y="168" width="336" height="50" rx="3"/><text class="t mid" x="582" y="191">COMMIT phase</text><text class="t-sm mid" x="582" y="207">ఆపలేం · ఒకేసారి DOM కి వర్తిస్తుంది</text><rect class="n-acc" x="0" y="236" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="258">దీని వల్ల వచ్చినవి</text><text class="t-w-sm mid" x="375" y="280">useTransition — "ఇది తక్కువ ప్రాధాన్యత, ఆగినా ఫర్వాలేదు" అని చెప్పగలగడం</text><text class="t-w-sm mid" x="375" y="296">Suspense — data వచ్చేదాకా ఆ భాగాన్ని ఆపి, మిగతాది చూపడం</text><text class="t-w-sm mid" x="375" y="312">Concurrent rendering — అత్యవసరమైన update (typing) ముందు వెళ్ళడం</text></svg>
+</div>
+
 ### వివరణ
 
 **Fiber = React 16 లో వచ్చిన reconciliation engine యొక్క పూర్తి rewrite.** పాత architecture ని "Stack reconciler" అంటారు — అది recursive గా tree ని traverse చేసేది, **ఆపలేని** (uninterruptible) synchronous ప్రక్రియ. Component tree పెద్దదైతే main thread నిమిషాల పాటు block → typing, animations, clicks అన్నీ freeze.
@@ -4582,6 +4650,11 @@ Component ని unmount చేయకుండా "దాచడం" — state, D
 
 ---
 ## 31. Suspense & React.lazy (Code Splitting)
+
+<div class="fig">
+<div class="cap">React.lazy &amp; Suspense · bundle ని విడగొట్టడం</div>
+<svg viewBox="0 0 750 300"><text class="t-xs" x="0" y="14">CODE SPLITTING · React.lazy + Suspense</text><rect class="n-bad" x="0" y="26" width="366" height="86" rx="4"/><text class="t mid" x="183" y="48">Splitting లేకుండా</text><text class="t-sm mid" x="183" y="70">ఒకే పెద్ద bundle — 2 MB</text><text class="t-sm mid" x="183" y="86">User మొదటి page చూడటానికి అంతా download</text><rect class="n-good" x="384" y="26" width="366" height="86" rx="4"/><text class="t mid" x="567" y="48">lazy తో</text><text class="t-sm mid" x="567" y="70">Route ప్రకారం విడగొట్టడం</text><text class="t-sm mid" x="567" y="86">మొదటి load 200 KB, మిగతాది అవసరమైనప్పుడు</text><text class="t-xs" x="0" y="132">ఎక్కడ విడగొట్టాలి</text><rect class="n-acc" x="0" y="144" width="240" height="40" rx="3"/><text class="t-w mid" x="120" y="162">Route స్థాయి</text><text class="t-w-sm mid" x="120" y="178">అత్యంత సహజం</text><rect class="n" x="255" y="144" width="240" height="40" rx="3"/><text class="t mid" x="375" y="162">భారీ components</text><text class="t-sm mid" x="375" y="178">chart, editor, map</text><rect class="n" x="510" y="144" width="240" height="40" rx="3"/><text class="t mid" x="630" y="162">Modal / tab content</text><text class="t-sm mid" x="630" y="178">కనిపించేదాకా అవసరం లేదు</text><rect class="n-acc" x="0" y="204" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="226">Suspense fallback ని జాగ్రత్తగా ఎంచుకోండి</text><text class="t-w-sm mid" x="375" y="248">Spinner కాకుండా — <tspan class="t-acc">skeleton</tspan> (అసలు layout ఆకారంలో) చూపిస్తే layout shift ఉండదు.</text><text class="t-w-sm mid" x="375" y="264">ఖాళీ fallback → content వచ్చినప్పుడు page దూకుతుంది (CLS దెబ్బతింటుంది).</text></svg>
+</div>
 
 ### వివరణ
 
@@ -5072,6 +5145,11 @@ function Chart({ data }) {
 # Part 5 — State Management (Client & Server)
 
 ## 35. State రకాలు — సరైన Decision Tree
+
+<div class="fig">
+<div class="cap">State రకాలు · ఏది ఎక్కడ ఉంచాలి</div>
+<svg viewBox="0 0 750 388"><text class="t-xs" x="0" y="14">STATE ఎక్కడ ఉండాలి — ఒక నిర్ణయ వృక్షం</text><rect class="n-acc" x="275" y="26" width="200" height="86" rx="4"/><text class="t-w mid" x="375" y="73">ఒక state ముక్క</text><line class="ln-acc" x1="330" y1="74" x2="180" y2="102" marker-end="url(#aa)"/><line class="ln-acc" x1="420" y1="74" x2="570" y2="102" marker-end="url(#aa)"/><rect class="n" x="40" y="106" width="280" height="64" rx="4"/><text class="t mid" x="180" y="128">Server నుంచి వచ్చిందా?</text><text class="t-sm mid" x="180" y="150">అవును → TanStack Query</text><rect class="n" x="430" y="106" width="280" height="64" rx="4"/><text class="t mid" x="570" y="128">ఒకే component lo వాడతారా?</text><text class="t-sm mid" x="570" y="150">అవును → useState</text><line class="ln-acc" x1="180" y1="174" x2="180" y2="204" marker-end="url(#aa)"/><line class="ln-acc" x1="570" y1="174" x2="570" y2="204" marker-end="url(#aa)"/><rect class="n-good" x="40" y="208" width="280" height="64" rx="4"/><text class="t mid" x="180" y="230">Cache, refetch, stale — అన్నీ</text><text class="t-sm mid" x="180" y="252">library చూసుకుంటుంది</text><rect class="n-info" x="430" y="208" width="280" height="64" rx="4"/><text class="t mid" x="570" y="230">పలు చోట్లా? → Context</text><text class="t-sm mid" x="570" y="252">లేదా Zustand / Redux</text><rect class="n-acc" x="0" y="292" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="314">అత్యంత సాధారణమైన తప్పు</text><text class="t-w-sm mid" x="375" y="336">Server data ని Redux lo పెట్టడం — అప్పుడు caching, refetch, stale, loading, error</text><text class="t-w-sm mid" x="375" y="352">అన్నీ మీరే రాయాలి. అది ఒక పూర్తి library ని మళ్ళీ కట్టడం.</text><text class="t-w-sm mid" x="375" y="368">Server state మరియు client state <tspan class="t-acc">వేర్వేరు జంతువులు</tspan> — వేర్వేరు సాధనాలు.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -5620,6 +5698,11 @@ Atomic/derived heavy → Jotai
 
 ---
 ## 39. TanStack Query (React Query) Deep
+
+<div class="fig">
+<div class="cap">Server state vs Client state · ఎందుకు వేరే సాధనాలు</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">SERVER STATE vs CLIENT STATE</text><rect class="n-acc" x="0" y="26" width="366" height="130" rx="4"/><text class="t-w mid" x="183" y="48">Server state</text><text class="t-w-sm mid" x="183" y="70">మీది కాదు — server దగ్గర ఉంది</text><text class="t-w-sm mid" x="183" y="86">పాతబడిపోతుంది (stale)</text><text class="t-w-sm mid" x="183" y="102">Async · ఇతరులు మార్చొచ్చు</text><text class="t-w-sm mid" x="183" y="118">→ TanStack Query, SWR</text><rect class="n-info" x="384" y="26" width="366" height="130" rx="4"/><text class="t mid" x="567" y="48">Client state</text><text class="t-sm mid" x="567" y="70">పూర్తిగా మీది</text><text class="t-sm mid" x="567" y="86">ఎప్పుడూ తాజాదే</text><text class="t-sm mid" x="567" y="102">Sync · మీరే మార్చేది</text><text class="t-sm mid" x="567" y="118">→ useState, Zustand</text><rect class="n-good" x="0" y="176" width="750" height="86" rx="4"/><text class="t mid" x="375" y="198">TanStack Query ఏం ఇస్తుంది</text><text class="t-sm mid" x="375" y="220">Cache + stale-while-revalidate · deduplication (ఒకే key కి ఒకే request)</text><text class="t-sm mid" x="375" y="236">Background refetch · retry · pagination · optimistic update</text><text class="t-sm mid" x="375" y="252">ఇవన్నీ చేతితో రాస్తే — అదే ఒక library.</text></svg>
+</div>
 
 ### వివరణ
 

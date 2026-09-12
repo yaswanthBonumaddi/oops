@@ -1,12 +1,27 @@
-# Go (Golang) - పూర్తి తెలుగు గైడ్ (SDE2 & SSE)
+<!-- style: editorial -->
+<!-- footer: Go (Golang) · SDE2 & SSE · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత Go మళ్ళీ జీవితంలో మర్చిపోలేవు. ప్రతి concept కి ఒక real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, trade-offs, gotchas (సాధారణ తప్పులు), లోపల ఏం జరుగుతుంది (internals — memory layout, scheduler, GC, escape analysis), మరియు interview దృష్టి — అన్నీ ఉంటాయి.
->
-> **లక్ష్యం:** Java/JS/Python తెలిసిన కానీ Go అస్సలు తెలియని senior engineer ని absolute basics నుండి deep internals వరకు తీసుకెళ్లడం. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> ఇది `OOPS_Telugu.md` + `LLD_Telugu.md` + `HLD_Telugu.md` కి కొనసాగింపు. Go-specific design docs: `LLD_Go_Telugu.md`, `HLD_Go_Telugu.md`, `SystemDesign_Go_Telugu.md` లలో ఇంకా లోతుగా చూడవచ్చు.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">GO</div>
+<div class="kicker">Go (Golang) · SDE2 &amp; SSE</div>
+<div class="rule"></div>
+<div class="cover-title">Go</div>
+<div class="lede">Goroutines, channels, select, interfaces, memory model — concurrency ని భాషలోనే కలిపిన డిజైన్.</div>
+<div class="sub">JavaScript నుంచి వచ్చినవారికి: Go lo event loop లేదు, goroutines ఉన్నాయి. ఆ మార్పు ని ఇక్కడ అడుగడుగునా వివరించాం.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -1070,6 +1085,11 @@ A: Size compile-time లో fixed & known అయినప్పుడు (ఉద
 
 ## 9. Slices — DEEP Dive (అత్యంత ముఖ్యం)
 
+<div class="fig">
+<div class="cap">Slice · header, backing array, మరియు append యొక్క ఉచ్చు</div>
+<svg viewBox="0 0 750 360"><text class="t-xs" x="0" y="14">SLICE = ఒక HEADER — మూడు fields మాత్రమే</text><rect class="n-acc" x="0" y="26" width="290" height="110" rx="4"/><text class="t-w mid" x="145" y="48">Slice header</text><text class="t-w-sm mono mid" x="145" y="70">ptr  → array lo ఒక చోటు</text><text class="t-w-sm mono mid" x="145" y="86">len  = ఇప్పుడు ఎన్ని</text><text class="t-w-sm mono mid" x="145" y="102">cap  = గరిష్ఠంగా ఎన్ని</text><line class="ln-acc" x1="294" y1="80" x2="356" y2="80" marker-end="url(#aa)"/><text class="t-sm mid" x="325" y="72">ptr</text><rect class="n-acc" x="360" y="62" width="70" height="34" rx="3"/><text class="t-w mid" x="395" y="84">1</text><rect class="n-acc" x="433" y="62" width="70" height="34" rx="3"/><text class="t-w mid" x="468" y="84">2</text><rect class="n-acc" x="506" y="62" width="70" height="34" rx="3"/><text class="t-w mid" x="541" y="84">3</text><rect class="n" x="579" y="62" width="70" height="34" rx="3"/><text class="t mid" x="614" y="84">4</text><rect class="n" x="652" y="62" width="70" height="34" rx="3"/><text class="t mid" x="687" y="84">5</text><text class="t-acc mid" x="465" y="146">len = 3</text><text class="t-sm mid" x="605" y="146">cap = 5</text><rect class="n-bad" x="0" y="166" width="750" height="86" rx="4"/><text class="t mid" x="375" y="188">ఎందుకు slices ప్రమాదకరం కావొచ్చు</text><text class="t-sm mid" x="375" y="210">s2 := s1[:2] — రెండూ <tspan class="t-acc">ఒకే array</tspan> ని చూపుతాయి. s2 lo మార్చితే s1 lo కూడా మారుతుంది.</text><text class="t-sm mid" x="375" y="226">append() — cap మిగిలి ఉంటే అదే array lo రాస్తుంది (ఇతరులకి కనిపిస్తుంది);</text><text class="t-sm mid" x="375" y="242">cap నిండితే కొత్త array కి copy చేస్తుంది (ఇక కనిపించదు). ఈ అస్థిరతే bugs కి మూలం.</text><rect class="n-good" x="0" y="266" width="750" height="86" rx="4"/><text class="t mid" x="375" y="288">సురక్షితమైన అలవాటు</text><text class="t-sm mid" x="375" y="310">నిజంగా copy కావాలంటే: <tspan class="t-acc">copy(dst, src)</tspan> లేదా three-index slice <tspan class="t-acc">s[a:b:b]</tspan> (cap ని కూడా</text><text class="t-sm mid" x="375" y="326">కత్తిరించడం).</text><text class="t-sm mid" x="375" y="342">Function కి slice ఇచ్చేటప్పుడు — "ఇది మార్చొచ్చా?" అని ఆలోచించడం.</text></svg>
+</div>
+
 ### వివరణ
 
 **Slice = ఒక underlying array మీద dynamic, resizable "window."** Go లో ఇది అత్యధికంగా వాడే data structure. Slice ఒక **3-word header:**
@@ -1884,6 +1904,11 @@ A: LIFO — చివరిగా defer చేసినది మొదట run. 
 
 ## 14. Methods — Value vs Pointer Receivers, Method Sets
 
+<div class="fig">
+<div class="cap">Value vs Pointer receiver · method sets</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">VALUE vs POINTER RECEIVER</text><rect class="n" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">func (c Counter) Inc()</text><text class="t-sm mid" x="183" y="70">Copy మీద పని చేస్తుంది</text><text class="t-sm mid" x="183" y="86">అసలు struct మారదు</text><text class="t-sm mid" x="183" y="102">చిన్న, immutable types కి</text><rect class="n-acc" x="384" y="26" width="366" height="110" rx="4"/><text class="t-w mid" x="567" y="48">func (c *Counter) Inc()</text><text class="t-w-sm mid" x="567" y="70">అసలు struct మీద పని</text><text class="t-w-sm mid" x="567" y="86">మార్పులు నిలుస్తాయి</text><text class="t-w-sm mid" x="567" y="102">పెద్ద structs కి (copy ఖరీదు)</text><rect class="n-bad" x="0" y="156" width="750" height="86" rx="4"/><text class="t mid" x="375" y="178">Method set — ఇదే గందరగోళానికి మూలం</text><text class="t-sm mid" x="375" y="200">*T యొక్క method set lo <tspan class="t-acc">value + pointer</tspan> రెండు receivers ఉంటాయి.</text><text class="t-sm mid" x="375" y="216">T యొక్క method set lo <tspan class="t-acc">value receivers మాత్రమే</tspan>.</text><text class="t-sm mid" x="375" y="232">అందుకే: pointer receiver ఉన్న method interface ని satisfy చేయాలంటే — &amp;x ఇవ్వాలి, x కాదు.</text><rect class="n-good" x="0" y="256" width="750" height="70" rx="4"/><text class="t mid" x="375" y="278">ఆచరణాత్మక నియమం</text><text class="t-sm mid" x="375" y="300">ఒక type కి ఏ ఒక్క method pointer receiver వాడితే — <tspan class="t-acc">అన్నీ</tspan> pointer receiver వాడాలి.</text><text class="t-sm mid" x="375" y="316">కలగలిపితే — method set గందరగోళం, మరియు చదివేవారికి "ఇది mutate చేస్తుందా?" అని అస్పష్టత.</text></svg>
+</div>
+
 ### వివరణ
 
 **Method = ఒక type కి attach అయిన function.** Go లో methods classes లో కాదు — receiver ద్వారా type కి bind అవుతాయి. Receiver = function పేరుకి ముందు `(r T)` లేదా `(r *T)`.
@@ -2022,6 +2047,11 @@ A: Method value = `x.M` — receiver `x` bound అయిన function. Method exp
 ---
 
 ## 15. Interfaces — Implicit Satisfaction, Internals, typed-nil Trap
+
+<div class="fig">
+<div class="cap">Interface internals · type + value జత</div>
+<svg viewBox="0 0 750 412"><text class="t-xs" x="0" y="14">INTERFACE లోపల — రెండు pointers</text><rect class="n-acc" x="200" y="26" width="350" height="86" rx="4"/><text class="t-w mid" x="375" y="48">interface value</text><text class="t-w-sm mono mid" x="375" y="70">type  → *Dog</text><text class="t-w-sm mono mid" x="375" y="86">value → 0xc000…</text><line class="ln-acc" x1="375" y1="116" x2="375" y2="146" marker-end="url(#aa)"/><rect class="n" x="200" y="150" width="350" height="58" rx="4"/><text class="t mid" x="375" y="172">అసలు Dog struct</text><rect class="n-bad" x="0" y="236" width="750" height="86" rx="4"/><text class="t mid" x="375" y="258">క్లాసిక్ nil interface ఉచ్చు</text><text class="t-sm mid" x="375" y="280">var p *Dog = nil;  var a Animal = p;  a == nil → <tspan class="t-acc">false</tspan>!</text><text class="t-sm mid" x="375" y="296">ఎందుకంటే interface lo <tspan class="t-acc">type</tspan> ఉంది (*Dog), value మాత్రమే nil.</text><text class="t-sm mid" x="375" y="312">అందుకే error return చేసేటప్పుడు — nil pointer ని error interface lo ఎప్పుడూ wrap చేయకూడదు.</text><rect class="n-good" x="0" y="336" width="750" height="70" rx="4"/><text class="t mid" x="375" y="358">నివారణ</text><text class="t-sm mid" x="375" y="380">Error return చేయాలంటే: <code>return nil</code> అని స్పష్టంగా రాయడం —</text><text class="t-sm mid" x="375" y="396">concrete nil pointer ని return చేయకపోవడం. ఇది Go lo అత్యంత ప్రసిద్ధమైన ఉచ్చు.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -2499,6 +2529,11 @@ A: "Underlying type int ఉన్న అన్ని types" — `type MyInt int`
 
 ## 18. Error Handling
 
+<div class="fig">
+<div class="cap">Error handling · values, wrapping, %w</div>
+<svg viewBox="0 0 750 338"><text class="t-xs" x="0" y="14">ERROR HANDLING — exceptions లేవు, values ఉన్నాయి</text><rect class="n-info" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">ఇతర భాషలు</text><text class="t-sm mid" x="183" y="70">try { … } catch (e) { … }</text><text class="t-sm mid" x="183" y="86">Error "పైకి ఎగురుతుంది"</text><text class="t-sm mid" x="183" y="102">ఎక్కడ పడుతుందో కనిపించదు</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">Go</text><text class="t-sm mid" x="567" y="70">if err != nil { return err }</text><text class="t-sm mid" x="567" y="86">Error ఒక సాధారణ value</text><text class="t-sm mid" x="567" y="102">ప్రతి చోటా స్పష్టంగా కనిపిస్తుంది</text><text class="t-xs" x="0" y="166">WRAPPING — context కలుపుతూ</text><rect class="n-acc" x="0" y="178" width="750" height="36" rx="3"/><text class="t-w-sm mono mid" x="375" y="201">fmt.Errorf("saving user %d: %w", id, err)</text><rect class="n-good" x="0" y="226" width="366" height="102" rx="4"/><text class="t mid" x="183" y="248">%w తో</text><text class="t-sm mid" x="183" y="270">errors.Is(err, ErrNotFound) పని చేస్తుంది</text><text class="t-sm mid" x="183" y="286">errors.As(err, &amp;myErr) పని చేస్తుంది</text><text class="t-sm mid" x="183" y="302">మూలం దాక chain ఉంటుంది</text><rect class="n-bad" x="384" y="226" width="366" height="102" rx="4"/><text class="t mid" x="567" y="248">%v తో</text><text class="t-sm mid" x="567" y="270">కేవలం string — chain తెగిపోతుంది</text><text class="t-sm mid" x="567" y="286">errors.Is ఎప్పటికీ match కాదు</text><text class="t-sm mid" x="567" y="302">Debug చేయడం కష్టం</text></svg>
+</div>
+
 ### వివరణ
 
 Go లో **exceptions లేవు.** బదులుగా errors **ordinary values** — functions `error` ని చివరి return value గా ఇస్తాయి, caller దాన్ని explicitly check చేస్తాడు. ఇది Go యొక్క అత్యంత విభిన్న (కొంతమందికి చిరాకు) design decision. తత్వం: **"errors are values"** — errors ని hide చేయకుండా, first-class గా handle చేయడం.
@@ -2723,6 +2758,11 @@ A: Error ని wrap చేస్తూ original ని preserve చేస్త
 
 ## 19. Goroutines
 
+<div class="fig">
+<div class="cap">Goroutines · M:N scheduling</div>
+<svg viewBox="0 0 750 376"><text class="t-xs" x="0" y="14">GOROUTINE — OS thread కాదు, చాలా చౌక</text><rect class="n-bad" x="0" y="26" width="366" height="102" rx="4"/><text class="t mid" x="183" y="48">OS Thread</text><text class="t-sm mid" x="183" y="70">~1 MB stack · kernel నిర్వహిస్తుంది</text><text class="t-sm mid" x="183" y="86">Context switch ఖరీదు (kernel lo)</text><text class="t-sm mid" x="183" y="102">వేలు సృష్టిస్తే machine కూలుతుంది</text><rect class="n-good" x="384" y="26" width="366" height="102" rx="4"/><text class="t mid" x="567" y="48">Goroutine</text><text class="t-sm mid" x="567" y="70">~2 KB stack — అవసరమైతే పెరుగుతుంది</text><text class="t-sm mid" x="567" y="86">Go runtime నిర్వహిస్తుంది (user space)</text><text class="t-sm mid" x="567" y="102">లక్షలు సృష్టించొచ్చు</text><text class="t-xs" x="0" y="156">M:N SCHEDULING — చాలా goroutines, కొన్ని threads</text><circle cx="60" cy="196" r="16" fill="#e2653a"/><text class="t-w mid" x="60" y="201">G</text><circle cx="120" cy="196" r="16" fill="#e2653a"/><text class="t-w mid" x="120" y="201">G</text><circle cx="180" cy="196" r="16" fill="#e2653a"/><text class="t-w mid" x="180" y="201">G</text><circle cx="240" cy="196" r="16" fill="#e2653a"/><text class="t-w mid" x="240" y="201">G</text><circle cx="300" cy="196" r="16" fill="#e2653a"/><text class="t-w mid" x="300" y="201">G</text><circle cx="360" cy="196" r="16" fill="#e2653a"/><text class="t-w mid" x="360" y="201">G</text><line class="ln-acc" x1="180" y1="218" x2="180" y2="246" marker-end="url(#aa)"/><line class="ln-acc" x1="300" y1="218" x2="300" y2="246" marker-end="url(#aa)"/><rect class="n-dark" x="120" y="250" width="120" height="34" rx="3"/><text class="t-w mid" x="180" y="272">OS thread</text><rect class="n-dark" x="250" y="250" width="120" height="34" rx="3"/><text class="t-w mid" x="310" y="272">OS thread</text><text class="t-sm" x="400" y="200">Runtime scheduler goroutines ని</text><text class="t-sm" x="400" y="218">threads మీద పంచుతుంది</text><text class="t-sm" x="400" y="244">ఒక goroutine block అయితే — ఆ thread మీద</text><text class="t-acc" x="400" y="262">వేరే goroutine నడుస్తుంది</text><rect class="n-acc" x="0" y="300" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="322">JavaScript తో పోలిక</text><text class="t-w-sm mid" x="375" y="344">JS: ఒకే thread + event loop — async పని మాత్రమే సమాంతరం, CPU పని కాదు.</text><text class="t-w-sm mid" x="375" y="360">Go: నిజమైన సమాంతరత — goroutines వేర్వేరు CPU cores మీద ఏకకాలంలో నడుస్తాయి.</text></svg>
+</div>
+
 ### వివరణ
 
 **Goroutine = Go runtime manage చేసే ఒక lightweight thread.** `go` keyword ఒక function ముందు పెడితే, అది కొత్త goroutine లో concurrently run అవుతుంది. దీని magic: **చాలా చవక** — initial stack కేవలం **2KB** (OS thread ~1-2MB కంటే వెయ్యి రెట్లు తక్కువ), అవసరమైతే dynamically grow అవుతుంది. అందుకే ఒక Go program **లక్షలాది** goroutines run చేయగలదు.
@@ -2839,6 +2879,11 @@ A: మొత్తం program వెంటనే exit — మిగతా gorout
 
 ## 20. GMP Scheduler
 
+<div class="fig">
+<div class="cap">GMP Scheduler · goroutine, machine, processor</div>
+<svg viewBox="0 0 750 382"><text class="t-xs" x="0" y="14">GMP SCHEDULER</text><rect class="n-acc" x="0" y="26" width="46" height="42" rx="4"/><text class="t-w mid" x="23" y="54" style="font-size:18px;font-weight:800">G</text><rect class="n" x="56" y="26" width="180" height="42" rx="3"/><text class="t mid" x="146" y="52">Goroutine</text><text class="t-sm" x="252" y="53">మన code · లక్షలు ఉండొచ్చు</text><rect class="n-acc" x="0" y="76" width="46" height="42" rx="4"/><text class="t-w mid" x="23" y="104" style="font-size:18px;font-weight:800">M</text><rect class="n" x="56" y="76" width="180" height="42" rx="3"/><text class="t mid" x="146" y="102">Machine</text><text class="t-sm" x="252" y="103">OS thread · పరిమితం</text><rect class="n-acc" x="0" y="126" width="46" height="42" rx="4"/><text class="t-w mid" x="23" y="154" style="font-size:18px;font-weight:800">P</text><rect class="n" x="56" y="126" width="180" height="42" rx="3"/><text class="t mid" x="146" y="152">Processor</text><text class="t-sm" x="252" y="153">context · GOMAXPROCS కి సమానం</text><rect class="n-good" x="0" y="186" width="750" height="86" rx="4"/><text class="t mid" x="375" y="208">Work stealing</text><text class="t-sm mid" x="375" y="230">ప్రతి P కి తన సొంత run queue. తన queue ఖాళీ అయితే — <tspan class="t-acc">వేరే P నుంచి దొంగిలిస్తుంది</tspan>.</text><text class="t-sm mid" x="375" y="246">దీంతో load ఆటోమేటిక్ గా సమానమవుతుంది, central lock అవసరం లేకుండా.</text><rect class="n-acc" x="0" y="286" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="308">Blocking syscall జరిగితే</text><text class="t-w-sm mid" x="375" y="330">G ఒక syscall lo ఇరుక్కుంటే — ఆ M కూడా block అవుతుంది.</text><text class="t-w-sm mid" x="375" y="346">Runtime ఆ P ని <tspan class="t-acc">విడదీసి వేరే M కి</tspan> అతికిస్తుంది, మిగతా goroutines ఆగవు.</text><text class="t-w-sm mid" x="375" y="362">అందుకే Go lo blocking I/O రాసినా — మొత్తం program స్తంభించదు.</text></svg>
+</div>
+
 ### వివరణ
 
 Go runtime లో goroutines ని OS threads మీద ఎలా run చేయాలో నిర్ణయించేది **GMP scheduler** (aka goroutine scheduler). ఇది Go concurrency యొక్క గుండె. మూడు అక్షరాలు:
@@ -2949,6 +2994,12 @@ A: ఒక P యొక్క local run queue ఖాళీ అయితే, వే
 ---
 
 ## 21. Channels
+
+<div class="fig">
+<div class="cap">Channels · buffered vs unbuffered</div>
+<svg viewBox="0 0 750 344"><text class="t-xs" x="0" y="14">CHANNEL — goroutines మధ్య సురక్షితమైన పైపు</text><circle cx="60" cy="80" r="24" fill="#17203a"/><text class="t-w mid" x="60" y="85">G1</text><line class="ln-acc" x1="88" y1="80" x2="200" y2="80" marker-end="url(#aa)"/><rect class="n-acc" x="204" y="60" width="220" height="40" rx="4"/><text class="t-w mid" x="314" y="85">ch chan int</text><line class="ln-acc" x1="428" y1="80" x2="540" y2="80" marker-end="url(#aa)"/><circle cx="570" cy="80" r="24" fill="#17203a"/><text class="t-w mid" x="570" y="85">G2</text><text class="t-sm mid" x="144" y="66">ch &lt;- 5</text><text class="t-sm mid" x="484" y="66">&lt;-ch</text><rect class="n-info" x="0" y="126" width="366" height="102" rx="4"/><text class="t mid" x="183" y="148">UNBUFFERED (cap 0)</text><text class="t-sm mid" x="183" y="170">Sender receiver కోసం <tspan class="t-acc">వేచి ఉంటుంది</tspan></text><text class="t-sm mid" x="183" y="186">ఇద్దరూ ఒకేసారి కలుసుకోవాలి (rendezvous)</text><text class="t-sm mid" x="183" y="202">ఇది ఒక synchronisation సాధనం కూడా</text><rect class="n-good" x="384" y="126" width="366" height="102" rx="4"/><text class="t mid" x="567" y="148">BUFFERED (cap n)</text><text class="t-sm mid" x="567" y="170">Buffer నిండేదాకా sender ఆగడు</text><text class="t-sm mid" x="567" y="186">నిండాక మాత్రమే block అవుతుంది</text><text class="t-sm mid" x="567" y="202">Producer-consumer కి ఇదే సరైనది</text><rect class="n-bad" x="0" y="248" width="750" height="86" rx="4"/><text class="t mid" x="375" y="270">మూడు ఉచ్చులు</text><text class="t-sm mid" x="375" y="292">1 · మూసిన channel కి పంపితే → <tspan class="t-acc">panic</tspan>. మూసేది ఎప్పుడూ sender మాత్రమే.</text><text class="t-sm mid" x="375" y="308">2 · nil channel మీద పని → శాశ్వతంగా block.</text><text class="t-sm mid" x="375" y="324">3 · Receiver లేని unbuffered channel → deadlock. Go దీన్ని runtime lo పట్టుకుంటుంది.</text></svg>
+<div class="note">Go యొక్క నినాదం: <b>"Do not communicate by sharing memory; share memory by communicating."</b> — mutex తో shared variable ని కాపాడటం కంటే, ownership ని channel ద్వారా బదిలీ చేయడం సురక్షితం.</div>
+</div>
 
 ### వివరణ
 
@@ -3541,6 +3592,11 @@ A: 32-bit platforms లో పాత `atomic.AddInt64` కి argument 8-byte al
 
 ## 25. context
 
+<div class="fig">
+<div class="cap">context · cancellation చెట్టు</div>
+<svg viewBox="0 0 750 422"><text class="t-xs" x="0" y="14">CONTEXT — cancellation ఒక చెట్టులా</text><circle cx="375" cy="46" r="30" fill="#17203a"/><text class="t-w mid" x="375" y="51">Background</text><line class="ln-acc" x1="352" y1="68" x2="250" y2="96" marker-end="url(#aa)"/><line class="ln-acc" x1="398" y1="68" x2="500" y2="96" marker-end="url(#aa)"/><circle cx="230" cy="116" r="34" fill="#17203a"/><text class="t-w mid" x="230" y="121">WithTimeout</text><circle cx="520" cy="116" r="32" fill="#17203a"/><text class="t-w mid" x="520" y="121">WithCancel</text><line class="ln-acc" x1="230" y1="150" x2="230" y2="180" marker-end="url(#aa)"/><line class="ln-acc" x1="520" y1="150" x2="520" y2="180" marker-end="url(#aa)"/><circle cx="230" cy="204" r="28" fill="#17203a"/><text class="t-w mid" x="230" y="209">DB call</text><circle cx="520" cy="204" r="30" fill="#17203a"/><text class="t-w mid" x="520" y="209">HTTP call</text><text class="t-acc" x="0" y="120">cancel ↓</text><rect class="n-acc" x="0" y="246" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="268">నియమాలు</text><text class="t-w-sm mid" x="375" y="290">ctx ఎప్పుడూ <tspan class="t-acc">మొదటి parameter</tspan> — func F(ctx context.Context, …)</text><text class="t-w-sm mid" x="375" y="306">Struct lo ఎప్పుడూ store చేయకూడదు · nil ctx పంపకూడదు (context.TODO() వాడాలి)</text><text class="t-w-sm mid" x="375" y="322">cancel() ని ఎప్పుడూ defer చేయాలి — లేకపోతే context leak.</text><rect class="n-bad" x="0" y="346" width="750" height="70" rx="4"/><text class="t mid" x="375" y="368">Values ని జాగ్రత్తగా</text><text class="t-sm mid" x="375" y="390">context.WithValue ని request-scoped metadata కి మాత్రమే (trace id, user id).</text><text class="t-sm mid" x="375" y="406">దాన్ని optional parameters పంపడానికి వాడితే — type safety పోతుంది, code చదవలేం.</text></svg>
+</div>
+
 ### వివరణ
 
 **`context` = goroutines మధ్య cancellation, deadlines, request-scoped values ని propagate చేసే mechanism.** Server లో ఒక request ని handle చేసేటప్పుడు అనేక goroutines (DB call, RPC, cache) spawn అవుతాయి — request cancel అయితే (client disconnect, timeout), అన్నిటినీ ఆపాలి. Context ఇదే చేస్తుంది. Standard: **HTTP handlers, DB calls, RPCs అన్నీ మొదటి argument గా `ctx context.Context` తీసుకుంటాయి.**
@@ -4025,6 +4081,11 @@ A: `-race` shadow memory వాడి ప్రతి memory access + synchroniz
 
 ## 28. Common Concurrency Bugs
 
+<div class="fig">
+<div class="cap">Concurrency bugs · నాలుగు క్లాసిక్ ఉచ్చులు</div>
+<svg viewBox="0 0 750 320"><text class="t-xs" x="0" y="14">సాధారణ CONCURRENCY BUGS</text><rect class="n-bad" x="0" y="26" width="220" height="44" rx="3"/><text class="t-sm mid" x="110" y="53">Loop variable capture</text><rect class="n" x="230" y="26" width="280" height="44" rx="3"/><text class="t-sm mono mid" x="370" y="53">for _, v := range s { go f(v) }</text><text class="t-sm" x="526" y="54">Go 1.22 కి ముందు — అందరూ చివరి v</text><rect class="n-bad" x="0" y="78" width="220" height="44" rx="3"/><text class="t-sm mid" x="110" y="105">WaitGroup.Add లోపల</text><rect class="n" x="230" y="78" width="280" height="44" rx="3"/><text class="t-sm mono mid" x="370" y="105">go func(){ wg.Add(1) … }</text><text class="t-sm" x="526" y="106">Add ని ఎప్పుడూ goroutine బయట</text><rect class="n-bad" x="0" y="130" width="220" height="44" rx="3"/><text class="t-sm mid" x="110" y="157">Unbuffered channel deadlock</text><rect class="n" x="230" y="130" width="280" height="44" rx="3"/><text class="t-sm mono mid" x="370" y="157">ch &lt;- 1 (receiver లేడు)</text><text class="t-sm" x="526" y="158">main goroutine శాశ్వతంగా block</text><rect class="n-bad" x="0" y="182" width="220" height="44" rx="3"/><text class="t-sm mid" x="110" y="209">Mutex copy</text><rect class="n" x="230" y="182" width="280" height="44" rx="3"/><text class="t-sm mono mid" x="370" y="209">struct ని value గా పంపడం</text><text class="t-sm" x="526" y="210">Mutex కూడా copy → రక్షణ పోయింది</text><rect class="n-acc" x="0" y="244" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="266">ఒకే సాధనం ఇవన్నీ పట్టుకుంటుంది</text><text class="t-w-sm mid" x="375" y="288"><code>go test -race</code> — race detector. CI lo ఎప్పుడూ నడపాలి.</text><text class="t-w-sm mid" x="375" y="304">ఇది runtime lo నిజంగా జరిగిన races ని పట్టుకుంటుంది; static analysis కాదు.</text></svg>
+</div>
+
 ### వివరణ
 
 Concurrency లో అత్యంత తరచుగా వచ్చే bugs — వీటిని గుర్తుపట్టడం, తప్పించడం senior engineer signature. ఇవి interview favorites కూడా. ఒక్కొక్కటి cause + fix తో.
@@ -4208,6 +4269,11 @@ A: Senders ఎవరూ నేరుగా close చేయకూడదు (doubl
 ---
 
 ## 29. Stack vs Heap + Escape Analysis
+
+<div class="fig">
+<div class="cap">Stack vs Heap · escape analysis</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">STACK vs HEAP — escape analysis నిర్ణయిస్తుంది</text><rect class="n-good" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">Stack</text><text class="t-sm mid" x="183" y="70">Function ముగిస్తే ఆటోమేటిక్ గా పోతుంది</text><text class="t-sm mid" x="183" y="86">GC పని లేదు — చాలా వేగం</text><text class="t-sm mid" x="183" y="102">Compiler "ఇది బయటికి పోదు" అని నిర్ధారిస్తే</text><rect class="n-info" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">Heap</text><text class="t-sm mid" x="567" y="70">GC నిర్వహిస్తుంది</text><text class="t-sm mid" x="567" y="86">Function ముగిసినా బతికే ఉండగలదు</text><text class="t-sm mid" x="567" y="102">Pointer బయటికి వెళ్తే తప్పనిసరి</text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">ఎప్పుడు heap కి escape అవుతుంది</text><text class="t-w-sm mid" x="375" y="200">Pointer ని return చేస్తే · interface lo పెడితే · closure lo capture అయితే</text><text class="t-w-sm mid" x="375" y="216">Size compile time lo తెలియకపోతే · goroutine lo వాడితే</text><text class="t-w-sm mid" x="375" y="232"><code>go build -gcflags="-m"</code> — compiler ఏం నిర్ణయించిందో చూపిస్తుంది.</text><rect class="n-good" x="0" y="256" width="750" height="70" rx="4"/><text class="t mid" x="375" y="278">ఆచరణాత్మక సలహా</text><text class="t-sm mid" x="375" y="300">ముందు clear code రాయండి — తర్వాత profile చేసి, hot path lo మాత్రమే allocations తగ్గించండి.</text><text class="t-sm mid" x="375" y="316">"Pointer వాడితే వేగం" అనేది అపోహ — చిన్న structs కి copy చేయడమే చౌక.</text></svg>
+</div>
 
 ### వివరణ
 

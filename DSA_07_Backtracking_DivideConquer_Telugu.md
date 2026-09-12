@@ -1,4 +1,28 @@
-# DSA: Backtracking & Divide and Conquer - తెలుగు గైడ్ (LeetCode 150, SSE)
+<!-- style: editorial -->
+<!-- footer: DSA · Backtracking & Divide and Conquer · తెలుగు గైడ్ -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
+
+<div class="cover">
+<div class="cover-num">07</div>
+<div class="kicker">DSA · Backtracking &amp; Divide and Conquer</div>
+<div class="rule"></div>
+<div class="cover-title">Backtracking &amp;<br>Divide and Conquer</div>
+<div class="lede">అన్ని అవకాశాలని క్రమపద్ధతిలో వెతకడం — choose, explore, un-choose.</div>
+<div class="sub">ప్రతి problem కి: <b>ఏ pattern ఇది</b> → ఎందుకు ఆ pattern → dry run → optimal JavaScript code → complexity → edge cases. <code>DSA_Patterns_Telugu.pdf</code> pattern-first దృష్టి; ఈ file ఆ patterns ని నిజమైన LeetCode problems మీద అమలు చేస్తుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
+
 
 > ఈ document చదివిన తర్వాత Backtracking మరియు Divide-and-Conquer problems మళ్ళీ నిన్ను భయపెట్టవు. Backtracking అంటే మెదడులో ఒక **decision tree** గీసి, ప్రతి node దగ్గర "choose → explore → un-choose" చేస్తూ అన్ని దారులూ తిరగడం. అది ఒకసారి కళ్ళకి కట్టినట్టు అర్థమైతే — permutations, combinations, subsets, N-Queens, maze, word search — అన్నీ **ఒకే template** తో పడిపోతాయి. ప్రతి problem కి: ఎలా ఆలోచించాలి (decision tree ని text లో గీస్తాం), naive నుండి optimal వరకు, pruning ఎలా చేయాలి, clean commented JavaScript, పెన్సిల్‌తో గీసినట్టు dry run, complexity (tree లో ఎన్ని nodes?), pattern takeaway, మరియు సాధారణ తప్పులు (un-choose మర్చిపోవడం, duplicates) — అన్నీ ఉంటాయి.
 >
@@ -51,6 +75,12 @@
 ఈ మూడోది — **un-choose** — backtracking లో అత్యంత కీలకం మరియు అందరూ మర్చిపోయేది. ఇది మర్చిపోతే, ఒక branch లో పెట్టిన choices పక్క branch లోకి leak అయి, తప్పు answers వస్తాయి.
 
 **Pruning (కత్తిరించడం):** కొన్ని branches ఎటూ valid solution ఇవ్వవని ముందే తెలిస్తే, అక్కడే ఆగిపో — ఆ subtree మొత్తం explore చేయకు. ఇదే backtracking ని plain brute-force కన్నా వేగం చేస్తుంది. ఉదా: Combination Sum లో remaining sum negative అయిపోతే, ఇక ముందుకు వెళ్ళి లాభం లేదు — return.
+
+<div class="fig">
+<div class="cap">Backtracking · choose → explore → un-choose</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">DECISION TREE · [1,2] యొక్క subsets</text><circle cx="375" cy="42" r="22" fill="#17203a"/><text class="t-w mid" x="375" y="47">[ ]</text><line class="ln" x1="357" y1="58" x2="255" y2="92"/><line class="ln" x1="393" y1="58" x2="495" y2="92"/><circle cx="235" cy="110" r="22" fill="#17203a"/><text class="t-w mid" x="235" y="115">[1]</text><circle cx="515" cy="110" r="22" fill="#17203a"/><text class="t-w mid" x="515" y="115">[ ]</text><text class="t-sm mid" x="280" y="82">1 తీసుకో</text><text class="t-sm mid" x="470" y="82">1 వద్దు</text><line class="ln" x1="217" y1="126" x2="155" y2="160"/><line class="ln" x1="253" y1="126" x2="315" y2="160"/><line class="ln" x1="497" y1="126" x2="435" y2="160"/><line class="ln" x1="533" y1="126" x2="595" y2="160"/><circle cx="135" cy="178" r="24" fill="#17203a"/><text class="t-w mid" x="135" y="183">[1,2]</text><circle cx="335" cy="178" r="24" fill="#17203a"/><text class="t-w mid" x="335" y="183">[1]</text><circle cx="415" cy="178" r="24" fill="#17203a"/><text class="t-w mid" x="415" y="183">[2]</text><circle cx="615" cy="178" r="24" fill="#17203a"/><text class="t-w mid" x="615" y="183">[ ]</text><rect class="n-acc" x="0" y="220" width="750" height="102" rx="4"/><text class="t-w mid" x="375" y="242">మూడు అడుగుల నృత్యం — ఇదే మొత్తం backtracking</text><text class="t-w-sm mid" x="375" y="264">CHOOSE      — path.push(candidate)</text><text class="t-w-sm mid" x="375" y="280">EXPLORE     — backtrack(next)</text><text class="t-w-sm mid" x="375" y="296">UN-CHOOSE   — path.pop()   ← ఇదే "backtrack"</text><text class="t-w-sm mid" x="375" y="312">చివరి అడుగు మర్చిపోతే శాఖలన్నీ ఒకదానితో ఒకటి కలుషితమవుతాయి</text></svg>
+<div class="note"><b>ఫలితంలో చేర్చేటప్పుడు copy తీసుకోవాలి</b> — <code>result.push([...path])</code>. Reference పంచితే, తర్వాత path మారినప్పుడు ఇప్పటికే చేర్చిన జవాబులూ మారిపోతాయి. ఇది అత్యంత సాధారణమైన bug.</div>
+</div>
 
 ### Real-life Scenario
 
@@ -327,6 +357,11 @@ result = [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]] ✅
 - **Pruning లేకపోయినా answer correct** — కానీ interview లో pruning చూపిస్తే senior signal.
 
 ---
+<div class="fig">
+<div class="cap">Combinations vs Permutations · start vs used[]</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">COMBINATIONS vs PERMUTATIONS — ఒక్క తేడా</text><rect class="n-acc" x="0" y="26" width="366" height="130" rx="4"/><text class="t-w mid" x="183" y="48">Combinations — క్రమం ముఖ్యం కాదు</text><text class="t-w-sm mid" x="183" y="70">backtrack(start, path)</text><text class="t-w-sm mid" x="183" y="86">for (i = <tspan class="t-acc">start</tspan>; i &lt; n; i++)</text><text class="t-w-sm mid" x="183" y="102">backtrack(<tspan class="t-acc">i + 1</tspan>, …)</text><text class="t-w-sm mid" x="183" y="118">→ [1,2] మరియు [2,1] ఒకటే</text><rect class="n-info" x="384" y="26" width="366" height="130" rx="4"/><text class="t mid" x="567" y="48">Permutations — క్రమం ముఖ్యం</text><text class="t-sm mid" x="567" y="70">backtrack(path, used[])</text><text class="t-sm mid" x="567" y="86">for (i = <tspan class="t-acc">0</tspan>; i &lt; n; i++)</text><text class="t-sm mid" x="567" y="102">if (used[i]) continue</text><text class="t-sm mid" x="567" y="118">→ [1,2] మరియు [2,1] వేరు</text><rect class="n-acc" x="0" y="176" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="198">ఒక్క పంక్తి తేడా — కానీ అర్థం పూర్తిగా వేరు</text><text class="t-w-sm mid" x="375" y="220"><tspan class="t-acc">start</tspan> వాడితే — వెనక్కి చూడము, కాబట్టి duplicates రావు (combinations).</text><text class="t-w-sm mid" x="375" y="236"><tspan class="t-acc">used[]</tspan> వాడితే — అన్నీ చూస్తాం కానీ ఒక్కసారే వాడతాం (permutations).</text><text class="t-w-sm mid" x="375" y="252">Duplicates ఉన్న input అయితే — sort చేసి, i &gt; start &amp;&amp; nums[i] === nums[i-1] → skip.</text></svg>
+</div>
+
 
 ## 3. Permutations (LeetCode #46) — Medium
 
@@ -436,6 +471,11 @@ result = [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]] ✅ (6 = 3!)
 - **Duplicates ఉన్న input:** ఈ problem distinct guarantee ఇస్తుంది; distinct కాకపోతే ఈ code duplicate permutations ఇస్తుంది. అప్పుడు Permutations II approach కావాలి.
 
 ---
+<div class="fig">
+<div class="cap">Pruning · శాఖలని ముందే కత్తిరించడం</div>
+<svg viewBox="0 0 750 304"><text class="t-xs" x="0" y="14">PRUNING — backtracking యొక్క అసలు నైపుణ్యం</text><circle cx="375" cy="44" r="24" fill="#17203a"/><text class="t-w mid" x="375" y="49">root</text><line class="ln" x1="357" y1="60" x2="230" y2="86"/><line class="ln" x1="393" y1="60" x2="520" y2="86"/><circle cx="210" cy="100" r="22" fill="#17203a"/><text class="t-w mid" x="210" y="105">✓</text><circle cx="540" cy="100" r="22" fill="#c0463a"/><text class="t-w mid" x="540" y="105">✗</text><line class="ln" x1="192" y1="114" x2="120" y2="140"/><line class="ln" x1="228" y1="114" x2="300" y2="140"/><circle cx="100" cy="154" r="20" fill="#17203a"/><text class="t-w mid" x="100" y="159">…</text><circle cx="320" cy="154" r="20" fill="#17203a"/><text class="t-w mid" x="320" y="159">…</text><text class="t-acc" x="580" y="106">ఇక్కడే ఆపేయడం —</text><text class="t-sm" x="580" y="124">కింద ఉన్న మొత్తం subtree</text><text class="t-sm" x="580" y="142">ఎప్పటికీ explore కాదు</text><rect class="n-good" x="0" y="192" width="366" height="102" rx="4"/><text class="t mid" x="183" y="214">Pruning వ్యూహాలు</text><text class="t-sm mid" x="183" y="236">Sort చేసి early break (sum &gt; target)</text><text class="t-sm mid" x="183" y="252">Constraint ని ముందే check (N-Queens)</text><text class="t-sm mid" x="183" y="268">ఇప్పటివరకటి ఉత్తమం కంటే చెడ్డదైతే ఆపడం</text><rect class="n-acc" x="384" y="192" width="366" height="102" rx="4"/><text class="t-w mid" x="567" y="214">ప్రభావం</text><text class="t-w-sm mid" x="567" y="236">సిద్ధాంతంలో complexity మారదు — O(n!) అలానే</text><text class="t-w-sm mid" x="567" y="252">కానీ ఆచరణలో 100 రెట్లు వేగం కావొచ్చు</text><text class="t-w-sm mid" x="567" y="268">N-Queens 8×8 — pruning లేకపోతే అసాధ్యం</text></svg>
+</div>
+
 
 ## 4. Combination Sum (LeetCode #39) — Medium
 
@@ -915,6 +955,11 @@ found = true → restore (1,3)='S'
 **Plain recursion కి తేడా?** అన్ని D&C recursive. కానీ D&C యొక్క గుర్తు — **సమస్యని multiple subproblems గా చీల్చి, వాటి results ని combine చేయడం**. ఉదా: factorial (n × factorial(n-1)) కేవలం linear recursion — ఒకే subproblem, "combine" trivial. Merge sort రెండు halves ని sort చేసి **merge** చేస్తుంది — నిజమైన divide-and-conquer. తేడా: **problem size సగానికి తగ్గడం + nontrivial combine step**.
 
 **Recursion Tree:** D&C ని ఒక tree గా ఊహించు. Root = full problem. ప్రతి node రెండు children గా విడిపోతుంది (సగం sized). Leaves = base cases. Tree లో **depth = log n** (ప్రతిసారి సగం అయితే), **ప్రతి level లో మొత్తం పని = O(n)** (అన్ని nodes కలిపి). కాబట్టి చాలా D&C algorithms **O(n log n)**.
+
+<div class="fig">
+<div class="cap">Divide and Conquer · విడగొట్టి, పరిష్కరించి, కలపడం</div>
+<svg viewBox="0 0 750 396"><text class="t-xs" x="0" y="14">DIVIDE → CONQUER → COMBINE</text><rect class="n-acc" x="275" y="26" width="200" height="86" rx="4"/><text class="t-w mid" x="375" y="73">పెద్ద problem</text><line class="ln-acc" x1="320" y1="74" x2="200" y2="106" marker-end="url(#aa)"/><line class="ln-acc" x1="430" y1="74" x2="550" y2="106" marker-end="url(#aa)"/><rect class="n" x="110" y="110" width="200" height="40" rx="4"/><text class="t mid" x="210" y="132">సగం</text><rect class="n" x="450" y="110" width="200" height="40" rx="4"/><text class="t mid" x="550" y="132">సగం</text><line class="ln" x1="210" y1="154" x2="210" y2="186" marker-end="url(#a)"/><line class="ln" x1="550" y1="154" x2="550" y2="186" marker-end="url(#a)"/><rect class="n-good" x="110" y="190" width="200" height="40" rx="4"/><text class="t mid" x="210" y="212">పరిష్కారం</text><rect class="n-good" x="450" y="190" width="200" height="40" rx="4"/><text class="t mid" x="550" y="212">పరిష్కారం</text><line class="ln-acc" x1="310" y1="210" x2="360" y2="210" marker-end="url(#aa)"/><line class="ln-acc" x1="450" y1="210" x2="400" y2="210" marker-end="url(#aa)"/><rect class="n-acc" x="280" y="240" width="190" height="52" rx="4"/><text class="t-w mid" x="375" y="261.5">COMBINE</text><text class="t-sm" x="0" y="130">Base case —</text><text class="t-acc" x="0" y="148">ఇక విడగొట్టలేనిది</text><rect class="n-acc" x="0" y="300" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="278.5">అసలు నైపుణ్యం COMBINE lo ఉంది</text><text class="t-w-sm mid" x="375" y="344">Divide చేయడం సులభం (సగానికి కోయడం). Conquer recursion చూసుకుంటుంది.</text><text class="t-w-sm mid" x="375" y="360">కానీ రెండు ఫలితాలని ఎలా కలపాలి — అదే ప్రతి problem lo వేరు.</text><text class="t-w-sm mid" x="375" y="376">Merge sort lo merge · Quick sort lo partition · Max subarray lo మధ్య దాటే భాగం.</text></svg>
+</div>
 
 ### Real-life Scenario
 

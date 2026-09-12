@@ -1,14 +1,27 @@
-# Next.js - పూర్తి తెలుగు గైడ్ (App Router, End-to-End, SDE2 & SSE)
+<!-- style: editorial -->
+<!-- footer: Next.js · App Router · SDE2 & SSE · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత Next.js మళ్ళీ జీవితంలో మర్చిపోలేవు. ప్రతి concept కి ఒక real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, trade-offs, gotchas (సాధారణ తప్పులు), లోపల ఏం జరుగుతుంది (internals — RSC payload, streaming, 4 caching layers, hydration, build output), మరియు interview దృష్టి — అన్నీ ఉంటాయి.
->
-> **లక్ష్యం:** React తెలిసిన engineer ని Next.js లో absolute basics నుండి **RSC, Server Actions, caching internals, production deployment, architecture** వరకు తీసుకెళ్లడం — **SDE2 & SSE interview level**. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> **ముఖ్యమైన హెచ్చరిక:** Next.js లో **అత్యంత గందరగోళమైన విషయం caching.** Next 13/14/15 మధ్య caching defaults మారాయి — చాలామంది developers ఇక్కడే ఇబ్బంది పడతారు. ఈ guide **Next.js 15** ఆధారంగా (React 19 తో) రాయబడింది, కానీ 13/14 తేడాలు స్పష్టంగా చూపించాను — ఎందుకంటే మీ company codebase పాత version లో ఉండొచ్చు, మరియు interview లో "ఏం మారింది?" అని అడుగుతారు.
->
-> **Companion docs:** `React_Telugu.md` (RSC, Suspense, hooks — ఇది తప్పనిసరి పునాది), `TypeScript_Telugu.md`, `JavaScript_Telugu.md`, `HLD_Telugu.md` / `SystemDesign_Go_Telugu.md` (deployment/scaling), `Security_Telugu.md`, `DBMS_Telugu.md`.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">N</div>
+<div class="kicker">Next.js · App Router · SDE2 &amp; SSE</div>
+<div class="rule"></div>
+<div class="cover-title">Next.js</div>
+<div class="lede">App Router, Server Components, నాలుగు caching పొరలు, rendering strategies — Next 15 మార్పులతో సహా.</div>
+<div class="sub">Next.js lo అతి కష్టమైన భాగం caching — ఏది ఎక్కడ cache అవుతోందో తెలియకపోతే bugs ఊహించలేం. ఆ నాలుగు పొరలని ఇక్కడ విడదీశాం.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -1049,6 +1062,11 @@ function LoadingIndicator() {
 
 ## 7. Rendering Strategies — Static, Dynamic, Streaming, PPR
 
+<div class="fig">
+<div class="cap">Rendering strategies · static, dynamic, ISR, streaming</div>
+<svg viewBox="0 0 750 340"><text class="t-xs" x="0" y="14">RENDERING STRATEGIES</text><rect class="n-good" x="0" y="26" width="200" height="44" rx="3"/><text class="t mid" x="100" y="53">Static (SSG)</text><text class="t-sm" x="216" y="46">build time lo render</text><text class="t-sm" x="216" y="64">CDN నుంచి — అత్యంత వేగం</text><rect class="n-info" x="0" y="78" width="200" height="44" rx="3"/><text class="t mid" x="100" y="105">Dynamic (SSR)</text><text class="t-sm" x="216" y="98">ప్రతి request కి render</text><text class="t-sm" x="216" y="116">తాజా data, నెమ్మది</text><rect class="n-acc" x="0" y="130" width="200" height="44" rx="3"/><text class="t-w mid" x="100" y="157">ISR</text><text class="t-sm" x="216" y="150">static + కాలానుగుణ refresh</text><text class="t-sm" x="216" y="168">రెండింటి మేలు కలయిక</text><rect class="n-acc" x="0" y="182" width="200" height="44" rx="3"/><text class="t-w mid" x="100" y="209">Streaming</text><text class="t-sm" x="216" y="202">భాగాలుగా పంపడం</text><text class="t-sm" x="216" y="220">నెమ్మది భాగం మిగతాదాన్ని ఆపదు</text><rect class="n-acc" x="0" y="244" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="266">App Router lo ఇది ఎలా నిర్ణయమవుతుంది</text><text class="t-w-sm mid" x="375" y="288">మీరు ఎంచుకోరు — <tspan class="t-acc">మీరు ఏం వాడారో</tspan> దాన్ని బట్టి Next నిర్ణయిస్తుంది.</text><text class="t-w-sm mid" x="375" y="304">cookies(), headers(), searchParams వాడితే → dynamic.</text><text class="t-w-sm mid" x="375" y="320">ఏదీ వాడకపోతే → static. అందుకే "నా page ఎందుకు static అయింది?" అనే ప్రశ్న వస్తుంది.</text></svg>
+</div>
+
 ### వివరణ — Next.js లో ఒక page ఎలా render అవుతుంది
 
 ```
@@ -1223,6 +1241,11 @@ Route (app)                              Size     First Load JS
 
 ---
 ## 8. Server Components vs Client Components
+
+<div class="fig">
+<div class="cap">Server vs Client Components · ఎక్కడ గీత గీయాలి</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">SERVER vs CLIENT COMPONENTS</text><rect class="n-acc" x="0" y="26" width="366" height="130" rx="4"/><text class="t-w mid" x="183" y="48">Server Component (default)</text><text class="t-w-sm mid" x="183" y="70">✓ DB / filesystem కి నేరుగా access</text><text class="t-w-sm mid" x="183" y="86">✓ Bundle కి 0 bytes — JS పంపము</text><text class="t-w-sm mid" x="183" y="102">✗ useState, useEffect లేవు</text><text class="t-w-sm mid" x="183" y="118">✗ onClick లాంటి handlers లేవు</text><rect class="n-info" x="384" y="26" width="366" height="130" rx="4"/><text class="t mid" x="567" y="48">Client Component ("use client")</text><text class="t-sm mid" x="567" y="70">✓ Hooks, state, effects</text><text class="t-sm mid" x="567" y="86">✓ Browser APIs, event handlers</text><text class="t-sm mid" x="567" y="102">✗ Bundle కి బరువు చేరుతుంది</text><text class="t-sm mid" x="567" y="118">✗ Secrets ఇక్కడ ఎప్పుడూ పెట్టకూడదు</text><rect class="n-good" x="0" y="176" width="750" height="86" rx="4"/><text class="t mid" x="375" y="198">బంగారు నియమం — "use client" ని ఆకుల దగ్గర పెట్టండి</text><text class="t-sm mid" x="375" y="220">Layout మీద "use client" పెడితే — దాని కిందున్న <tspan class="t-acc">అంతా</tspan> client అవుతుంది.</text><text class="t-sm mid" x="375" y="236">బదులుగా: interactive చిన్న భాగాన్ని మాత్రమే client చేసి, మిగతాది server గా ఉంచడం.</text><text class="t-sm mid" x="375" y="252">Server component ని client component కి <tspan class="t-acc">children గా</tspan> పంపొచ్చు — import చేయలేం.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -1432,6 +1455,11 @@ import "client-only";      // ఈ module ని server import చేస్తే
 ---
 
 ## 9. Streaming & Suspense
+
+<div class="fig">
+<div class="cap">Streaming &amp; Suspense · భాగాలుగా పంపడం</div>
+<svg viewBox="0 0 750 298"><text class="t-xs" x="0" y="14">STREAMING — Suspense boundary దగ్గర విరగడం</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">Streaming లేకుండా</text><text class="t-sm mid" x="183" y="70">అన్ని data వచ్చేదాకా ఏమీ కనిపించదు</text><text class="t-sm mid" x="183" y="86">నెమ్మది API = ఖాళీ screen</text><text class="t-sm mid" x="183" y="102">TTFB చెడ్డది</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">Streaming తో</text><text class="t-sm mid" x="567" y="70">Shell వెంటనే వెళ్తుంది</text><text class="t-sm mid" x="567" y="86">నెమ్మది భాగం స్థానంలో fallback</text><text class="t-sm mid" x="567" y="102">Data వచ్చాక ఆ భాగం మాత్రం చేరుతుంది</text><rect class="n-acc" x="0" y="156" width="750" height="30" rx="3"/><text class="t-w-sm mid" x="375" y="176">HTML shell  →  &lt;Suspense fallback&gt;  →  …తర్వాత… → అసలు content</text><rect class="n-acc" x="0" y="202" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="224">ఎక్కడ boundary పెట్టాలి</text><text class="t-w-sm mid" x="375" y="246">నెమ్మది data fetch చేసే component <tspan class="t-acc">చుట్టూ</tspan> — మొత్తం page చుట్టూ కాదు.</text><text class="t-w-sm mid" x="375" y="262">Page చుట్టూ పెడితే streaming యొక్క ప్రయోజనం పోతుంది (మళ్ళీ అంతా ఒకేసారి).</text><text class="t-w-sm mid" x="375" y="278">Fallback ని skeleton గా చేయడం — layout shift రాకుండా.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -1894,6 +1922,11 @@ Data B కి Data A అవసరమా?
 
 ## 12. Caching Deep — 4 Layers ⭐
 
+<div class="fig">
+<div class="cap">Next.js · నాలుగు caching పొరలు</div>
+<svg viewBox="0 0 750 362"><text class="t-xs" x="0" y="14">నాలుగు CACHE పొరలు — ఇదే Next.js lo అతి కష్టమైన భాగం</text><rect class="n-info" x="0" y="26" width="250" height="50" rx="3"/><text class="t mid" x="125" y="56">1 · Request Memoization</text><text class="t-sm" x="266" y="48">ఒకే render lo అదే fetch → ఒక్కసారే</text><text class="t-sm" x="266" y="66">server · ఒక request వరకు</text><rect class="n-acc" x="0" y="84" width="250" height="50" rx="3"/><text class="t-w mid" x="125" y="114">2 · Data Cache</text><text class="t-sm" x="266" y="106">fetch ఫలితం — deploys దాటి కూడా</text><text class="t-sm" x="266" y="124">server · శాశ్వతం</text><rect class="n-acc" x="0" y="142" width="250" height="50" rx="3"/><text class="t-w mid" x="125" y="172">3 · Full Route Cache</text><text class="t-sm" x="266" y="164">render చేసిన HTML + RSC payload</text><text class="t-sm" x="266" y="182">server · build time</text><rect class="n-good" x="0" y="200" width="250" height="50" rx="3"/><text class="t mid" x="125" y="230">4 · Router Cache</text><text class="t-sm" x="266" y="222">client lo navigation కోసం</text><text class="t-sm" x="266" y="240">browser · session</text><rect class="n-bad" x="0" y="266" width="750" height="86" rx="4"/><text class="t mid" x="375" y="288">ఎందుకు ఇది గందరగోళం</text><text class="t-sm mid" x="375" y="310">"నా data ఎందుకు update కావడం లేదు?" — నాలుగు పొరల్లో ఏదో ఒకటి పట్టుకుంది.</text><text class="t-sm mid" x="375" y="326">Debug చేసే క్రమం: ముందు router cache (client), తర్వాత full route, తర్వాత data cache.</text><text class="t-sm mid" x="375" y="342">Next 15 lo defaults మారాయి — fetch ఇప్పుడు default గా cache కాదు (ఇది పెద్ద మార్పు).</text></svg>
+</div>
+
 ### వివరణ
 
 **Next.js లో అత్యంత గందరగోళమైన విషయం ఇదే.** App Router లో **4 caching layers** ఉన్నాయి, ఒక్కొక్కటి వేర్వేరు చోట, వేర్వేరు కాలం, వేర్వేరు invalidation.
@@ -2335,6 +2368,11 @@ next build --turbopack     # ⚠️ ఇంకా beta/stabilizing
 # Part 4 — Mutations, Forms & APIs
 
 ## 15. Server Actions Deep
+
+<div class="fig">
+<div class="cap">Server Actions · form నుంచి server దాకా</div>
+<svg viewBox="0 0 750 294"><text class="t-xs" x="0" y="14">SERVER ACTIONS — form నుంచి server దాకా, API route లేకుండా</text><rect class="n" x="0" y="26" width="160" height="44" rx="3"/><text class="t mid" x="80" y="53">&lt;form action={fn}&gt;</text><line class="ln-acc" x1="164" y1="48" x2="206" y2="48" marker-end="url(#aa)"/><rect class="n-acc" x="210" y="26" width="180" height="44" rx="3"/><text class="t-w mid" x="300" y="46">POST (auto)</text><text class="t-w-sm mid" x="300" y="62">Next generate చేస్తుంది</text><line class="ln-acc" x1="394" y1="48" x2="436" y2="48" marker-end="url(#aa)"/><rect class="n-good" x="440" y="26" width="150" height="44" rx="3"/><text class="t mid" x="515" y="46">"use server"</text><text class="t-sm mid" x="515" y="62">function నడుస్తుంది</text><line class="ln-acc" x1="594" y1="48" x2="636" y2="48" marker-end="url(#aa)"/><rect class="n-info" x="640" y="26" width="110" height="44" rx="3"/><text class="t mid" x="695" y="53">revalidate</text><rect class="n-good" x="0" y="96" width="366" height="102" rx="4"/><text class="t mid" x="183" y="118">లాభం</text><text class="t-sm mid" x="183" y="140">API route రాయనవసరం లేదు</text><text class="t-sm mid" x="183" y="156">Progressive enhancement — JS లేకున్నా పని చేస్తుంది</text><text class="t-sm mid" x="183" y="172">Type safety client నుంచి server దాకా</text><rect class="n-bad" x="384" y="96" width="366" height="102" rx="4"/><text class="t mid" x="567" y="118">జాగ్రత్తలు</text><text class="t-sm mid" x="567" y="140">ఇది ఒక <tspan class="t-acc">public endpoint</tspan> — auth check తప్పనిసరి</text><text class="t-sm mid" x="567" y="156">Input ని ఎప్పుడూ validate చేయాలి (zod)</text><text class="t-sm mid" x="567" y="172">Closure lo ఉన్న variables client కి encrypt అయి వెళ్తాయి</text><rect class="n-acc" x="0" y="218" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="240">అతి సాధారణమైన భద్రతా తప్పు</text><text class="t-w-sm mid" x="375" y="262">"ఇది server action కదా, సురక్షితం" — <tspan class="t-acc">కాదు</tspan>. ఎవరైనా దాన్ని నేరుగా call చేయొచ్చు.</text><text class="t-w-sm mid" x="375" y="278">Component lo auth check చేసినా సరిపోదు — action లోపల మళ్ళీ check చేయాలి.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -3001,6 +3039,11 @@ export default function robots(): MetadataRoute.Robots {
 
 ## 18. Middleware & Edge Runtime
 
+<div class="fig">
+<div class="cap">Middleware &amp; Edge runtime</div>
+<svg viewBox="0 0 750 310"><text class="t-xs" x="0" y="14">MIDDLEWARE — request routing కి ముందు</text><rect class="n" x="0" y="26" width="130" height="44" rx="3"/><text class="t mid" x="65" y="53">Request</text><line class="ln-acc" x1="134" y1="48" x2="176" y2="48" marker-end="url(#aa)"/><rect class="n-acc" x="180" y="26" width="190" height="44" rx="3"/><text class="t-w mid" x="275" y="46">middleware.ts</text><text class="t-w-sm mid" x="275" y="62">Edge runtime</text><line class="ln-acc" x1="374" y1="48" x2="416" y2="48" marker-end="url(#aa)"/><rect class="n" x="420" y="26" width="150" height="44" rx="3"/><text class="t mid" x="495" y="53">Route handler</text><line class="ln-acc" x1="275" y1="72" x2="275" y2="102" marker-end="url(#aa)"/><rect class="n-info" x="150" y="106" width="250" height="40" rx="3"/><text class="t mid" x="275" y="131">redirect / rewrite / headers</text><rect class="n-bad" x="430" y="96" width="320" height="102" rx="4"/><text class="t mid" x="590" y="118">Edge runtime పరిమితులు</text><text class="t-sm mid" x="590" y="140">Node APIs లేవు (fs, crypto కొన్ని)</text><text class="t-sm mid" x="590" y="156">DB connections సాధారణంగా కుదరవు</text><text class="t-sm mid" x="590" y="172">Bundle size పరిమితం · వేగం మాత్రమే లాభం</text><rect class="n-acc" x="0" y="214" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="236">ఎక్కడ వాడాలి, ఎక్కడ వద్దు</text><text class="t-w-sm mid" x="375" y="258">✓ Auth cookie ఉందా అని చూసి redirect · A/B split · geo-based rewrite · headers</text><text class="t-w-sm mid" x="375" y="274">✗ Database lookup · భారీ లెక్కలు · session validation (DB కావాలంటే)</text><text class="t-w-sm mid" x="375" y="290">నియమం: middleware <tspan class="t-acc">వేగంగా</tspan> ఉండాలి — ప్రతి request దాని గుండా వెళ్తుంది.</text></svg>
+</div>
+
 ### వివరణ
 
 **Middleware = ప్రతి request కి, route render/handler కి *ముందు* run అయ్యే code.**
@@ -3587,6 +3630,11 @@ async function getProducts() {
 ---
 
 ## 21. Images, Fonts, Metadata & SEO
+
+<div class="fig">
+<div class="cap">next/image · ఆటోమేటిక్ optimisation</div>
+<svg viewBox="0 0 750 306"><text class="t-xs" x="0" y="14">IMAGE OPTIMISATION — next/image ఏం చేస్తుంది</text><rect class="n-acc" x="0" y="26" width="180" height="36" rx="3"/><text class="t-w mid" x="90" y="49">Format</text><text class="t-sm" x="196" y="49">WebP / AVIF ఆటోమేటిక్</text><rect class="n-acc" x="0" y="70" width="180" height="36" rx="3"/><text class="t-w mid" x="90" y="93">Size</text><text class="t-sm" x="196" y="93">device కి సరిపడా — srcset</text><rect class="n-acc" x="0" y="114" width="180" height="36" rx="3"/><text class="t-w mid" x="90" y="137">Lazy</text><text class="t-sm" x="196" y="137">viewport lo వచ్చేదాకా load కాదు</text><rect class="n-acc" x="0" y="158" width="180" height="36" rx="3"/><text class="t-w mid" x="90" y="181">CLS</text><text class="t-sm" x="196" y="181">width/height తప్పనిసరి → layout shift లేదు</text><rect class="n-bad" x="0" y="210" width="750" height="86" rx="4"/><text class="t mid" x="375" y="232">తరచుగా వచ్చే తప్పులు</text><text class="t-sm mid" x="375" y="254">width/height ఇవ్వకపోవడం → layout shift (Core Web Vitals దెబ్బ)</text><text class="t-sm mid" x="375" y="270">Above-the-fold image కి priority ఇవ్వకపోవడం → LCP నెమ్మది</text><text class="t-sm mid" x="375" y="286">బయటి domain నుంచి images → next.config lo remotePatterns చేర్చాలి</text></svg>
+</div>
 
 ### `next/image` — automatic optimization
 

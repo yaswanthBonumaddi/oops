@@ -1,17 +1,27 @@
-# LLD (Low-Level Design) in Go - పూర్తి తెలుగు గైడ్ (SDE2 & SSE)
+<!-- style: editorial -->
+<!-- footer: Low-Level Design in Go · తెలుగు గైడ్ -->
 
-> ఈ document ఒకసారి చదివితే **Go లో LLD మళ్ళీ మర్చిపోలేవు**. ప్రతి principle, ప్రతి design pattern కి real-life analogy, వివరణ, comparison table, మరియు **run అయ్యే idiomatic Go code** ఉంటాయి.
->
-> ⚠️ ముఖ్యమైన mindset shift: **Go లో `class` లేదు, `inheritance` లేదు, `extends` లేదు.** బదులుగా `struct` + `interface` + `composition (embedding)` ఉంటాయి. అందుకే classic Java/C++ లో నేర్చుకున్న GoF patterns Go లో **వేరేలా** కనిపిస్తాయి — కొన్ని అసలు అవసరం లేకుండా పోతాయి (Strategy = ఒక `func` type), కొన్ని language లోనే built-in (Iterator = `range`, Decorator = `io.Reader` wrapping). ఈ గైడ్ classic OOD ని Go's model కి **map** చేస్తూ నేర్పుతుంది.
->
-> ఇది ఒక series లో భాగం:
-> - `GO_Telugu.md` — Go language basics (**ఇది ముందు చదవడం strongly recommend** — struct, interface, goroutine, channel అర్థం కాకపోతే ఇక్కడ code follow అవ్వదు).
-> - `HLD_Go_Telugu.md` — High-Level Design in Go.
-> - `SystemDesign_Go_Telugu.md` — end-to-end system design.
->
-> Audience: OOP / design patterns conceptually తెలిసిన **senior engineer**, కానీ Go కి కొత్త. లక్ష్యం — "Java-in-Go" రాయకుండా, **idiomatic Go** design నేర్పడం.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">LLD</div>
+<div class="kicker">Low-Level Design in Go</div>
+<div class="rule"></div>
+<div class="cover-title">LLD in Go</div>
+<div class="lede">ఇంటర్‌ఫేసులు, composition, patterns — Go యొక్క సొంత శైలిలో. Go lo inheritance లేదు, అదే దీన్ని ఆసక్తికరం చేస్తుంది.</div>
+<div class="sub">భావనలకి <code>LLD_Telugu.pdf</code> · interview problems కి <code>LLD_Design_Problems_Telugu.pdf</code> చూడండి. ఇది వాటి <i>Go అమలు</i>.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -165,6 +175,11 @@ Go లో LLD కి ఒక **ప్రత్యేకమైన mindset shift** 
 - Idiomatic Go = small, boring, composable. Java patterns ని blindly copy చేయకు.
 
 ## 2. Go's Design Model — struct + interface + composition
+
+<div class="fig">
+<div class="cap">Go యొక్క design model · embedding + implicit interfaces</div>
+<svg viewBox="0 0 750 396"><text class="t-xs" x="0" y="14">GO lo INHERITANCE లేదు — EMBEDDING ఉంది</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">ఇతర భాషల్లో (inheritance)</text><text class="t-sm mid" x="183" y="70">class Dog extends Animal</text><text class="t-sm mid" x="183" y="86">Dog "ఒక" Animal — గట్టి బంధం</text><text class="t-sm mid" x="183" y="102">Parent మారితే children విరుగుతాయి</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">Go lo (embedding)</text><text class="t-sm mid" x="567" y="70">type Dog struct { Animal }</text><text class="t-sm mid" x="567" y="86">Dog కి Animal యొక్క methods వస్తాయి</text><text class="t-sm mid" x="567" y="102">కానీ Dog ఒక Animal <tspan class="t-acc">కాదు</tspan> — కలిగి ఉంది</text><text class="t-xs" x="0" y="166">INTERFACE SATISFACTION — implicit</text><rect class="n" x="0" y="178" width="366" height="102" rx="4"/><text class="t mid" x="183" y="200">ఇతర భాషల్లో</text><text class="t-sm mid" x="183" y="222">class Dog implements Speaker</text><text class="t-sm mid" x="183" y="238">Explicit గా ప్రకటించాలి</text><text class="t-sm mid" x="183" y="254">Interface ముందు ఉండాలి</text><rect class="n-acc" x="384" y="178" width="366" height="102" rx="4"/><text class="t-w mid" x="567" y="200">Go lo</text><text class="t-w-sm mid" x="567" y="222">Speak() method ఉంటే చాలు</text><text class="t-w-sm mid" x="567" y="238">Dog కి Speaker గురించి తెలియనవసరం లేదు</text><text class="t-w-sm mid" x="567" y="254">Interface ని <tspan class="t-acc">consumer</tspan> నిర్వచిస్తాడు</text><rect class="n-acc" x="0" y="300" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="322">దీని పెద్ద పరిణామం</text><text class="t-w-sm mid" x="375" y="344">మీరు వేరే package నుంచి తెచ్చిన type కి కూడా — మీ interface ని సంతృప్తి పరచొచ్చు,</text><text class="t-w-sm mid" x="375" y="360">ఆ package ని ముట్టుకోకుండా. అందుకే Go lo adapter pattern చాలా అరుదుగా అవసరం.</text><text class="t-w-sm mid" x="375" y="376">నియమం: <tspan class="t-acc">"Accept interfaces, return structs"</tspan>.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -393,6 +408,11 @@ func main() {
 
 ## 4. Composition over Inheritance — Embedding Deep
 
+<div class="fig">
+<div class="cap">Embedding · method promotion, inheritance కాదు</div>
+<svg viewBox="0 0 750 362"><text class="t-xs" x="0" y="14">EMBEDDING — method promotion</text><rect class="n-acc" x="200" y="26" width="350" height="110" rx="4"/><text class="t-w mid" x="375" y="48">type Dog struct {</text><text class="t-w-sm mono mid" x="375" y="70">    Animal      ← embedded</text><text class="t-w-sm mono mid" x="375" y="86">    Name string</text><text class="t-w-sm mono mid" x="375" y="102">}</text><line class="ln-acc" x1="375" y1="146" x2="375" y2="176" marker-end="url(#aa)"/><rect class="n-good" x="150" y="180" width="450" height="58" rx="4"/><text class="t mid" x="375" y="202">dog.Eat()  — Animal యొక్క method నేరుగా వాడొచ్చు</text><rect class="n-bad" x="0" y="262" width="750" height="86" rx="4"/><text class="t mid" x="375" y="284">కానీ ఇది inheritance కాదు</text><text class="t-sm mid" x="375" y="306"><code>var a Animal = dog</code> — ఇది <tspan class="t-acc">పని చేయదు</tspan>. Dog ఒక Animal కాదు.</text><text class="t-sm mid" x="375" y="322">Embedding = composition + syntactic sugar. Method promotion మాత్రమే.</text><text class="t-sm mid" x="375" y="338">Interface satisfy అవుతుంది కానీ — type hierarchy ఏర్పడదు.</text></svg>
+</div>
+
 ### వివరణ
 
 Java లో reuse కి **inheritance** (`extends`) వాడతాం. **Go లో inheritance అసలు లేదు.** బదులుగా **composition** — దానికి Go native support: **embedding**.
@@ -522,6 +542,11 @@ type ReadWriter interface {
 - Interfaces ని కూడా embed చేసి పెద్ద contracts నిర్మించవచ్చు (io.ReadWriter).
 
 ## 5. Program to Interface — Accept Interfaces, Return Structs
+
+<div class="fig">
+<div class="cap">Accept interfaces, return structs</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">ACCEPT INTERFACES, RETURN STRUCTS</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">తప్పు</text><text class="t-sm mid" x="183" y="70">func New() Storer { … }</text><text class="t-sm mid" x="183" y="86">Caller కి concrete type కనిపించదు</text><text class="t-sm mid" x="183" y="102">కొత్త methods చేర్చినా వాడలేరు</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">సరైనది</text><text class="t-sm mid" x="567" y="70">func New() *PostgresStore { … }</text><text class="t-sm mid" x="567" y="86">func Save(s Storer, …) — accept interface</text><text class="t-sm mid" x="567" y="102">Caller కి పూర్తి type; function కి flexibility</text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">ఎందుకు</text><text class="t-w-sm mid" x="375" y="200">Interface ని <tspan class="t-acc">వాడేవాడు</tspan> నిర్వచించాలి — ఇచ్చేవాడు కాదు.</text><text class="t-w-sm mid" x="375" y="216">అప్పుడు ప్రతి consumer తనకి కావలసిన కనిష్ఠ interface ని నిర్వచించుకుంటాడు (ISP సహజంగా).</text><text class="t-w-sm mid" x="375" y="232">Producer package lo interface పెడితే — అందరూ దాన్నే వాడాలి, అది చాలా పెద్దదవుతుంది.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -943,6 +968,11 @@ func (s OrderStatus) String() string { // fmt.Stringer — pretty print
 ---
 
 ## 8. SOLID in Go — SRP, OCP, LSP, ISP, DIP
+
+<div class="fig">
+<div class="cap">SOLID in Go · చిన్న interfaces</div>
+<svg viewBox="0 0 750 358"><text class="t-xs" x="0" y="14">SOLID — Go యొక్క రూపంలో</text><rect class="n-acc" x="0" y="26" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="51" style="font-size:17px;font-weight:800">S</text><rect class="n" x="52" y="26" width="698" height="38" rx="4"/><text class="t-sm" x="66" y="50">చిన్న types, ఒక్క పని</text><rect class="n-acc" x="0" y="72" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="97" style="font-size:17px;font-weight:800">O</text><rect class="n" x="52" y="72" width="698" height="38" rx="4"/><text class="t-sm" x="66" y="96">interface + composition (embedding కాదు)</text><rect class="n-info" x="0" y="118" width="46" height="38" rx="4"/><text class="t mid" x="23" y="143" style="font-size:17px;font-weight:800">L</text><rect class="n" x="52" y="118" width="698" height="38" rx="4"/><text class="t-sm" x="66" y="142">interface contract ని గౌరవించడం</text><rect class="n-acc" x="0" y="164" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="189" style="font-size:17px;font-weight:800">I</text><rect class="n" x="52" y="164" width="698" height="38" rx="4"/><text class="t-sm" x="66" y="188">చిన్న interfaces — io.Reader ఒక్క method</text><rect class="n-good" x="0" y="210" width="46" height="38" rx="4"/><text class="t mid" x="23" y="235" style="font-size:17px;font-weight:800">D</text><rect class="n" x="52" y="210" width="698" height="38" rx="4"/><text class="t-sm" x="66" y="234">concrete కాదు, interface ని accept చేయడం</text><rect class="n-acc" x="0" y="262" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="284">Go lo ISP సహజం</text><text class="t-w-sm mid" x="375" y="306">Standard library చూడండి: io.Reader (1 method), io.Writer (1), io.Closer (1).</text><text class="t-w-sm mid" x="375" y="322">పెద్దవి కావాలంటే — వాటిని కలపడం (io.ReadWriteCloser).</text><text class="t-w-sm mid" x="375" y="338">"The bigger the interface, the weaker the abstraction" — Rob Pike.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -1415,6 +1445,11 @@ func main() {
 
 ## 11. Singleton (sync.Once, package-level var, init())
 
+<div class="fig">
+<div class="cap">Singleton in Go · sync.Once</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">sync.Once — Go యొక్క idiomatic singleton</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">ఇతర భాషల శైలి</text><text class="t-sm mid" x="183" y="70">if instance == nil { … }</text><text class="t-sm mid" x="183" y="86">Race condition — ఇద్దరు ఒకేసారి</text><text class="t-sm mid" x="183" y="102">Double-checked locking సంక్లిష్టం</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">Go శైలి</text><text class="t-sm mid" x="567" y="70">var once sync.Once</text><text class="t-sm mid" x="567" y="86">once.Do(func(){ … })</text><text class="t-sm mid" x="567" y="102">Thread-safe, ఒక్కసారే — హామీ</text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">కానీ — నిజంగా singleton కావాలా?</text><text class="t-w-sm mid" x="375" y="200">Go lo package-level variable + init() కూడా ఒక ఎంపిక.</text><text class="t-w-sm mid" x="375" y="216">ఇంకా మేలైనది: dependency injection — struct lo ఒక field గా పంపడం.</text><text class="t-w-sm mid" x="375" y="232">Singleton test lo ఇబ్బంది పెడుతుంది — Go lo అది ఇంకా ఎక్కువ, ఎందుకంటే global state package-wide.</text></svg>
+</div>
+
 ### వివరణ
 
 **Singleton** = మొత్తం program కి ఒకే ఒక్క instance. Config, logger, DB connection pool, metrics registry — ఇలాంటి వాటికి.
@@ -1780,6 +1815,11 @@ func main() {
 - కొత్త product type add చేయడం అన్ని factories ని touch చేస్తుంది (pattern weakness). YAGNI గుర్తుంచుకో.
 
 ## 14. Builder — మరియు idiomatic Functional Options Pattern
+
+<div class="fig">
+<div class="cap">Functional Options · Go యొక్క builder</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">FUNCTIONAL OPTIONS — Go యొక్క builder</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">Telescoping constructor</text><text class="t-sm mid" x="183" y="70">NewServer(addr, port, timeout,</text><text class="t-sm mid" x="183" y="86">  maxConn, tls, logger, …)</text><text class="t-sm mid" x="183" y="102">7 arguments — ఏది ఏమిటో గుర్తుండదు</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">Functional options</text><text class="t-sm mid" x="567" y="70">NewServer(addr,</text><text class="t-sm mid" x="567" y="86">  WithTimeout(5*time.Second),</text><text class="t-sm mid" x="567" y="102">  WithTLS(cfg))</text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">ఎలా పని చేస్తుంది</text><text class="t-w-sm mid" x="375" y="200">type Option func(*Server) — ఒక్కో option ఒక function.</text><text class="t-w-sm mid" x="375" y="216">NewServer(addr string, opts ...Option) — variadic గా తీసుకుని, ఒక్కొక్కటిగా apply.</text><text class="t-w-sm mid" x="375" y="232">డిఫాల్ట్‌లు constructor lo; caller కావలసినవి మాత్రమే మారుస్తాడు.</text><rect class="n-good" x="0" y="256" width="750" height="70" rx="4"/><text class="t mid" x="375" y="278">ఎందుకు ఇది Go lo builder కంటే మేలు</text><text class="t-sm mid" x="375" y="300">Builder కి ఒక అదనపు struct + .Build() కావాలి. Options కి function types చాలు.</text><text class="t-sm mid" x="375" y="316">కొత్త option చేర్చినా — ఉన్న callers ఏవీ మారవు (backward compatible).</text></svg>
+</div>
 
 ### వివరణ
 
@@ -2299,6 +2339,11 @@ func (a StripeAdapter2) Pay(rupees int) error { return a.MakePayment(int64(rupee
 - Unit/error translation జాగ్రత్త (leaky adapter); embedding adapter unwanted methods leak చేయొచ్చు.
 
 ## 18. Decorator (io.Reader/Writer wrapping, HTTP middleware)
+
+<div class="fig">
+<div class="cap">Decorator in Go · io wrapping మరియు middleware</div>
+<svg viewBox="0 0 750 294"><text class="t-xs" x="0" y="14">DECORATOR = middleware · io.Reader wrapping</text><rect class="n" x="0" y="26" width="140" height="44" rx="3"/><text class="t mid" x="70" y="53">file</text><line class="ln-acc" x1="144" y1="48" x2="186" y2="48" marker-end="url(#aa)"/><rect class="n-acc" x="190" y="26" width="150" height="44" rx="3"/><text class="t-w mid" x="265" y="52">gzip.Reader</text><line class="ln-acc" x1="344" y1="48" x2="386" y2="48" marker-end="url(#aa)"/><rect class="n-acc" x="390" y="26" width="150" height="44" rx="3"/><text class="t-w mid" x="465" y="52">bufio.Reader</text><line class="ln-acc" x1="544" y1="48" x2="586" y2="48" marker-end="url(#aa)"/><rect class="n-good" x="590" y="26" width="160" height="44" rx="3"/><text class="t mid" x="670" y="53">మన code</text><text class="t-acc mid" x="375" y="88">ప్రతిదీ io.Reader — కాబట్టి ఎన్నయినా పేర్చొచ్చు</text><text class="t-xs" x="0" y="126">HTTP MIDDLEWARE — అదే ఆలోచన</text><rect class="n" x="0" y="138" width="140" height="40" rx="3"/><text class="t mid" x="70" y="163">Request</text><line class="ln-acc" x1="144" y1="158" x2="186" y2="158" marker-end="url(#aa)"/><rect class="n-acc" x="190" y="138" width="130" height="40" rx="3"/><text class="t-w mid" x="255" y="162">Logging</text><line class="ln-acc" x1="324" y1="158" x2="366" y2="158" marker-end="url(#aa)"/><rect class="n-acc" x="370" y="138" width="130" height="40" rx="3"/><text class="t-w mid" x="435" y="162">Auth</text><line class="ln-acc" x1="504" y1="158" x2="546" y2="158" marker-end="url(#aa)"/><rect class="n-good" x="550" y="138" width="200" height="40" rx="3"/><text class="t mid" x="650" y="163">Handler</text><rect class="n-acc" x="0" y="198" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="220">ఎందుకు ఇది Go lo ఇంత సహజం</text><text class="t-w-sm mid" x="375" y="242">func(http.Handler) http.Handler — ఒక handler తీసుకుని, ఇంకో handler ఇచ్చే function.</text><text class="t-w-sm mid" x="375" y="258">Interface ఒక్క method కాబట్టి wrap చేయడం చాలా సులభం.</text><text class="t-w-sm mid" x="375" y="274">ఇదే decorator pattern — కానీ Go lo దీనికి ప్రత్యేక పేరు అవసరం లేదు, అది సహజ శైలి.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -2999,6 +3044,11 @@ func main() {
 
 ## 24. Strategy (Func Types — Idiomatic)
 
+<div class="fig">
+<div class="cap">Strategy in Go · function types</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">STRATEGY — Go lo function type చాలు</text><rect class="n-info" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">Interface శైలి</text><text class="t-sm mid" x="183" y="70">type Sorter interface { Sort([]int) }</text><text class="t-sm mid" x="183" y="86">type QuickSort struct{}</text><text class="t-sm mid" x="183" y="102">func (q QuickSort) Sort(…) — struct అవసరమా?</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">Function type శైలి</text><text class="t-sm mid" x="567" y="70">type SortFn func([]int)</text><text class="t-sm mid" x="567" y="86">var quick SortFn = func(s []int){ … }</text><text class="t-sm mid" x="567" y="102">Struct లేదు — function చాలు</text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">ఎప్పుడు ఏది</text><text class="t-w-sm mid" x="375" y="200">Strategy కి <tspan class="t-acc">state అవసరం లేకపోతే</tspan> → function type. సులభం, చౌక.</text><text class="t-w-sm mid" x="375" y="216">State లేదా పలు methods కావాలంటే → interface.</text><text class="t-w-sm mid" x="375" y="232">Standard library ఉదాహరణ: http.HandlerFunc — ఒక function ని interface గా మార్చే adapter.</text></svg>
+</div>
+
 ### వివరణ
 
 **Strategy** = ఒకే పనికి **swappable algorithms**, runtime లో ఏది వాడాలో decide చేయడం. If/else చెట్టు కాకుండా, ఒక్కో algorithm ని separate గా encapsulate చేసి, context కి inject చేస్తాం.
@@ -3116,6 +3166,11 @@ func (u UPI) Name() string    { return "UPI" }
 - nil strategy panic, closure capture bugs జాగ్రత్త; trivial variation కి over-abstract వద్దు.
 
 ## 25. Observer (Channels & Callbacks)
+
+<div class="fig">
+<div class="cap">Observer in Go · channels vs callbacks</div>
+<svg viewBox="0 0 750 254"><text class="t-xs" x="0" y="14">OBSERVER — channels తో</text><circle cx="120" cy="80" r="40" fill="#17203a"/><text class="t-w mid" x="120" y="85">Subject</text><line class="ln-acc" x1="162" y1="60" x2="260" y2="40" marker-end="url(#aa)"/><line class="ln-acc" x1="162" y1="80" x2="260" y2="80" marker-end="url(#aa)"/><line class="ln-acc" x1="162" y1="100" x2="260" y2="120" marker-end="url(#aa)"/><rect class="n-acc" x="270" y="22" width="200" height="36" rx="3"/><text class="t-w-sm mid" x="370" y="45">chan Event</text><rect class="n-acc" x="270" y="62" width="200" height="36" rx="3"/><text class="t-w-sm mid" x="370" y="85">chan Event</text><rect class="n-acc" x="270" y="102" width="200" height="36" rx="3"/><text class="t-w-sm mid" x="370" y="125">chan Event</text><line class="ln" x1="474" y1="40" x2="540" y2="40" marker-end="url(#a)"/><line class="ln" x1="474" y1="80" x2="540" y2="80" marker-end="url(#a)"/><line class="ln" x1="474" y1="120" x2="540" y2="120" marker-end="url(#a)"/><rect class="n-good" x="550" y="22" width="200" height="36" rx="3"/><text class="t mid" x="650" y="45">Observer 1</text><rect class="n-good" x="550" y="62" width="200" height="36" rx="3"/><text class="t mid" x="650" y="85">Observer 2</text><rect class="n-good" x="550" y="102" width="200" height="36" rx="3"/><text class="t mid" x="650" y="125">Observer 3</text><rect class="n-bad" x="0" y="158" width="750" height="86" rx="4"/><text class="t mid" x="375" y="180">Channel తో ఒక ముఖ్యమైన ప్రమాదం</text><text class="t-sm mid" x="375" y="202">ఒక observer నెమ్మదిగా ఉంటే — unbuffered channel lo publish <tspan class="t-acc">block</tspan> అవుతుంది.</text><text class="t-sm mid" x="375" y="218">పరిష్కారాలు: buffered channel · select తో default (drop) · ఒక్కో observer కి goroutine.</text><text class="t-sm mid" x="375" y="234">Callback శైలి అయితే ఈ సమస్య లేదు కానీ — ఒక callback panic అయితే publisher పడిపోతుంది.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -3750,6 +3805,11 @@ func main() {
 - Map `range` order random; channel iterator `defer close(ch)` తప్పనిసరి.
 
 ## 30. Chain of Responsibility (Middleware Chains)
+
+<div class="fig">
+<div class="cap">Chain of Responsibility · middleware chains</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">MIDDLEWARE CHAIN = Chain of Responsibility</text><rect class="n" x="0" y="26" width="120" height="40" rx="3"/><text class="t mid" x="60" y="51">Request</text><line class="ln-acc" x1="120" y1="46" x2="130" y2="46" marker-end="url(#aa)"/><rect class="n-acc" x="134" y="26" width="136" height="40" rx="3"/><text class="t-w mid" x="202" y="51">Recover</text><line class="ln-acc" x1="270" y1="46" x2="280" y2="46" marker-end="url(#aa)"/><rect class="n-acc" x="284" y="26" width="136" height="40" rx="3"/><text class="t-w mid" x="352" y="51">Logging</text><line class="ln-acc" x1="420" y1="46" x2="430" y2="46" marker-end="url(#aa)"/><rect class="n-bad" x="434" y="26" width="136" height="40" rx="3"/><text class="t mid" x="502" y="51">Auth</text><line class="ln" x1="570" y1="46" x2="580" y2="46" marker-end="url(#aa)"/><rect class="n-good" x="584" y="26" width="136" height="40" rx="3"/><text class="t mid" x="652" y="51">Handler</text><text class="t-acc mid" x="494" y="86">Auth fail → ఇక్కడే ఆగుతుంది</text><line class="ln-acc" x1="494" y1="96" x2="494" y2="116" marker-end="url(#aa)"/><rect class="n-bad" x="400" y="120" width="190" height="36" rx="3"/><text class="t mid" x="495" y="143">401 తిరిగి వెళ్తుంది</text><rect class="n-acc" x="0" y="176" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="198">ఇది నిజమైన CoR — ఎందుకంటే</text><text class="t-w-sm mid" x="375" y="220">ప్రతి middleware "నేను handle చేసి ఆపేయాలా, లేక next కి పంపాలా" అని నిర్ణయిస్తుంది.</text><text class="t-w-sm mid" x="375" y="236">Auth fail అయితే — next ని పిలవకుండా response రాసి ఆగిపోతుంది.</text><text class="t-w-sm mid" x="375" y="252">Logging lo ఇది fan-out (అందరూ చూడాలి) — అది chain కాదు. ఈ తేడా ముఖ్యం.</text></svg>
+</div>
 
 ### వివరణ
 

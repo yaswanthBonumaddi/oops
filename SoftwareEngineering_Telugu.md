@@ -1,12 +1,27 @@
-# Software Engineering & SDLC - తెలుగు గైడ్ (SSE Fundamentals)
+<!-- style: editorial -->
+<!-- footer: Software Engineering & SDLC · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత software engineering process మళ్ళీ జీవితంలో మర్చిపోలేవు. Bootcamp/YouTube నీకు React, Node, Express, MongoDB నేర్పించాయి — కానీ ఒక real team లో software *ఎలా build అవుతుంది* (Agile, sprint, requirements, code review, testing, CI/CD, on-call) అనేది ఎవరూ నేర్పించలేదు. సరిగ్గా ఆ gap నే ఈ guide పూడుస్తుంది. ప్రతి concept కి ఒక vivid real-life analogy, అది ఎందుకు పుట్టింది, ఎప్పుడు వాడాలి, trade-offs, మరియు ఒక real MERN team లో అది ఎలా జరుగుతుంది — అన్నీ ఉంటాయి.
->
-> **లక్ష్యం:** Self-taught MERN developer (non-CS background) ని — code రాయడం వచ్చు కానీ *engineering process* అస్సలు తెలియని వ్యక్తిని — SSE (Senior Software Engineer) interviews మరియు real teams expect చేసే స్థాయికి తీసుకెళ్లడం. Best-teacher style — absolute basics నుండి, intuition first, formalism తర్వాత. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> ఇది `OOPS_Telugu.md`, `LLD_Telugu.md`, `HLD_Telugu.md`, మరియు `DSA_00..10` set కి companion. అవి *coding & design* నేర్పే docs; ఇది *process & practice* నేర్పే doc. రెండూ కలిస్తేనే complete SSE.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">SE</div>
+<div class="kicker">Software Engineering &amp; SDLC</div>
+<div class="rule"></div>
+<div class="cover-title">Software<br>Engineering</div>
+<div class="lede">SDLC, Agile, testing pyramid, CI/CD, code review — code రాయడం కాకుండా, ఒక team lo software ని ఎలా నడపాలి.</div>
+<div class="sub">CS fundamentals — self-taught / non-CS background నుంచి వచ్చినవారికి SSE interview lo అడిగే లోతు వరకు. ప్రతి concept ని MERN / JavaScript ప్రపంచంతో ముడిపెట్టి.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -165,6 +180,11 @@ A: Process ని team size కి తగ్గట్టు scale చేయా�
 A: Coding నేను bootcamp/self-study తో నేర్చుకున్నా, కానీ *engineering process* (SDLC, Agile, testing, CI/CD, code review, on-call) ని consciously study చేసి, ప్రతి practice ఎందుకు ఉందో అర్థం చేసుకున్నా. ఇప్పుడు నేను code మాత్రమే కాదు — ఒక feature ని idea నుండి production monitoring వరకు తీసుకెళ్లగలను. (ఈ answer నిన్ను చాలా mature గా చూపిస్తుంది.)
 
 ## 2. SDLC — Software Development Life Cycle
+
+<div class="fig">
+<div class="cap">SDLC · ఆరు దశలు</div>
+<svg viewBox="0 0 750 196"><text class="t-xs" x="0" y="14">SDLC — ఆరు దశలు</text><rect class="n-acc" x="0" y="26" width="118" height="56" rx="3"/><text class="t-w mid" x="59" y="59">Requirements</text><text class="t-w-sm mid" x="59" y="70">ఏం కట్టాలి</text><line class="ln" x1="120" y1="54" x2="124" y2="54" marker-end="url(#a)"/><rect class="n-acc" x="126" y="26" width="118" height="56" rx="3"/><text class="t-w mid" x="185" y="59">Design</text><text class="t-w-sm mid" x="185" y="70">ఎలా కట్టాలి</text><line class="ln" x1="246" y1="54" x2="250" y2="54" marker-end="url(#a)"/><rect class="n" x="252" y="26" width="118" height="56" rx="3"/><text class="t mid" x="311" y="59">Implementation</text><text class="t-sm mid" x="311" y="70">code</text><line class="ln" x1="372" y1="54" x2="376" y2="54" marker-end="url(#a)"/><rect class="n" x="378" y="26" width="118" height="56" rx="3"/><text class="t mid" x="437" y="59">Testing</text><text class="t-sm mid" x="437" y="70">పని చేస్తోందా</text><line class="ln" x1="498" y1="54" x2="502" y2="54" marker-end="url(#a)"/><rect class="n" x="504" y="26" width="118" height="56" rx="3"/><text class="t mid" x="563" y="59">Deployment</text><text class="t-sm mid" x="563" y="70">users కి</text><line class="ln" x1="624" y1="54" x2="628" y2="54" marker-end="url(#a)"/><rect class="n" x="630" y="26" width="118" height="56" rx="3"/><text class="t mid" x="689" y="59">Maintenance</text><text class="t-sm mid" x="689" y="70">బతికి ఉంచడం</text><rect class="n-acc" x="0" y="100" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="122">Bug ఖరీదు దశ ప్రకారం పెరుగుతుంది</text><text class="t-w-sm mid" x="375" y="144">Requirements lo పట్టుకుంటే — ఒక వాక్యం మార్చడం.</text><text class="t-w-sm mid" x="375" y="160">Production lo పట్టుకుంటే — code మార్పు + test + deploy + బహుశా data fix + customer trust.</text><text class="t-w-sm mid" x="375" y="176">అందుకే review, testing "నెమ్మది" కాదు — అవి తర్వాతి ఖర్చుని తగ్గించే పెట్టుబడి.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -424,6 +444,11 @@ A: పెద్ద, ఖరీదైన, high-risk (కొత్త, unproven tec
 ---
 
 ## 4. Agile & Scrum — Deep Dive
+
+<div class="fig">
+<div class="cap">Scrum · sprint యొక్క చక్రం</div>
+<svg viewBox="0 0 750 248"><text class="t-xs" x="0" y="14">SCRUM — ఒక sprint</text><rect class="n-acc" x="0" y="26" width="150" height="44" rx="3"/><text class="t-w mid" x="75" y="46">Backlog</text><text class="t-w-sm mid" x="75" y="62">ప్రాధాన్యత క్రమంలో</text><line class="ln-acc" x1="154" y1="48" x2="196" y2="48" marker-end="url(#aa)"/><rect class="n" x="200" y="26" width="150" height="44" rx="3"/><text class="t mid" x="275" y="46">Sprint planning</text><text class="t-sm mid" x="275" y="62">2 వారాల పని</text><line class="ln-acc" x1="354" y1="48" x2="396" y2="48" marker-end="url(#aa)"/><rect class="n-acc" x="400" y="26" width="150" height="44" rx="3"/><text class="t-w mid" x="475" y="46">Sprint</text><text class="t-w-sm mid" x="475" y="62">daily standup</text><line class="ln-acc" x1="554" y1="48" x2="596" y2="48" marker-end="url(#aa)"/><rect class="n-good" x="600" y="26" width="150" height="44" rx="3"/><text class="t mid" x="675" y="53">Review + Retro</text><path class="ln-acc" d="M675 76 L675 100 L75 100 L75 76" marker-end="url(#aa)"/><text class="t-acc mid" x="375" y="118">తర్వాతి sprint</text><rect class="n-good" x="0" y="136" width="366" height="102" rx="4"/><text class="t mid" x="183" y="158">Retro యొక్క ఉద్దేశం</text><text class="t-sm mid" x="183" y="180">ఏం బాగా జరిగింది · ఏం జరగలేదు · ఏం మారుస్తాం</text><text class="t-sm mid" x="183" y="196">ఒక్క actionable item అయినా తీసుకోవాలి</text><text class="t-sm mid" x="183" y="212">లేకపోతే అది కేవలం ఫిర్యాదుల సమావేశం</text><rect class="n-bad" x="384" y="136" width="366" height="102" rx="4"/><text class="t mid" x="567" y="158">Standup ఎలా చెడిపోతుంది</text><text class="t-sm mid" x="567" y="180">15 నిమిషాలు దాటడం · status report అవడం</text><text class="t-sm mid" x="567" y="196">Manager కి నివేదిక కాదు — team కి sync</text><text class="t-sm mid" x="567" y="212">Blocker చెప్పడమే అసలు ఉద్దేశం</text></svg>
+</div>
 
 ### వివరణ
 
@@ -1164,6 +1189,11 @@ A: Big-bang rewrite avoid చేస్తాను (అది చాలావర
 
 Manual testing (ప్రతిసారి UI లో click చేసి చూడటం) scale అవ్వదు — 500 features ఉన్న app ని ప్రతి deploy కి manually test చేయలేం. అందుకే **automated tests** — code రాసి, machine వాటిని seconds లో run చేస్తుంది.
 
+<div class="fig">
+<div class="cap">Testing Pyramid · ఎన్ని, ఏ స్థాయిలో</div>
+<svg viewBox="0 0 750 378"><text class="t-xs" x="0" y="14">TESTING PYRAMID</text><polygon points="375,26 620,120 130,120" fill="#fcecea" stroke="#eec4bd" stroke-width="1.2"/><text class="t mid" x="375" y="80">E2E</text><text class="t-sm mid" x="375" y="100">కొన్ని · నెమ్మది · పెళుసు</text><polygon points="130,124 620,124 700,200 50,200" fill="#eaf0fa" stroke="#c3d3ec" stroke-width="1.2"/><text class="t mid" x="375" y="158">Integration</text><text class="t-sm mid" x="375" y="178">మధ్యస్థం</text><rect class="n-good" x="20" y="204" width="710" height="60" rx="4"/><text class="t mid" x="375" y="230">Unit tests</text><text class="t-sm mid" x="375" y="250">చాలా ఎక్కువ · వేగం · స్థిరం</text><rect class="n-acc" x="0" y="282" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="304">ఎందుకు ఈ ఆకారం</text><text class="t-w-sm mid" x="375" y="326">E2E tests నమ్మకం ఎక్కువ ఇస్తాయి కానీ — నెమ్మది, తరచుగా విఫలం (flaky), maintain కష్టం.</text><text class="t-w-sm mid" x="375" y="342">Unit tests వేగం, ఖచ్చితంగా ఎక్కడ విరిగిందో చెప్తాయి.</text><text class="t-w-sm mid" x="375" y="358">తలక్రిందుల pyramid (ఎక్కువ E2E) = నెమ్మది CI + ఎవరూ నమ్మని tests.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Tests = ఇంటికి పెట్టిన smoke detectors + burglar alarms.**
@@ -1400,6 +1430,11 @@ A: లేదు. Coverage అంటే "ఈ lines execute అయ్యాయి"
 
 ## 10. Code Review
 
+<div class="fig">
+<div class="cap">Code review · ప్రాధాన్యత క్రమం</div>
+<svg viewBox="0 0 750 346"><text class="t-xs" x="0" y="14">CODE REVIEW — ఏం చూడాలి, ఏ క్రమంలో</text><rect class="n-acc" x="0" y="26" width="200" height="36" rx="3"/><text class="t-w mid" x="100" y="49">1 · Correctness</text><text class="t-sm" x="216" y="49">ఇది నిజంగా పని చేస్తుందా · edge cases</text><rect class="n-acc" x="0" y="70" width="200" height="36" rx="3"/><text class="t-w mid" x="100" y="93">2 · Design</text><text class="t-sm" x="216" y="93">ఇది సరైన చోట, సరైన abstraction నా</text><rect class="n-info" x="0" y="114" width="200" height="36" rx="3"/><text class="t mid" x="100" y="137">3 · Tests</text><text class="t-sm" x="216" y="137">కొత్త behaviour కి tests ఉన్నాయా</text><rect class="n" x="0" y="158" width="200" height="36" rx="3"/><text class="t mid" x="100" y="181">4 · Readability</text><text class="t-sm" x="216" y="181">6 నెలల తర్వాత అర్థమవుతుందా</text><rect class="n-soft" x="0" y="202" width="200" height="36" rx="3"/><text class="t mid" x="100" y="225">5 · Style</text><text class="t-sm" x="216" y="225">linter పని — మనిషి పని కాదు</text><rect class="n-bad" x="0" y="250" width="750" height="86" rx="4"/><text class="t mid" x="375" y="272">Review ని విషపూరితం చేసేవి</text><text class="t-sm mid" x="375" y="294">Style మీద పోరాటం — అది <tspan class="t-acc">linter/prettier</tspan> పని, CI lo ఆటోమేట్ చేయాలి.</text><text class="t-sm mid" x="375" y="310">"ఇది తప్పు" కాకుండా "ఇలా చేస్తే ఎలా ఉంటుంది?" — ప్రశ్నగా అడగడం.</text><text class="t-sm mid" x="375" y="326">Blocking comment మరియు nit ని స్పష్టంగా వేరు చేయడం (nit: అని prefix).</text></svg>
+</div>
+
 ### వివరణ
 
 **Code Review = నీ code ని merge చేసేముందు ఇంకో engineer చదివి, feedback ఇవ్వడం.** ప్రతి modern team లో ఇది mandatory gate — PR (Topic 7) raise చేస్తే, 1-2 reviewers approve చేయందే main లో merge అవ్వదు. Self-taught devs కి ఇది కొత్త, కొంచెం భయపెట్టే experience — "నా code ని ఎవరో judge చేస్తారు." కానీ నిజానికి ఇది నీ అతిపెద్ద learning tool + team యొక్క quality safety net.
@@ -1535,6 +1570,11 @@ Continuous Delivery:      merge → build → test → staging → [🔘 manual]
 Continuous Deployment:    merge → build → test → staging → prod         (fully auto)
                                                             ↑ button లేదు
 ```
+
+<div class="fig">
+<div class="cap">CI/CD · commit నుంచి production వరకు</div>
+<svg viewBox="0 0 750 294"><text class="t-xs" x="0" y="14">CI / CD PIPELINE</text><rect class="n" x="0" y="26" width="118" height="48" rx="3"/><text class="t mid" x="59" y="48">Commit</text><text class="t-sm mid" x="59" y="64">git push</text><line class="ln" x1="120" y1="50" x2="124" y2="50" marker-end="url(#a)"/><rect class="n" x="126" y="26" width="118" height="48" rx="3"/><text class="t mid" x="185" y="48">Build</text><text class="t-sm mid" x="185" y="64">compile, bundle</text><line class="ln" x1="246" y1="50" x2="250" y2="50" marker-end="url(#a)"/><rect class="n-acc" x="252" y="26" width="118" height="48" rx="3"/><text class="t-w mid" x="311" y="48">Test</text><text class="t-w-sm mid" x="311" y="64">unit + integration</text><line class="ln" x1="372" y1="50" x2="376" y2="50" marker-end="url(#a)"/><rect class="n" x="378" y="26" width="118" height="48" rx="3"/><text class="t mid" x="437" y="48">Scan</text><text class="t-sm mid" x="437" y="64">lint, security</text><line class="ln" x1="498" y1="50" x2="502" y2="50" marker-end="url(#a)"/><rect class="n" x="504" y="26" width="118" height="48" rx="3"/><text class="t mid" x="563" y="48">Deploy</text><text class="t-sm mid" x="563" y="64">staging</text><line class="ln" x1="624" y1="50" x2="628" y2="50" marker-end="url(#a)"/><rect class="n-acc" x="630" y="26" width="118" height="48" rx="3"/><text class="t-w mid" x="689" y="48">Release</text><text class="t-w-sm mid" x="689" y="64">production</text><rect class="n-good" x="0" y="96" width="366" height="102" rx="4"/><text class="t mid" x="183" y="118">CI — Continuous Integration</text><text class="t-sm mid" x="183" y="140">ప్రతి push కి: build + test ఆటోమేటిక్ గా</text><text class="t-sm mid" x="183" y="156">విరిగితే నిమిషాల్లో తెలుస్తుంది</text><text class="t-sm mid" x="183" y="172">లక్ష్యం: main ఎప్పుడూ పని చేసే స్థితిలో</text><rect class="n-info" x="384" y="96" width="366" height="102" rx="4"/><text class="t mid" x="567" y="118">CD — Delivery vs Deployment</text><text class="t-sm mid" x="567" y="140">Delivery = ఎప్పుడైనా release చేయగలిగే స్థితి</text><text class="t-sm mid" x="567" y="156">(చివరి బటన్ మనిషి నొక్కుతాడు)</text><text class="t-sm mid" x="567" y="172">Deployment = ఆ బటన్ కూడా ఆటోమేటిక్</text><rect class="n-acc" x="0" y="218" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="240">ఎందుకు ఇది ముఖ్యం</text><text class="t-w-sm mid" x="375" y="262">చిన్న, తరచుగా వచ్చే మార్పులు = చిన్న ప్రమాదం. నెలకోసారి పెద్ద release = పెద్ద ప్రమాదం.</text><text class="t-w-sm mid" x="375" y="278">Rollback ని ముందే ఆలోచించాలి — deploy చేయడం కంటే వెనక్కి తీసుకోవడం ముఖ్యం.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -1722,6 +1762,11 @@ A: Integration/deployment నొప్పి పెడితే (conflicts, brok
 ---
 
 ## 12. DevOps Basics
+
+<div class="fig">
+<div class="cap">DevOps · సంస్కృతి మరియు DORA metrics</div>
+<svg viewBox="0 0 750 376"><text class="t-xs" x="0" y="14">DEVOPS — ఒక సంస్కృతి, ఒక పాత్ర కాదు</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">పాత విధానం</text><text class="t-sm mid" x="183" y="70">Dev code రాసి "throw over the wall"</text><text class="t-sm mid" x="183" y="86">Ops deploy చేసి, పడిపోతే వాళ్ళ సమస్య</text><text class="t-sm mid" x="183" y="102">ఒకరినొకరు నిందించుకోవడం</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">DevOps</text><text class="t-sm mid" x="567" y="70">"You build it, you run it"</text><text class="t-sm mid" x="567" y="86">Dev కి production visibility</text><text class="t-sm mid" x="567" y="102">Ops కి pipeline lo పాత్ర</text><text class="t-xs" x="0" y="166">నాలుగు కీలక metrics (DORA)</text><rect class="n-acc" x="0" y="178" width="170" height="44" rx="3"/><text class="t-w mid" x="85" y="205">Deploy frequency</text><text class="t-sm" x="186" y="206">ఎంత తరచుగా release</text><rect class="n-acc" x="380" y="178" width="170" height="44" rx="3"/><text class="t-w mid" x="465" y="205">Lead time</text><text class="t-sm" x="566" y="206">commit నుంచి production దాకా</text><rect class="n-acc" x="0" y="234" width="170" height="44" rx="3"/><text class="t-w mid" x="85" y="261">MTTR</text><text class="t-sm" x="186" y="262">పడిపోతే ఎంతలో లేపుతారు</text><rect class="n-acc" x="380" y="234" width="170" height="44" rx="3"/><text class="t-w mid" x="465" y="261">Change failure rate</text><text class="t-sm" x="566" y="262">ఎన్ని deploys విఫలం</text><rect class="n-acc" x="0" y="300" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="322">ఈ నాలుగు ఎందుకు</text><text class="t-w-sm mid" x="375" y="344">మొదటి రెండు = వేగం · చివరి రెండు = స్థిరత్వం. మంచి teams <tspan class="t-acc">రెండింటిలోనూ</tspan> మెరుగవుతాయి.</text><text class="t-w-sm mid" x="375" y="360">"వేగం vs నాణ్యత" అనేది తప్పుడు ఎంపిక — మంచి pipeline రెండింటినీ ఇస్తుంది.</text></svg>
+</div>
 
 ### వివరణ
 

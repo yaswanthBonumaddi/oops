@@ -3241,7 +3241,7 @@ class QuietHoursPreferences extends PreferenceService {
 
 <div class="fig">
 <div class="cap">ఒక కదలిక చెల్లుబాటు అవ్వాలంటే 5 పరీక్షలు · క్రమం ముఖ్యం</div>
-<svg viewBox="0 0 750 245">
+<svg viewBox="0 0 750 254">
 <rect class="n" x="0" y="24" width="140" height="52" rx="4"/>
 <text class="t mid" x="70" y="44">1 · Piece ఉందా?</text>
 <text class="t-sm mid" x="70" y="62">నీ రంగుదేనా?</text>
@@ -3264,7 +3264,7 @@ class QuietHoursPreferences extends PreferenceService {
 <text class="t-sm mid" x="375" y="170">దీన్ని తెలుసుకోవడానికి ఒకే మార్గం: కదలికని చేసి చూడటం, తర్వాత వెనక్కి తిప్పడం</text>
 <rect class="n-good" x="0" y="190" width="750" height="50" rx="4"/>
 <text class="t mid" x="375" y="212">SIMULATE → CHECK → UNDO</text>
-<text class="t-sm mid" x="375" y="230">కదలికని board మీద చేసి, check ఉందా అని చూసి, తిరిగి వెనక్కి తిప్పడం. అందుకే ప్రతి కదలిక reversible గా ఉండాలి — ఇక్కడే Command pattern వస్తుంది.</text>
+<text class="t-sm mid" x="375" y="230">కదలికని board మీద చేసి, check ఉందా అని చూసి, తిరిగి వెనక్కి తిప్పడం. అందుకే ప్రతి కదలిక</text><text class="t-sm mid" x="375" y="246">reversible గా ఉండాలి — ఇక్కడే Command pattern వస్తుంది.</text>
 </svg>
 </div>
 
@@ -3765,8 +3765,10 @@ Commands వరుసగా అమలయ్యాయి, ప్రతిదీ �
 <text class="t-sm mono mid" x="560" y="154">- children: Map&lt;name, FSNode&gt;</text>
 <text class="t-sm mono mid" x="560" y="170">size → Σ child.size</text>
 <path class="ln-acc" d="M690 148 Q 730 148 730 100 Q 730 60 500 46" marker-end="url(#aa)"/>
-<text class="t-acc" x="600" y="200">Directory తనలో FSNode లని పట్టుకుంటుంది —</text>
-<text class="t-acc" x="600" y="216">అంటే directories లోపల directories. అదే recursion.</text>
+<text class="t-acc" x="586" y="196">Directory తనలో FSNode లని</text>
+<text class="t-acc" x="586" y="211">పట్టుకుంటుంది — అంటే</text>
+<text class="t-acc" x="586" y="226">directories లోపల directories.</text>
+<text class="t-acc" x="586" y="241">అదే recursion.</text>
 <rect class="n-good" x="0" y="196" width="560" height="44" rx="4"/>
 <text class="t" x="14" y="216">Caller ఎప్పుడూ "ఇది file నా directory నా" అని అడగడు</text>
 <text class="t-sm" x="14" y="234"><tspan class="mono">node.size</tspan> — File అయితే content పొడవు, Directory అయితే recursion. Polymorphism మిగతాది చూసుకుంటుంది.</text>
@@ -4501,7 +4503,7 @@ Library lo <i>Clean Code</i> యొక్క <b>5 copies</b> ఉండొచ్�
 
 <div class="fig">
 <div class="cap">పుస్తకం తిరిగి వచ్చినప్పుడు ఎవరికి ఇవ్వాలి?</div>
-<svg viewBox="0 0 750 230">
+<svg viewBox="0 0 750 254">
 <rect class="n-acc" x="0" y="20" width="180" height="50" rx="4"/>
 <text class="t-w mid" x="90" y="42">Copy C1 తిరిగి వచ్చింది</text>
 <text class="t-w-sm mid" x="90" y="58">status → ?</text>
@@ -4518,10 +4520,10 @@ Library lo <i>Clean Code</i> యొక్క <b>5 copies</b> ఉండొచ్�
 <text class="t mid" x="612" y="84">కాదు → status = AVAILABLE</text>
 <rect class="n-bad" x="0" y="112" width="750" height="52" rx="4"/>
 <text class="t" x="16" y="134">ఇక్కడ చాలా మంది చేసే తప్పు</text>
-<text class="t-sm" x="16" y="154">తిరిగి వచ్చిన copy ని వెంటనే AVAILABLE చేయడం. అప్పుడు — 3 నెలలు queue lo వేచి ఉన్న member కంటే, ఆ క్షణంలో counter దగ్గర నిలబడిన వ్యక్తి గెలుస్తాడు. <tspan class="t-acc">Reservation యొక్క అర్థమే పోతుంది.</tspan></text>
+<text class="t-sm" x="16" y="154">తిరిగి వచ్చిన copy ని వెంటనే AVAILABLE చేయడం. అప్పుడు — 3 నెలలు queue lo వేచి ఉన్న</text><text class="t-sm" x="16" y="170">member కంటే, ఆ క్షణంలో counter దగ్గర నిలబడిన వ్యక్తి గెలుస్తాడు. <tspan class="t-acc">Reservation యొక్క అర్థమే పోతుంది.</tspan></text>
 <rect class="n-info" x="0" y="176" width="750" height="46" rx="4"/>
 <text class="t" x="16" y="196">HELD కి TTL ఎందుకు</text>
-<text class="t-sm" x="16" y="214">Member reserve చేసి ఎప్పటికీ రాకపోతే — ఆ copy శాశ్వతంగా ఇరుక్కుంటుంది. అందుకే 48 గంటల hold, తర్వాత queue lo తర్వాతివారికి. ఇది Problem 03 (seat hold), Problem 07 (uber lock) lo చూసిన <b>TTL ఉన్న claim</b> — మళ్ళీ అదే నమూనా.</text>
+<text class="t-sm" x="16" y="214">Member reserve చేసి ఎప్పటికీ రాకపోతే — ఆ copy శాశ్వతంగా ఇరుక్కుంటుంది. అందుకే 48 గంటల</text><text class="t-sm" x="16" y="230">hold, తర్వాత queue lo తర్వాతివారికి. ఇది Problem 03 (seat hold), Problem 07 (uber lock)</text><text class="t-sm" x="16" y="246">lo చూసిన <tspan class="t-acc">TTL ఉన్న claim</tspan> — మళ్ళీ అదే నమూనా.</text>
 </svg>
 </div>
 

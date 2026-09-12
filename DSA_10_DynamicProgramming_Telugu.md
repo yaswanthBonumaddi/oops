@@ -1,4 +1,28 @@
-# DSA: Dynamic Programming - తెలుగు గైడ్ (LeetCode 150, SSE)
+<!-- style: editorial -->
+<!-- footer: DSA · Dynamic Programming · తెలుగు గైడ్ -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
+
+<div class="cover">
+<div class="cover-num">10</div>
+<div class="kicker">DSA · Dynamic Programming</div>
+<div class="rule"></div>
+<div class="cover-title">Dynamic<br>Programming</div>
+<div class="lede">Recursion + memo. State ని సరిగ్గా నిర్వచిస్తే DP సగం అయిపోయినట్టే.</div>
+<div class="sub">ప్రతి problem కి: <b>ఏ pattern ఇది</b> → ఎందుకు ఆ pattern → dry run → optimal JavaScript code → complexity → edge cases. <code>DSA_Patterns_Telugu.pdf</code> pattern-first దృష్టి; ఈ file ఆ patterns ని నిజమైన LeetCode problems మీద అమలు చేస్తుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
+
 
 > ఈ document చదివిన తర్వాత **DP (Dynamic Programming) మళ్ళీ నిన్ను భయపెట్టదు.** DP అంటే జనం భయపడేది — కానీ నిజం ఏమిటంటే DP ఒక *technique* కాదు, ఒక **ఆలోచనా విధానం (way of thinking)**. కింద మనం మొదట ఆ ఆలోచనా విధానాన్ని (universal 5-step recipe) లోతుగా నేర్చుకుంటాం, తర్వాత దాన్ని 14 classic LeetCode problems మీద పదే పదే apply చేసి — నీ brain లో ఆ pattern permanent గా ముద్రించుకునేలా చేస్తాం. ప్రతి problem కి: **ఎలా ఆలోచించాలి** (state, recurrence, base case explicit గా), brute-force recursion ఎందుకు slow, memoization → tabulation, clean JavaScript, dry run (dp table నింపడం), complexity, గుర్తుంచుకోవాల్సినది, సాధారణ తప్పులు. లక్ష్యం: **"ఒకసారి చదివితే మర్చిపోకూడదు."**
 >
@@ -49,6 +73,12 @@ DP రెండు లక్షణాలు ఉన్న problems మీద ప�
 2. **Optimal substructure** — పెద్ద problem యొక్క optimal answer, దాని subproblems యొక్క optimal answers నుండి కట్టవచ్చు. (ఉదా: n-వ మెట్టుకి చేరే మార్గాల సంఖ్య = (n-1)-వ మెట్టు మార్గాలు + (n-2)-వ మెట్టు మార్గాలు.)
 
 > **Real-life analogy:** నువ్వు ఒక పెద్ద పరీక్షకి చదువుతున్నావు. ప్రతి chapter లో కొన్ని sums వస్తాయి. కొన్ని sub-calculations (ఉదా: "log 2 విలువ") పదే పదే అవసరం అవుతాయి. తెలివైన student ప్రతిసారీ మళ్ళీ లెక్కించడు — ఒకసారి లెక్కించి, ఒక **cheat-sheet (memo)** లో రాసుకుని, మళ్ళీ అవసరం అయినప్పుడు అక్కడ చూసుకుంటాడు. DP అంటే అదే: **once compute, forever reuse.** ఆ cheat-sheet నే మనం `dp` array/table అంటాం.
+
+<div class="fig">
+<div class="cap">DP · recognition మరియు 1D table</div>
+<svg viewBox="0 0 750 368"><rect class="n-acc" x="0" y="10" width="750" height="110" rx="4"/><text class="t-w mid" x="375" y="32">DP ని గుర్తుపట్టడం — మూడు సంకేతాలు</text><text class="t-w-sm mid" x="375" y="54">1 · "ఎన్ని విధాలుగా" / "గరిష్ఠం" / "కనిష్ఠం" — counting లేదా optimisation</text><text class="t-w-sm mid" x="375" y="70">2 · ప్రస్తుత నిర్ణయం తర్వాతివాటిని ప్రభావితం చేస్తుంది (overlapping subproblems)</text><text class="t-w-sm mid" x="375" y="86">3 · Greedy తప్పు జవాబు ఇచ్చే ఒక counter-example ఉంది</text><text class="t-xs" x="0" y="146">CLIMBING STAIRS · dp[i] = dp[i−1] + dp[i−2]</text><rect class="n" x="30" y="158" width="56" height="34" rx="3"/><text class="t mid" x="58" y="180">1</text><text class="t-sm mid" x="58" y="207">0</text><rect class="n" x="89" y="158" width="56" height="34" rx="3"/><text class="t mid" x="117" y="180">1</text><text class="t-sm mid" x="117" y="207">1</text><rect class="n" x="148" y="158" width="56" height="34" rx="3"/><text class="t mid" x="176" y="180">2</text><text class="t-sm mid" x="176" y="207">2</text><rect class="n" x="207" y="158" width="56" height="34" rx="3"/><text class="t mid" x="235" y="180">3</text><text class="t-sm mid" x="235" y="207">3</text><rect class="n" x="266" y="158" width="56" height="34" rx="3"/><text class="t mid" x="294" y="180">5</text><text class="t-sm mid" x="294" y="207">4</text><rect class="n" x="325" y="158" width="56" height="34" rx="3"/><text class="t mid" x="353" y="180">8</text><text class="t-sm mid" x="353" y="207">5</text><line class="ln-acc" x1="142" y1="214" x2="86" y2="236" marker-end="url(#a)"/><line class="ln-acc" x1="198" y1="214" x2="142" y2="236" marker-end="url(#a)"/><text class="t-acc mid" x="142" y="254">ప్రతి గడి తన ముందు రెండింటి నుంచి</text><rect class="n-good" x="0" y="272" width="366" height="86" rx="4"/><text class="t mid" x="183" y="294">Bottom-up (tabulation)</text><text class="t-sm mid" x="183" y="316">Loop — stack overflow రాదు</text><text class="t-sm mid" x="183" y="332">Space ని O(1) కి తగ్గించొచ్చు (రెండు variables)</text><rect class="n-info" x="384" y="272" width="366" height="86" rx="4"/><text class="t mid" x="567" y="294">Top-down (memoization)</text><text class="t-sm mid" x="567" y="316">Recursion + cache — రాయడం సులభం</text><text class="t-sm mid" x="567" y="332">Brute force నుంచి సహజంగా పరిణామం</text></svg>
+<div class="note"><b>State design ఇక్కడే గెలుస్తారు:</b> "dp[i] యొక్క అర్థం ఏమిటి?" అని ఒక్క వాక్యంలో రాయండి. "i వరకు జవాబు" అస్పష్టం; "i-వ element తో ముగిసే గరిష్ఠ sum" స్పష్టం. అర్థం స్పష్టంగా ఉంటే transition దానంతట అదే వస్తుంది.</div>
+</div>
 
 ### ఇది DP problem అని ఎలా గుర్తించాలి? (recognition signals)
 
@@ -560,6 +590,11 @@ Return `3` (5+5+1). ✅
   - `-1` return మర్చిపోవడం — impossible case ని Infinity గా వదిలేయకూడదు.
 
 ---
+<div class="fig">
+<div class="cap">0/1 Knapsack · table మరియు 1D ఉచ్చు</div>
+<svg viewBox="0 0 750 408"><text class="t-xs" x="0" y="14">0/1 KNAPSACK — table ఎలా నిండుతుంది</text><text class="t-xs" x="0" y="44">rows = items · columns = capacity</text><rect class="n" x="140" y="56" width="84" height="34" rx="3"/><rect class="n" x="230" y="56" width="84" height="34" rx="3"/><rect class="n" x="320" y="56" width="84" height="34" rx="3"/><rect class="n" x="410" y="56" width="84" height="34" rx="3"/><rect class="n" x="500" y="56" width="84" height="34" rx="3"/><rect class="n" x="590" y="56" width="84" height="34" rx="3"/><rect class="n" x="140" y="96" width="84" height="34" rx="3"/><rect class="n" x="230" y="96" width="84" height="34" rx="3"/><rect class="n" x="320" y="96" width="84" height="34" rx="3"/><rect class="n" x="410" y="96" width="84" height="34" rx="3"/><rect class="n" x="500" y="96" width="84" height="34" rx="3"/><rect class="n" x="590" y="96" width="84" height="34" rx="3"/><rect class="n" x="140" y="136" width="84" height="34" rx="3"/><rect class="n" x="230" y="136" width="84" height="34" rx="3"/><rect class="n" x="320" y="136" width="84" height="34" rx="3"/><rect class="n" x="410" y="136" width="84" height="34" rx="3"/><rect class="n" x="500" y="136" width="84" height="34" rx="3"/><rect class="n-good" x="590" y="136" width="84" height="34" rx="3"/><rect class="n" x="140" y="176" width="84" height="34" rx="3"/><rect class="n" x="230" y="176" width="84" height="34" rx="3"/><rect class="n-good" x="320" y="176" width="84" height="34" rx="3"/><rect class="n" x="410" y="176" width="84" height="34" rx="3"/><rect class="n" x="500" y="176" width="84" height="34" rx="3"/><rect class="n-acc" x="590" y="176" width="84" height="34" rx="3"/><text class="t-sm" x="0" y="80">item 0</text><text class="t-sm" x="0" y="120">item 1</text><text class="t-sm" x="0" y="160">item 2</text><text class="t-sm" x="0" y="200">item 3</text><line class="ln-acc" x1="590" y1="130" x2="590" y2="168" marker-end="url(#aa)"/><line class="ln-acc" x1="320" y1="210" x2="410" y2="210" marker-end="url(#aa)"/><rect class="n-acc" x="0" y="232" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="254">ప్రతి గడికి ఒక్క నిర్ణయం</text><text class="t-w-sm mid" x="375" y="276">dp[i][w] = max( <tspan class="t-acc">తీసుకోకపోతే</tspan> dp[i−1][w] , <tspan class="t-acc">తీసుకుంటే</tspan> value[i] + dp[i−1][w−weight[i]] )</text><text class="t-w-sm mid" x="375" y="292">పైనుంచి (తీసుకోలేదు) లేదా వికర్ణంగా ఎడమనుంచి (తీసుకున్నాం).</text><text class="t-w-sm mid" x="375" y="308">అందుకే ప్రతి గడికి కేవలం <tspan class="t-acc">ముందు row</tspan> కావాలి → 1D కి తగ్గించొచ్చు.</text><rect class="n-bad" x="0" y="332" width="750" height="70" rx="4"/><text class="t mid" x="375" y="354">1D optimisation lo ఒక ఉచ్చు</text><text class="t-sm mid" x="375" y="376">0/1 knapsack కి — capacity loop ని <tspan class="t-acc">వెనక నుంచి</tspan> తిప్పాలి.</text><text class="t-sm mid" x="375" y="392">ముందు నుంచి తిప్పితే ఒకే item ని పలుసార్లు వాడతాం — అది unbounded knapsack అవుతుంది.</text></svg>
+</div>
+
 
 ## 5. Longest Increasing Subsequence (LeetCode #300) — Medium
 
@@ -666,6 +701,11 @@ var lengthOfLIS = function (nums) {
 > 1D DP లో state ఒక్క index (`dp[i]`). కానీ కొన్ని problems లో subproblem ని describe చెయ్యడానికి **రెండు parameters** అవసరం — grid లో (row, col), లేదా రెండు strings యొక్క (i, j) prefixes. అప్పుడు `dp[i][j]` అనే **2D table** వాడతాం. Same 5-step recipe — కేవలం state కి రెండు dimensions.
 
 ---
+<div class="fig">
+<div class="cap">LIS · O(n²) DP vs O(n log n)</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">LIS — రెండు విధానాలు</text><rect class="n" x="30" y="26" width="56" height="34" rx="3"/><text class="t mid" x="58" y="48">10</text><text class="t-sm mid" x="58" y="75">0</text><rect class="n" x="89" y="26" width="56" height="34" rx="3"/><text class="t mid" x="117" y="48">9</text><text class="t-sm mid" x="117" y="75">1</text><rect class="n" x="148" y="26" width="56" height="34" rx="3"/><text class="t mid" x="176" y="48">2</text><text class="t-sm mid" x="176" y="75">2</text><rect class="n" x="207" y="26" width="56" height="34" rx="3"/><text class="t mid" x="235" y="48">5</text><text class="t-sm mid" x="235" y="75">3</text><rect class="n" x="266" y="26" width="56" height="34" rx="3"/><text class="t mid" x="294" y="48">3</text><text class="t-sm mid" x="294" y="75">4</text><rect class="n" x="325" y="26" width="56" height="34" rx="3"/><text class="t mid" x="353" y="48">7</text><text class="t-sm mid" x="353" y="75">5</text><rect class="n-info" x="0" y="96" width="366" height="110" rx="4"/><text class="t mid" x="183" y="118">O(n²) DP</text><text class="t-sm mid" x="183" y="140">dp[i] = i తో ముగిసే LIS పొడవు</text><text class="t-sm mid" x="183" y="156">ప్రతి i కి, ముందున్న అన్ని j లని చూడటం</text><text class="t-sm mid" x="183" y="172">nums[j] &lt; nums[i] అయితే dp[i] = max(dp[i], dp[j]+1)</text><rect class="n-good" x="384" y="96" width="366" height="110" rx="4"/><text class="t mid" x="567" y="118">O(n log n) — patience sorting</text><text class="t-sm mid" x="567" y="140">ఒక tails array ని ఉంచడం</text><text class="t-sm mid" x="567" y="156">ప్రతి సంఖ్యకి binary search తో స్థానం</text><text class="t-sm mid" x="567" y="172">tails పొడవే జవాబు</text><rect class="n-bad" x="0" y="226" width="750" height="86" rx="4"/><text class="t mid" x="375" y="248">ముఖ్యమైన సూక్ష్మత</text><text class="t-sm mid" x="375" y="270">tails array <tspan class="t-acc">నిజమైన subsequence కాదు</tspan> — అది కేవలం పొడవుని సరిగ్గా track చేస్తుంది.</text><text class="t-sm mid" x="375" y="286">నిజమైన subsequence కావాలంటే — parent pointers విడిగా ఉంచాలి.</text><text class="t-sm mid" x="375" y="302">ఇది interview lo తరచుగా అడిగే follow-up.</text></svg>
+</div>
+
 
 ## Pattern: 2D DP (Grid DP + String DP)
 
@@ -678,6 +718,11 @@ var lengthOfLIS = function (nums) {
 **(2) String DP** — రెండు strings (లేదా ఒక string యొక్క రెండు indices) మధ్య relation. `dp[i][j]` = మొదటి string యొక్క మొదటి `i` అక్షరాలు మరియు రెండో string యొక్క మొదటి `j` అక్షరాల మధ్య answer (ఉదా: edit distance, interleaving, LCS). ఇక్కడ ఒక అదనపు trick: **empty prefix కోసం extra row/column** (`dp[0][*]`, `dp[*][0]`) — అందుకే matrix size `(m+1) × (n+1)`.
 
 > **Real-life analogy:** ఒక city road-grid ని ఊహించు. నువ్వు top-left నుండి bottom-right కి వెళ్ళాలి, కుడికి లేదా కిందకి మాత్రమే. ప్రతి junction (i, j) దగ్గర "ఇక్కడికి చేరడానికి కనిష్ఠ cost ఎంత?" అనేది — నీకు **పైనుండి వచ్చిన cost** మరియు **ఎడమనుండి వచ్చిన cost** లో చిన్నదానికి, ఈ junction cost కలిపితే వస్తుంది. ప్రతి junction ని ఒకసారే లెక్కించి board (dp table) మీద రాసుకుంటూ, top-left నుండి bottom-right దాకా నింపుకుంటూ వెళ్తావు. అదే grid DP.
+
+<div class="fig">
+<div class="cap">2D DP · grid మరియు string tables</div>
+<svg viewBox="0 0 750 404"><text class="t-xs" x="0" y="14">2D DP · grid — ప్రతి గడి తన పైనుంచి, ఎడమనుంచి</text><rect class="n" x="60" y="26" width="54" height="40" rx="3"/><rect class="n" x="120" y="26" width="54" height="40" rx="3"/><rect class="n" x="180" y="26" width="54" height="40" rx="3"/><rect class="n" x="240" y="26" width="54" height="40" rx="3"/><rect class="n" x="60" y="72" width="54" height="40" rx="3"/><rect class="n" x="120" y="72" width="54" height="40" rx="3"/><rect class="n" x="180" y="72" width="54" height="40" rx="3"/><rect class="n-good" x="240" y="72" width="54" height="40" rx="3"/><rect class="n" x="60" y="118" width="54" height="40" rx="3"/><rect class="n" x="120" y="118" width="54" height="40" rx="3"/><rect class="n-good" x="180" y="118" width="54" height="40" rx="3"/><rect class="n-acc" x="240" y="118" width="54" height="40" rx="3"/><line class="ln-acc" x1="267" y1="120" x2="267" y2="146" marker-end="url(#aa)"/><line class="ln-acc" x1="207" y1="166" x2="237" y2="166" marker-end="url(#aa)"/><text class="t-w mid" x="267" y="152">dp[i][j]</text><text class="t-sm mono" x="340" y="120">dp[i][j] = dp[i−1][j] + dp[i][j−1]</text><text class="t-sm" x="340" y="142">(unique paths) — operation problem ని బట్టి</text><text class="t-sm" x="340" y="164">min → minimum path sum · max → maximal square</text><text class="t-xs" x="0" y="196">STRING DP · rows = string A, columns = string B</text><rect class="n-good" x="0" y="208" width="366" height="86" rx="4"/><text class="t mid" x="183" y="230">అక్షరాలు సమానమైతే</text><text class="t-sm mid" x="183" y="252">dp[i][j] = dp[i−1][j−1] + 1</text><text class="t-sm mid" x="183" y="268">వికర్ణంగా వెనక్కి — రెండూ ముందుకి కదిలాయి</text><rect class="n-bad" x="384" y="208" width="366" height="86" rx="4"/><text class="t mid" x="567" y="230">సమానం కాకపోతే</text><text class="t-sm mid" x="567" y="252">మూడు ఎంపికల్లో ఉత్తమం:</text><text class="t-sm mid" x="567" y="268">insert · delete · replace (Edit Distance)</text><rect class="n-acc" x="0" y="308" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="330">Space optimisation — దాదాపు ఎప్పుడూ సాధ్యం</text><text class="t-w-sm mid" x="375" y="352">dp[i][j] కి కేవలం ముందు row (మరియు కొన్నిసార్లు వికర్ణం) మాత్రమే కావాలంటే —</text><text class="t-w-sm mid" x="375" y="368">మొత్తం 2D table అవసరం లేదు, రెండు rows చాలు → O(n) space.</text><text class="t-w-sm mid" x="375" y="384">Interview lo ముందు 2D రాసి, తర్వాత "దీన్ని 1D కి తగ్గించొచ్చు" అని చెప్పడం మంచి ముగింపు.</text></svg>
+</div>
 
 ### ఎలా గుర్తించాలి (recognition signals)
 

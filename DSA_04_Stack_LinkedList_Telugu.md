@@ -1,4 +1,28 @@
-# DSA: Stack & Linked List - తెలుగు గైడ్ (LeetCode 150, SSE)
+<!-- style: editorial -->
+<!-- footer: DSA · Stack & Linked List · తెలుగు గైడ్ -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
+
+<div class="cover">
+<div class="cover-num">04</div>
+<div class="kicker">DSA · Stack &amp; Linked List</div>
+<div class="rule"></div>
+<div class="cover-title">Stack &amp;<br>Linked List</div>
+<div class="lede">Monotonic stack, pointer manipulation — pointers మీద పట్టు ఇక్కడే వస్తుంది.</div>
+<div class="sub">ప్రతి problem కి: <b>ఏ pattern ఇది</b> → ఎందుకు ఆ pattern → dry run → optimal JavaScript code → complexity → edge cases. <code>DSA_Patterns_Telugu.pdf</code> pattern-first దృష్టి; ఈ file ఆ patterns ని నిజమైన LeetCode problems మీద అమలు చేస్తుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
+
 
 > ఈ document చదివిన తర్వాత Stack మరియు Linked List problems మళ్ళీ జీవితంలో మర్చిపోకూడదు. ప్రతి problem కి — ఎలా ఆలోచించాలి (intuition first), ఒక vivid real-life analogy, naive నుండి optimal వరకు thought process, clean commented JavaScript solution, పెన్సిల్‌తో గీసినట్టు dry run, complexity reasoning, pattern takeaway, మరియు edge cases (null, single node, cycles) — అన్నీ ఉంటాయి.
 >
@@ -52,6 +76,12 @@
 - **peek() / top()** — top item ఏమిటో చూడు (తీయకుండా).
 
 JavaScript లో ప్రత్యేకంగా Stack class అవసరం లేదు — **plain array** ని stack లా వాడతాం. `arr.push()` = push, `arr.pop()` = pop, `arr[arr.length - 1]` = peek. ఈ మూడూ amortized O(1).
+
+<div class="fig">
+<div class="cap">Monotonic Stack · next greater / smaller family</div>
+<svg viewBox="0 0 750 340"><text class="t-xs" x="0" y="14">MONOTONIC STACK · "తర్వాతి పెద్ద element" — [2, 1, 5]</text><rect class="n" x="60" y="26" width="52" height="34" rx="3"/><text class="t mid" x="86" y="48">2</text><text class="t-sm mid" x="86" y="75">0</text><rect class="n" x="115" y="26" width="52" height="34" rx="3"/><text class="t mid" x="141" y="48">1</text><text class="t-sm mid" x="141" y="75">1</text><rect class="n" x="170" y="26" width="52" height="34" rx="3"/><text class="t mid" x="196" y="48">5</text><text class="t-sm mid" x="196" y="75">2</text><rect class="n" x="0" y="100" width="150" height="36" rx="3"/><text class="t-sm mid" x="75" y="123">2 వచ్చింది</text><rect class="n-acc" x="160" y="100" width="110" height="36" rx="3"/><text class="t-w-sm mono mid" x="215" y="123">[2]</text><text class="t-sm" x="284" y="123">stack ఖాళీ → push</text><rect class="n" x="0" y="144" width="150" height="36" rx="3"/><text class="t-sm mid" x="75" y="167">1 వచ్చింది</text><rect class="n-acc" x="160" y="144" width="110" height="36" rx="3"/><text class="t-w-sm mono mid" x="215" y="167">[2, 1]</text><text class="t-sm" x="284" y="167">1 &lt; 2 → push (దిగుతున్న క్రమం నిలిచింది)</text><rect class="n" x="0" y="188" width="150" height="36" rx="3"/><text class="t-sm mid" x="75" y="211">5 వచ్చింది</text><rect class="n-acc" x="160" y="188" width="110" height="36" rx="3"/><text class="t-w-sm mono mid" x="215" y="211">[5]</text><text class="t-sm" x="284" y="211">5 &gt; 1 → pop · 5 &gt; 2 → pop · ఇద్దరికీ జవాబు 5</text><rect class="n-good" x="0" y="244" width="750" height="86" rx="4"/><text class="t mid" x="375" y="266">ప్రతి element ఒకసారి push, ఒకసారి pop</text><text class="t-sm mid" x="375" y="288">అందుకే nested loop లా కనిపించినా మొత్తం O(n).</text><text class="t-sm mid" x="375" y="304">ఈ amortised వాదనని interview lo స్పష్టంగా చెప్పాలి —</text><text class="t-sm mid" x="375" y="320">లేకపోతే interviewer O(n²) అనుకుంటాడు.</text></svg>
+<div class="note"><b>Stack lo ఏ క్రమం ఉంచాలి:</b> "next greater" కావాలంటే <i>దిగుతున్న</i> stack · "next smaller" కావాలంటే <i>పెరుగుతున్న</i> stack. Daily Temperatures, Largest Rectangle, Stock Span — అన్నీ ఇదే.</div>
+</div>
 
 ### Real-life Scenario
 
@@ -230,6 +260,11 @@ loop ముగిసింది; stack.length === 0 → return true ✅
 - **Odd length:** `s.length` బేసి సంఖ్య అయితే ఎప్పటికీ valid కాదు — కావాలంటే మొదట్లోనే `if (s.length % 2 !== 0) return false;` పెట్టి కొంచెం optimize చెయ్యొచ్చు (mandatory కాదు).
 
 ---
+<div class="fig">
+<div class="cap">Valid Parentheses · LIFO ఎందుకు సరిపోతుంది</div>
+<svg viewBox="0 0 750 366"><text class="t-xs" x="0" y="14">VALID PARENTHESES — stack ఎందుకు సరైన సాధనం</text><rect class="n" x="60" y="26" width="60" height="34" rx="3"/><text class="t mid" x="90" y="48">(</text><text class="t-sm mid" x="90" y="75">0</text><rect class="n" x="123" y="26" width="60" height="34" rx="3"/><text class="t mid" x="153" y="48">[</text><text class="t-sm mid" x="153" y="75">1</text><rect class="n" x="186" y="26" width="60" height="34" rx="3"/><text class="t mid" x="216" y="48">]</text><text class="t-sm mid" x="216" y="75">2</text><rect class="n" x="249" y="26" width="60" height="34" rx="3"/><text class="t mid" x="279" y="48">)</text><text class="t-sm mid" x="279" y="75">3</text><rect class="n-acc" x="0" y="110" width="70" height="34" rx="3"/><text class="t-w mid" x="35" y="132">(</text><rect class="n" x="80" y="110" width="260" height="34" rx="3"/><text class="t mid" x="210" y="132">push</text><rect class="n-info" x="350" y="110" width="200" height="34" rx="3"/><text class="t-sm mono mid" x="450" y="132">[ ( ]</text><rect class="n-acc" x="0" y="152" width="70" height="34" rx="3"/><text class="t-w mid" x="35" y="174">[</text><rect class="n" x="80" y="152" width="260" height="34" rx="3"/><text class="t mid" x="210" y="174">push</text><rect class="n-info" x="350" y="152" width="200" height="34" rx="3"/><text class="t-sm mono mid" x="450" y="174">[ (, [ ]</text><rect class="n-acc" x="0" y="194" width="70" height="34" rx="3"/><text class="t-w mid" x="35" y="216">]</text><rect class="n" x="80" y="194" width="260" height="34" rx="3"/><text class="t mid" x="210" y="216">top తో match → pop</text><rect class="n-info" x="350" y="194" width="200" height="34" rx="3"/><text class="t-sm mono mid" x="450" y="216">[ ( ]</text><rect class="n-acc" x="0" y="236" width="70" height="34" rx="3"/><text class="t-w mid" x="35" y="258">)</text><rect class="n" x="80" y="236" width="260" height="34" rx="3"/><text class="t mid" x="210" y="258">match → pop</text><rect class="n-info" x="350" y="236" width="200" height="34" rx="3"/><text class="t-sm mono mid" x="450" y="258">[ ] ఖాళీ ✓</text><rect class="n-acc" x="0" y="290" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="312">ఎందుకు stack</text><text class="t-w-sm mid" x="375" y="334">చివరిగా తెరిచినది <tspan class="t-acc">మొదట</tspan> మూయాలి — అదే LIFO. Stack యొక్క నిర్వచనమే ఇది.</text><text class="t-w-sm mid" x="375" y="350">చివర్లో stack ఖాళీ కాకపోతే — మూయని brackets మిగిలాయి → invalid.</text></svg>
+</div>
+
 
 ## 2. Simplify Path (LeetCode #71) — Medium
 
@@ -341,6 +376,11 @@ result = "/" + "c" = "/c" ✅
 - **`"..."` ని `..` గా పొరపడటం:** మూడు చుక్కలు (`...`) ఒక **valid directory name** — పైకి వెళ్ళే command కాదు. Exact equality (`part === ".."`) చెక్ చెయ్యి, `startsWith` కాదు.
 
 ---
+<div class="fig">
+<div class="cap">Dummy node · head యొక్క special case ని తొలగించడం</div>
+<svg viewBox="0 0 750 318"><text class="t-xs" x="0" y="14">DUMMY NODE — head మారే ప్రతిచోటా</text><text class="t-xs" x="0" y="44">Dummy లేకుండా — head ని delete చేయాలంటే</text><circle cx="80" cy="86" r="20" fill="#17203a"/><text class="t-w mid" x="80" y="91">1</text><circle cx="200" cy="86" r="20" fill="#17203a"/><text class="t-w mid" x="200" y="91">2</text><circle cx="320" cy="86" r="20" fill="#17203a"/><text class="t-w mid" x="320" y="91">3</text><line class="ln" x1="102" y1="86" x2="178" y2="86" marker-end="url(#a)"/><line class="ln" x1="222" y1="86" x2="298" y2="86" marker-end="url(#a)"/><text class="t-sm" x="400" y="80">head ప్రత్యేక సందర్భం →</text><text class="t-sm mono" x="400" y="98">if (head === target) head = head.next</text><text class="t-xs" x="0" y="140">Dummy తో — అన్నీ ఒకేలా</text><circle cx="80" cy="182" r="20" fill="#e2653a"/><text class="t-w mid" x="80" y="187">D</text><circle cx="200" cy="182" r="20" fill="#17203a"/><text class="t-w mid" x="200" y="187">1</text><circle cx="320" cy="182" r="20" fill="#17203a"/><text class="t-w mid" x="320" y="187">2</text><circle cx="440" cy="182" r="20" fill="#17203a"/><text class="t-w mid" x="440" y="187">3</text><line class="ln" x1="102" y1="182" x2="178" y2="182" marker-end="url(#a)"/><line class="ln" x1="222" y1="182" x2="298" y2="182" marker-end="url(#a)"/><line class="ln" x1="342" y1="182" x2="418" y2="182" marker-end="url(#a)"/><text class="t-sm" x="520" y="176">ప్రతి node కి prev ఉంది —</text><text class="t-acc" x="520" y="194">special case లేదు</text><rect class="n-acc" x="0" y="222" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="244">ఎక్కడ తప్పనిసరి</text><text class="t-w-sm mid" x="375" y="266">Remove Nth from End · Remove Duplicates · Merge Two Lists · Partition List</text><text class="t-w-sm mid" x="375" y="282">నియమం: <tspan class="t-acc">head మారే అవకాశం ఉంటే — dummy వాడండి.</tspan></text><text class="t-w-sm mid" x="375" y="298">చివర్లో <code>return dummy.next</code> — అంతే.</text></svg>
+</div>
+
 
 ## 3. Min Stack (LeetCode #155) — Medium
 
@@ -735,6 +775,11 @@ while (current !== null) {   // null వచ్చేదాకా = list అం�
 // 👉 బంగారు నియమం: 'head' ని ఎప్పుడూ కదపొద్దు — లేకపోతే list మొదలు పోగొట్టుకుంటావు.
 //    ఎప్పుడూ ఒక temporary pointer (current) తో traverse చెయ్యి.
 ```
+
+<div class="fig">
+<div class="cap">Linked List · dummy, fast-slow, reverse</div>
+<svg viewBox="0 0 750 346"><text class="t-xs" x="0" y="14">మూడు కీలక techniques</text><text class="t-xs" x="0" y="44">1 · DUMMY NODE — head మారే ప్రతిచోటా</text><circle cx="50" cy="80" r="20" fill="#e2653a"/><text class="t-w mid" x="50" y="85">D</text><circle cx="150" cy="80" r="20" fill="#17203a"/><text class="t-w mid" x="150" y="85">1</text><circle cx="250" cy="80" r="20" fill="#17203a"/><text class="t-w mid" x="250" y="85">2</text><line class="ln" x1="72" y1="80" x2="128" y2="80" marker-end="url(#a)"/><line class="ln" x1="172" y1="80" x2="228" y2="80" marker-end="url(#a)"/><text class="t-sm" x="300" y="86">head ని delete చేయాల్సి వస్తే — dummy ఉంటే special case లేదు</text><text class="t-xs" x="0" y="132">2 · FAST &amp; SLOW — మధ్య node, cycle</text><circle cx="50" cy="168" r="20" fill="#17203a"/><text class="t-w mid" x="50" y="173">1</text><circle cx="140" cy="168" r="20" fill="#17203a"/><text class="t-w mid" x="140" y="173">2</text><circle cx="230" cy="168" r="20" fill="#17203a"/><text class="t-w mid" x="230" y="173">3</text><circle cx="320" cy="168" r="20" fill="#17203a"/><text class="t-w mid" x="320" y="173">4</text><line class="ln" x1="72" y1="168" x2="118" y2="168" marker-end="url(#a)"/><line class="ln" x1="162" y1="168" x2="208" y2="168" marker-end="url(#a)"/><line class="ln" x1="252" y1="168" x2="298" y2="168" marker-end="url(#a)"/><text class="t-acc mid" x="140" y="206">slow</text><text class="t-sm mid" x="320" y="206">fast</text><text class="t-sm" x="400" y="174">fast చివరికి చేరినప్పుడు slow సరిగ్గా మధ్యలో</text><text class="t-xs" x="0" y="238">3 · REVERSE — prev, curr, next</text><rect class="n-acc" x="0" y="250" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="272">నాలుగు lines — క్రమం తప్పకూడదు</text><text class="t-w-sm mid" x="375" y="294">next = curr.next   ·   curr.next = prev</text><text class="t-w-sm mid" x="375" y="310">prev = curr        ·   curr = next</text><text class="t-w-sm mid" x="375" y="326">మొదటి line లేకపోతే తర్వాతి node కి దారి పోతుంది, list అక్కడే తెగుతుంది</text></svg>
+</div>
 
 ### Real-life Scenario
 

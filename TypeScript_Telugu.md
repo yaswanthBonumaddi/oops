@@ -1,16 +1,27 @@
-# TypeScript - పూర్తి తెలుగు గైడ్ (End-to-End, SDE2 & SSE)
+<!-- style: editorial -->
+<!-- footer: TypeScript · End-to-End · SDE2 & SSE · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత TypeScript మళ్ళీ జీవితంలో మర్చిపోలేవు. ప్రతి concept కి ఒక real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, trade-offs, gotchas (సాధారణ తప్పులు), లోపల ఏం జరుగుతుంది (internals — structural typing, type erasure, inference algorithm, variance, compiler phases), మరియు interview దృష్టి — అన్నీ ఉంటాయి.
->
-> **లక్ష్యం:** JavaScript తెలిసిన engineer ని TypeScript లో absolute basics నుండి **type-level programming, declaration files, compiler performance, migration strategy** వరకు తీసుకెళ్లడం — **SDE2 & SSE (Senior Software Engineer) interview level**. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> **ముఖ్యమైన హెచ్చరిక:** TypeScript ని "JavaScript + కొన్ని annotations" అనుకుంటే మీరు దాని 20% మాత్రమే వాడుతున్నారు. నిజమైన శక్తి — **type system ని ఒక ప్రోగ్రామింగ్ భాషలా వాడటం** (conditional types, mapped types, inference). SSE interviews లో ఇక్కడే తేడా కనిపిస్తుంది.
->
-> **Companion docs:** `JavaScript_Telugu.md` (భాష పునాది — ఇది తప్పనిసరి), `React_Telugu.md` (React + TS), `OOPS_Telugu.md` (classes, SOLID, patterns), `SoftwareEngineering_Telugu.md`.
->
-> ఇది **TypeScript 5.x** (5.0 – 5.7) ఆధారంగా రాయబడింది; పాత versions తో తేడాలు ఎక్కడ ముఖ్యమో అక్కడ చెప్పాను.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">TS</div>
+<div class="kicker">TypeScript · End-to-End · SDE2 &amp; SSE</div>
+<div class="rule"></div>
+<div class="cover-title">TypeScript</div>
+<div class="lede">Structural typing, generics, conditional &amp; mapped types, variance, <code>satisfies</code> — type system ని ఒక భాషలా ఆలోచించడం.</div>
+<div class="sub">ప్రతి ఉదాహరణ నిజమైన <code>tsc --strict</code> తో పరీక్షించబడింది — type-level assertions మరియు negative tests తో సహా.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -803,6 +814,11 @@ type NonError = Exclude<LoadingState, { status: "error" }>;
 
 ## 6. Type Narrowing & Type Guards
 
+<div class="fig">
+<div class="cap">Type Narrowing · union ని కుదించడం</div>
+<svg viewBox="0 0 750 390"><text class="t-xs" x="0" y="14">NARROWING — TypeScript ఎలా "అర్థం చేసుకుంటుంది"</text><rect class="n-acc" x="240" y="26" width="270" height="40" rx="3"/><text class="t-w mid" x="375" y="50">string | number</text><line class="ln-acc" x1="300" y1="70" x2="180" y2="98" marker-end="url(#aa)"/><line class="ln-acc" x1="450" y1="70" x2="570" y2="98" marker-end="url(#aa)"/><text class="t-sm mid" x="200" y="90">typeof x === "string"</text><text class="t-sm mid" x="570" y="90">else</text><rect class="n-good" x="80" y="102" width="200" height="40" rx="3"/><text class="t mid" x="180" y="127">string</text><rect class="n-good" x="470" y="102" width="200" height="40" rx="3"/><text class="t mid" x="570" y="127">number</text><rect class="n-good" x="0" y="166" width="366" height="110" rx="4"/><text class="t mid" x="183" y="188">Narrowing పద్ధతులు</text><text class="t-sm mid" x="183" y="210">typeof · instanceof · in</text><text class="t-sm mid" x="183" y="226">Truthiness · equality</text><text class="t-sm mid" x="183" y="242">Discriminated union (కీలకం)</text><text class="t-sm mid" x="183" y="258">Custom type guard (x is T)</text><rect class="n-acc" x="384" y="166" width="366" height="110" rx="4"/><text class="t-w mid" x="567" y="188">Discriminated union — ఉత్తమం</text><text class="t-w-sm mid" x="567" y="210">{ kind: "circle", r } | { kind: "square", s }</text><text class="t-w-sm mid" x="567" y="226">switch (shape.kind) — TS ఖచ్చితంగా తెలుసుకుంటుంది</text><text class="t-w-sm mid" x="567" y="242">never తో exhaustiveness check చేయొచ్చు</text><rect class="n-bad" x="0" y="296" width="750" height="86" rx="4"/><text class="t mid" x="375" y="318">Narrowing ఎప్పుడు పోతుంది</text><text class="t-sm mid" x="375" y="340">Callback లోపలికి వెళ్తే · await తర్వాత · object property ని narrow చేసి, ఆ object ని</text><text class="t-sm mid" x="375" y="356">function కి పంపితే.</text><text class="t-sm mid" x="375" y="372">TS "ఈలోపు ఎవరైనా మార్చారేమో" అనుకుంటుంది — అందుకే local variable lo copy చేసుకోవడం మేలు.</text></svg>
+</div>
+
 ### వివరణ
 
 **Narrowing = TypeScript ఒక variable యొక్క type ని కొన్ని code paths లో మరింత నిర్దిష్టంగా చేసే ప్రక్రియ.** దీనికి compiler వాడేదాన్ని **control flow analysis** అంటారు.
@@ -1177,6 +1193,11 @@ type T2 = { a: string | undefined };    // a తప్పనిసరిగా �
 
 ## 8. Objects, Interfaces & Index Signatures
 
+<div class="fig">
+<div class="cap">Structural Typing · ఆకారం సరిపోతే చాలు</div>
+<svg viewBox="0 0 750 354"><text class="t-xs" x="0" y="14">STRUCTURAL TYPING — పేరు కాదు, ఆకారం</text><rect class="n" x="0" y="26" width="340" height="110" rx="4"/><text class="t mid" x="170" y="48">interface Point</text><text class="t-sm mono mid" x="170" y="70">x: number</text><text class="t-sm mono mid" x="170" y="86">y: number</text><rect class="n-acc" x="410" y="26" width="340" height="110" rx="4"/><text class="t-w mid" x="580" y="48">{ x: 1, y: 2, z: 3 }</text><text class="t-w-sm mid" x="580" y="70">అదనంగా z ఉన్నా —</text><text class="t-w-sm mid" x="580" y="86">Point కి సరిపోతుంది ✓</text><line class="ln-acc" x1="344" y1="80" x2="406" y2="80" marker-end="url(#aa)"/><rect class="n-good" x="0" y="156" width="366" height="102" rx="4"/><text class="t mid" x="183" y="178">ఇది ఎందుకు మంచిది</text><text class="t-sm mid" x="183" y="200">Java/C# lo class ని explicit గా implement చేయాలి.</text><text class="t-sm mid" x="183" y="216">TS lo — ఆకారం సరిపోతే చాలు.</text><text class="t-sm mid" x="183" y="232">ఇది JavaScript యొక్క duck typing కి సహజంగా సరిపోతుంది.</text><rect class="n-bad" x="384" y="156" width="366" height="102" rx="4"/><text class="t mid" x="567" y="178">ఉచ్చు — excess property check</text><text class="t-sm mid" x="567" y="200">Object literal ని <tspan class="t-acc">నేరుగా</tspan> assign చేస్తే — అదనపు</text><text class="t-sm mid" x="567" y="216">property కి error వస్తుంది.</text><text class="t-sm mid" x="567" y="232">కానీ variable ద్వారా assign చేస్తే రాదు. ఈ అసమానత గందరగోళం.</text><rect class="n-acc" x="0" y="278" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="300">గుర్తుంచుకోవాల్సినది</text><text class="t-w-sm mid" x="375" y="322">TypeScript types <tspan class="t-acc">runtime lo ఉండవు</tspan> — అవి compile అయ్యాక పూర్తిగా చెరిగిపోతాయి.</text><text class="t-w-sm mid" x="375" y="338">అందుకే API నుంచి వచ్చే data ని validate చేయాలి (zod లాంటిది) — type annotation సరిపోదు.</text></svg>
+</div>
+
 ### వివరణ
 
 ```ts
@@ -1318,6 +1339,11 @@ class Labrador implements Dog {
 ---
 
 ## 9. `type` vs `interface`
+
+<div class="fig">
+<div class="cap">type vs interface</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">type vs interface — ఎప్పుడు ఏది</text><rect class="n-acc" x="0" y="26" width="366" height="130" rx="4"/><text class="t-w mid" x="183" y="48">interface</text><text class="t-w-sm mid" x="183" y="70">Declaration merging (మళ్ళీ తెరవొచ్చు)</text><text class="t-w-sm mid" x="183" y="86">extends — వారసత్వం స్పష్టం</text><text class="t-w-sm mid" x="183" y="102">Error messages శుభ్రం</text><text class="t-w-sm mid" x="183" y="118">Objects / classes కి ఉత్తమం</text><rect class="n-info" x="384" y="26" width="366" height="130" rx="4"/><text class="t mid" x="567" y="48">type</text><text class="t-sm mid" x="567" y="70">Unions, intersections</text><text class="t-sm mid" x="567" y="86">Conditional &amp; mapped types</text><text class="t-sm mid" x="567" y="102">Primitives, tuples కి alias</text><text class="t-sm mid" x="567" y="118">ఒకసారి నిర్వచిస్తే మళ్ళీ మార్చలేం</text><rect class="n-good" x="0" y="176" width="750" height="86" rx="4"/><text class="t mid" x="375" y="198">ఆచరణాత్మక నియమం</text><text class="t-sm mid" x="375" y="220">Public API / library types → <tspan class="t-acc">interface</tspan> (users దాన్ని augment చేయగలరు)</text><text class="t-sm mid" x="375" y="236">Union, mapped, conditional ఏదైనా కావాలంటే → <tspan class="t-acc">type</tspan> (interface చేయలేదు)</text><text class="t-sm mid" x="375" y="252">మిగతా అన్ని సందర్భాల్లో — team ఏది ఎంచుకుంటే అది. స్థిరత్వమే ముఖ్యం.</text></svg>
+</div>
 
 ### వివరణ — పూర్తి పోలిక
 
@@ -1801,6 +1827,11 @@ class Service {
 
 ## 12. Generics Deep
 
+<div class="fig">
+<div class="cap">Generics · type ని parameter గా తీసుకోవడం</div>
+<svg viewBox="0 0 750 326"><text class="t-xs" x="0" y="14">GENERICS — type ని ఒక parameter గా</text><rect class="n-acc" x="0" y="26" width="750" height="58" rx="4"/><text class="t-w mid" x="375" y="48">function first&lt;T&gt;(arr: T[]): T | undefined</text><text class="t-w-sm mono mid" x="375" y="70">T ని caller నిర్ణయిస్తాడు — first([1,2]) → number · first(["a"]) → string</text><text class="t-xs" x="0" y="112">ఎందుకు any కాదు</text><rect class="n-bad" x="0" y="124" width="366" height="86" rx="4"/><text class="t mid" x="183" y="146">any</text><text class="t-sm mid" x="183" y="168">Type safety పూర్తిగా పోతుంది</text><text class="t-sm mid" x="183" y="184">first([1,2]).toUpperCase() — error రాదు, runtime lo crash</text><rect class="n-good" x="384" y="124" width="366" height="86" rx="4"/><text class="t mid" x="567" y="146">Generic T</text><text class="t-sm mid" x="567" y="168">Input type ని output కి మోసుకెళ్తుంది</text><text class="t-sm mid" x="567" y="184">తప్పు method పిలిస్తే compile time lo పట్టుబడుతుంది</text><rect class="n-acc" x="0" y="230" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="252">Constraints — T ని పరిమితం చేయడం</text><text class="t-w-sm mid" x="375" y="274">&lt;T extends { id: string }&gt; — "T ఏదైనా సరే, కానీ దానికి id ఉండాలి"</text><text class="t-w-sm mid" x="375" y="290">ఇది generics ని నిజంగా ఉపయోగకరం చేస్తుంది — పూర్తి స్వేచ్ఛ కంటే పరిమిత స్వేచ్ఛ మేలు.</text></svg>
+</div>
+
 ### వివరణ
 
 **Generic = types కి parameters.** Function కి values ఇచ్చినట్టే, type కి types ఇవ్వడం.
@@ -2127,6 +2158,11 @@ type UserPaths = Paths<User>;      // "id" | "name" | "age" | "address" | "addre
 
 ## 14. Conditional Types & `infer`
 
+<div class="fig">
+<div class="cap">Conditional Types &amp; infer</div>
+<svg viewBox="0 0 750 378"><text class="t-xs" x="0" y="14">CONDITIONAL TYPES — type స్థాయిలో if</text><rect class="n-acc" x="0" y="26" width="750" height="58" rx="4"/><text class="t-w mid" x="375" y="48">T extends U ? X : Y</text><text class="t-w-sm mono mid" x="375" y="70">"T అనేది U కి assign అవుతుందా? అయితే X, లేకపోతే Y"</text><text class="t-xs" x="0" y="112">infer — pattern నుంచి type ని లాగడం</text><rect class="n-good" x="0" y="124" width="750" height="58" rx="4"/><text class="t mid" x="375" y="146">type Unwrap&lt;T&gt; = T extends Promise&lt;infer U&gt; ? U : T</text><text class="t-sm mono mid" x="375" y="168">Unwrap&lt;Promise&lt;string&gt;&gt; → string · Unwrap&lt;number&gt; → number</text><text class="t-xs" x="0" y="210">DISTRIBUTIVE — naked type parameter అయితే union మీద విడిగా వర్తిస్తుంది</text><rect class="n" x="0" y="222" width="240" height="40" rx="3"/><text class="t mid" x="120" y="247">T = A | B</text><line class="ln-acc" x1="244" y1="242" x2="286" y2="242" marker-end="url(#aa)"/><rect class="n-acc" x="290" y="222" width="460" height="40" rx="3"/><text class="t-w mid" x="520" y="247">(A extends U ? X : Y) | (B extends U ? X : Y)</text><rect class="n-bad" x="0" y="282" width="750" height="86" rx="4"/><text class="t mid" x="375" y="304">ఆపాలంటే — [T] extends [U]</text><text class="t-sm mid" x="375" y="326">చదరపు బ్రాకెట్లు distribution ని ఆపుతాయి.</text><text class="t-sm mid" x="375" y="342">ఇది తెలియకపోతే — <code>NonNullable&lt;string|null&gt;</code> లాంటివి ఎందుకు అలా పని చేస్తాయో అర్థం కాదు.</text></svg>
+</div>
+
 ### వివరణ
 
 **Conditional type = type-level `if/else`.**
@@ -2290,6 +2326,11 @@ type Params2 = ExtractParams<"/users/:userId/posts/:postId">;   // "userId" | "p
 ---
 
 ## 15. Mapped Types
+
+<div class="fig">
+<div class="cap">Mapped Types · utility types ఎలా పని చేస్తాయి</div>
+<svg viewBox="0 0 750 368"><text class="t-xs" x="0" y="14">MAPPED TYPES — ఉన్న type మీద నుంచి కొత్తది</text><rect class="n-acc" x="0" y="26" width="750" height="58" rx="4"/><text class="t-w mid" x="375" y="48">{ [K in keyof T]: T[K] }</text><text class="t-w-sm mono mid" x="375" y="70">T యొక్క ప్రతి key మీద తిరిగి, కొత్త type కట్టడం</text><rect class="n-info" x="0" y="100" width="160" height="32" rx="3"/><text class="t-sm mid" x="80" y="121">Partial&lt;T&gt;</text><rect class="n" x="170" y="100" width="360" height="32" rx="3"/><text class="t-sm mono mid" x="350" y="121">{ [K in keyof T]?: T[K] }</text><text class="t-sm" x="546" y="121">అన్నీ optional</text><rect class="n-info" x="0" y="140" width="160" height="32" rx="3"/><text class="t-sm mid" x="80" y="161">Required&lt;T&gt;</text><rect class="n" x="170" y="140" width="360" height="32" rx="3"/><text class="t-sm mono mid" x="350" y="161">{ [K in keyof T]-?: T[K] }</text><text class="t-sm" x="546" y="161">optional ని తీసేయడం</text><rect class="n-info" x="0" y="180" width="160" height="32" rx="3"/><text class="t-sm mid" x="80" y="201">Readonly&lt;T&gt;</text><rect class="n" x="170" y="180" width="360" height="32" rx="3"/><text class="t-sm mono mid" x="350" y="201">{ readonly [K in keyof T]: T[K] }</text><text class="t-sm" x="546" y="201">మార్చలేనివి</text><rect class="n-info" x="0" y="220" width="160" height="32" rx="3"/><text class="t-sm mid" x="80" y="241">Pick&lt;T,K&gt;</text><rect class="n" x="170" y="220" width="360" height="32" rx="3"/><text class="t-sm mono mid" x="350" y="241">{ [P in K]: T[P] }</text><text class="t-sm" x="546" y="241">కొన్ని keys మాత్రమే</text><rect class="n-good" x="0" y="272" width="750" height="86" rx="4"/><text class="t mid" x="375" y="294">Key remapping (TS 4.1+)</text><text class="t-sm mid" x="375" y="316"><code>as</code> తో key పేరుని కూడా మార్చొచ్చు: { [K in keyof T as `get${Capitalize&lt;K&gt;}`]: () =&gt; T[K] }</text><text class="t-sm mid" x="375" y="332">దీంతో getters ని ఆటోమేటిక్ గా generate చేయొచ్చు — type స్థాయిలో metaprogramming.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -3335,6 +3376,11 @@ const e3: Empty = null;        // ❌ (null/undefined మాత్రమే క�
 
 ## 22. Variance — Covariance, Contravariance, Bivariance
 
+<div class="fig">
+<div class="cap">Variance · covariance మరియు contravariance</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">VARIANCE — subtype సంబంధం ఎలా ప్రవహిస్తుంది</text><rect class="n-good" x="0" y="26" width="240" height="110" rx="4"/><text class="t mid" x="120" y="48">Covariant (out)</text><text class="t-sm mid" x="120" y="70">Dog[] → Animal[] ✓</text><text class="t-sm mid" x="120" y="86">ఫలితాల స్థానంలో</text><text class="t-sm mid" x="120" y="102">Read చేసేవి</text><rect class="n-info" x="255" y="26" width="240" height="110" rx="4"/><text class="t mid" x="375" y="48">Contravariant (in)</text><text class="t-sm mid" x="375" y="70">(a: Animal) =&gt; void →</text><text class="t-sm mid" x="375" y="86">(d: Dog) =&gt; void ✓</text><text class="t-sm mid" x="375" y="102">Parameters స్థానంలో</text><rect class="n-bad" x="510" y="26" width="240" height="110" rx="4"/><text class="t mid" x="630" y="48">Bivariant (TS default)</text><text class="t-sm mid" x="630" y="70">Method parameters bivariant</text><text class="t-sm mid" x="630" y="86">— సౌకర్యం కోసం, safety తగ్గించి</text><text class="t-sm mid" x="630" y="102">strictFunctionTypes దీన్ని సరిచేస్తుంది</text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">ఎందుకు parameters తిరగబడతాయి</text><text class="t-w-sm mid" x="375" y="200">"ఏ Animal నైనా handle చేయగల function" — ఒక Dog ని handle చేయాల్సిన చోట పనికొస్తుంది.</text><text class="t-w-sm mid" x="375" y="216">కానీ "Dog ని మాత్రమే handle చేసేది" — ఏ Animal వచ్చినా అనే చోట ప్రమాదం (Cat వస్తే?).</text><text class="t-w-sm mid" x="375" y="232">అందుకే parameters <tspan class="t-acc">వ్యతిరేక దిశలో</tspan> ప్రవహిస్తాయి.</text></svg>
+</div>
+
 ### వివరణ
 
 **Variance = "A అనేది B కి subtype అయితే, `F<A>` అనేది `F<B>` కి subtype ఆ?"** అనే ప్రశ్నకు సమాధానం.
@@ -3758,6 +3804,11 @@ const z: T1 = {};                    // ✅
 ---
 
 ## 25. `any` vs `unknown` vs `never` — Top & Bottom Types
+
+<div class="fig">
+<div class="cap">any · unknown · never</div>
+<svg viewBox="0 0 750 400"><text class="t-xs" x="0" y="14">any vs unknown vs never — type lattice</text><rect class="n-bad" x="200" y="26" width="350" height="40" rx="3"/><text class="t mid" x="375" y="44">any</text><text class="t-sm mid" x="375" y="60">type checking ఆపేస్తుంది</text><rect class="n-acc" x="200" y="80" width="350" height="40" rx="3"/><text class="t-w mid" x="375" y="98">unknown — TOP type</text><text class="t-w-sm mid" x="375" y="114">అన్నీ దీనికి assign అవుతాయి</text><line class="ln-acc" x1="375" y1="124" x2="375" y2="150" marker-end="url(#aa)"/><rect class="n" x="150" y="154" width="450" height="40" rx="3"/><text class="t mid" x="375" y="179">string · number · object · …</text><line class="ln-acc" x1="375" y1="198" x2="375" y2="224" marker-end="url(#aa)"/><rect class="n-good" x="200" y="228" width="350" height="40" rx="3"/><text class="t mid" x="375" y="246">never — BOTTOM type</text><text class="t-sm mid" x="375" y="262">దేనికీ assign కాదు</text><rect class="n-good" x="0" y="288" width="366" height="102" rx="4"/><text class="t mid" x="183" y="310">unknown ఎందుకు మేలు</text><text class="t-sm mid" x="183" y="332">any — ఏమైనా చేయొచ్చు, safety లేదు</text><text class="t-sm mid" x="183" y="348">unknown — ముందు narrow చేయాలి</text><text class="t-sm mid" x="183" y="364">API response కి ఎప్పుడూ unknown</text><rect class="n-info" x="384" y="288" width="366" height="102" rx="4"/><text class="t mid" x="567" y="310">never ఎక్కడ వస్తుంది</text><text class="t-sm mid" x="567" y="332">Function ఎప్పటికీ return కానప్పుడు</text><text class="t-sm mid" x="567" y="348">Exhaustiveness check lo</text><text class="t-sm mid" x="567" y="364">అసాధ్యమైన type intersection lo</text></svg>
+</div>
 
 ### వివరణ
 
@@ -4510,6 +4561,11 @@ for await (const item of paginate(fetchUsers)) { /* item: User ✅ */ }
 
 ---
 ## 29. Runtime Validation — Zod & the Type Boundary
+
+<div class="fig">
+<div class="cap">Type boundary · types ఎక్కడ ఆగుతాయి</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">TYPE BOUNDARY — types ఎక్కడ ఆగిపోతాయి</text><rect class="n-good" x="0" y="26" width="340" height="110" rx="4"/><text class="t mid" x="170" y="48">మీ code లోపల</text><text class="t-sm mid" x="170" y="70">Types పూర్తిగా నమ్మదగినవి</text><text class="t-sm mid" x="170" y="86">Compiler ప్రతిదీ check చేసింది</text><line class="ln-acc" x1="344" y1="80" x2="406" y2="80" marker-end="url(#aa)"/><rect class="n-bad" x="410" y="26" width="340" height="110" rx="4"/><text class="t mid" x="580" y="48">సరిహద్దు దాటాక</text><text class="t-sm mid" x="580" y="70">API response · localStorage · JSON.parse</text><text class="t-sm mid" x="580" y="86">process.env · form data</text><text class="t-sm mid" x="580" y="102">TS ఇక్కడ <tspan class="t-acc">ఏమీ హామీ ఇవ్వదు</tspan></text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">పరిష్కారం — runtime validation</text><text class="t-w-sm mid" x="375" y="200">zod / valibot తో ఒకసారి schema రాసి — దాని నుంచి type ని <tspan class="t-acc">derive</tspan> చేయడం.</text><text class="t-w-sm mid" x="375" y="216">z.infer&lt;typeof schema&gt; — ఒకే సత్యం, రెండు చోట్ల (runtime + compile time).</text><text class="t-w-sm mid" x="375" y="232">Interface రాసి, విడిగా validation రాస్తే — అవి కాలక్రమేణా వేరైపోతాయి.</text><rect class="n-bad" x="0" y="256" width="750" height="70" rx="4"/><text class="t mid" x="375" y="278">as Type ఒక అబద్ధం</text><text class="t-sm mid" x="375" y="300"><code>const u = data as User</code> — ఇది check చేయదు, కేవలం compiler నోరు మూయిస్తుంది.</text><text class="t-sm mid" x="375" y="316">Runtime lo data వేరుగా ఉంటే — crash అక్కడ కాదు, చాలా దూరంలో జరుగుతుంది.</text></svg>
+</div>
 
 ### వివరణ
 

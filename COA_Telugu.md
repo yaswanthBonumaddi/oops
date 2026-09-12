@@ -1,12 +1,27 @@
-# Computer Organization & Architecture (COA) - తెలుగు గైడ్ (SSE Fundamentals)
+<!-- style: editorial -->
+<!-- footer: Computer Organization & Architecture · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత నీ JavaScript code *కింద* ఉన్న "machine" ఎలా పనిచేస్తుందో జీవితంలో మర్చిపోలేవు. Hardware / architecture అస్సలు తెలియని MERN developer ని — ZERO నుండి — SSE interview లో COA fundamentals confident గా మాట్లాడే స్థాయికి తీసుకెళ్లడమే లక్ష్యం. ప్రతి concept కి ఒక vivid real-life analogy, ఎందుకు/ఎప్పుడు matter అవుతుంది, ASCII diagram, comparison table, worked example (binary conversion, cache hit/miss), మరియు interview దృష్టి — అన్నీ ఉంటాయి.
->
-> **లక్ష్యం:** నీకు `const x = a + b` రాయడం తెలుసు. కానీ ఆ ఒక్క line CPU లో ఎలా register లోకి load అయ్యి, ALU లో add అయ్యి, cache నుండి memory దాకా ఎలా ప్రయాణిస్తుందో — ఆ "under the hood" story ఇక్కడ నేర్చుకుంటావు. ఎందుకు కొన్ని codes fast, కొన్ని slow; ఎందుకు array cache-friendly, linked list కాదు; ఎందుకు `0.1 + 0.2 !== 0.3` — ఇవన్నీ hardware level నుండి అర్థం అవుతాయి. Best-teacher style — intuition first, formalism తర్వాత. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> ఇది `OOPS_Telugu.md`, `DSA_00_Foundations_Telugu.md`, `JavaScript_Telugu.md` కి companion. Operating System వైపు (process, thread, scheduling, paging software view) కోసం `OS_Telugu.md` చూడు — ఈ doc hardware వైపు నుండి explain చేస్తుంది.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">COA</div>
+<div class="kicker">Computer Organization &amp; Architecture</div>
+<div class="rule"></div>
+<div class="cover-title">Computer<br>Architecture</div>
+<div class="lede">CPU లోపల ఏం జరుగుతోంది — pipeline, cache, memory hierarchy. Code వేగం ఎందుకు అలా ఉంటుందో ఇక్కడే తెలుస్తుంది.</div>
+<div class="sub">CS fundamentals — self-taught / non-CS background నుంచి వచ్చినవారికి SSE interview lo అడిగే లోతు వరకు. ప్రతి concept ని MERN / JavaScript ప్రపంచంతో ముడిపెట్టి.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -351,6 +366,11 @@ A: కాదు — అది floating-point representation (Topic 3), integer o
 A: JS bitwise operators operands ని 32-bit signed integers గా treat చేస్తాయి. `1 << 31` MSB (bit 31) ని set చేస్తుంది — two's complement లో MSB = sign bit, కాబట్టి result negative (`−2147483648`) అవుతుంది. Large shifts కి `BigInt` లేదా `Math.pow` వాడాలి.
 
 ## 3. Floating Point (IEEE-754) — ఎందుకు `0.1 + 0.2 ≠ 0.3`
+
+<div class="fig">
+<div class="cap">Floating point · 0.1 + 0.2 యొక్క రహస్యం</div>
+<svg viewBox="0 0 750 298"><text class="t-xs" x="0" y="14">ఎందుకు 0.1 + 0.2 ≠ 0.3</text><rect class="n" x="0" y="26" width="240" height="44" rx="3"/><text class="t mid" x="120" y="53">0.1 (దశాంశం)</text><line class="ln-acc" x1="244" y1="48" x2="286" y2="48" marker-end="url(#aa)"/><rect class="n-bad" x="290" y="26" width="460" height="44" rx="3"/><text class="t mid" x="520" y="53">0.0001100110011… (binary lo అనంతం)</text><rect class="n-acc" x="0" y="86" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="108">కారణం — base 10 vs base 2</text><text class="t-w-sm mid" x="375" y="130">దశాంశంలో 1/3 = 0.333… అనంతం. అలాగే binary lo 1/10 అనంతం.</text><text class="t-w-sm mid" x="375" y="146">64 bits lo దాన్ని <tspan class="t-acc">కత్తిరించాలి</tspan> — అందుకే చిన్న తేడా మిగులుతుంది.</text><text class="t-w-sm mid" x="375" y="162">0.1 + 0.2 = 0.30000000000000004 — ఇది bug కాదు, IEEE-754 యొక్క స్వభావం.</text><rect class="n-good" x="0" y="186" width="366" height="102" rx="4"/><text class="t mid" x="183" y="208">పరిష్కారాలు</text><text class="t-sm mid" x="183" y="230">పోల్చడానికి: Math.abs(a-b) &lt; Number.EPSILON</text><text class="t-sm mid" x="183" y="246">డబ్బుకి: <tspan class="t-acc">integer paise</tspan> గా store చేయడం</text><text class="t-sm mid" x="183" y="262">లేదా decimal library (decimal.js)</text><rect class="n-info" x="384" y="186" width="366" height="102" rx="4"/><text class="t mid" x="567" y="208">IEEE-754 నిర్మాణం</text><text class="t-sm mid" x="567" y="230">1 bit sign · 11 bits exponent</text><text class="t-sm mid" x="567" y="246">52 bits mantissa</text><text class="t-sm mid" x="567" y="262">సురక్షిత integer పరిధి: ±2⁵³</text></svg>
+</div>
 
 ### వివరణ
 
@@ -939,6 +959,11 @@ A: Machine code = CPU నేరుగా execute చేసే binary (0/1) instr
 
 ## 7. Instruction Cycle (Fetch → Decode → Execute → Writeback)
 
+<div class="fig">
+<div class="cap">Instruction cycle · fetch, decode, execute, write back</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">INSTRUCTION CYCLE</text><rect class="n-acc" x="0" y="26" width="178" height="64" rx="3"/><text class="t-w mid" x="89" y="63">FETCH</text><text class="t-w-sm mid" x="89" y="70">memory నుంచి instruction</text><line class="ln" x1="180" y1="58" x2="188" y2="58" marker-end="url(#a)"/><rect class="n" x="190" y="26" width="178" height="64" rx="3"/><text class="t mid" x="279" y="63">DECODE</text><text class="t-sm mid" x="279" y="70">ఏం చేయాలో అర్థం చేసుకోవడం</text><line class="ln" x1="370" y1="58" x2="378" y2="58" marker-end="url(#a)"/><rect class="n-acc" x="380" y="26" width="178" height="64" rx="3"/><text class="t-w mid" x="469" y="63">EXECUTE</text><text class="t-w-sm mid" x="469" y="70">ALU పని చేస్తుంది</text><line class="ln" x1="560" y1="58" x2="568" y2="58" marker-end="url(#a)"/><rect class="n" x="570" y="26" width="178" height="64" rx="3"/><text class="t mid" x="659" y="63">WRITE BACK</text><text class="t-sm mid" x="659" y="70">ఫలితాన్ని register/memory కి</text><path class="ln-acc" d="M719 96 L719 116 L89 116 L89 96" marker-end="url(#aa)"/><text class="t-acc mid" x="375" y="134">తర్వాతి instruction — program counter పెరుగుతుంది</text><rect class="n-acc" x="0" y="152" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="174">ఇది తెలిస్తే ఏం అర్థమవుతుంది</text><text class="t-w-sm mid" x="375" y="196">Pipelining ఎందుకు సాధ్యం — ఈ నాలుగు దశలు వేర్వేరు hardware units వాడతాయి.</text><text class="t-w-sm mid" x="375" y="212">Branch prediction ఎందుకు అవసరం — fetch ముందుకి వెళ్తుంది, కానీ ఎటు వెళ్ళాలో తెలియదు.</text><text class="t-w-sm mid" x="375" y="228">Assembly ఎందుకు ఇలా ఉంటుంది — ప్రతి instruction ఈ చక్రంలో ఇమడాలి.</text></svg>
+</div>
+
 ### వివరణ
 
 CPU ఒక instruction ని ఎలా execute చేస్తుంది? ఒక్క magic step లో కాదు — **అనేక small steps** గా. ఈ steps యొక్క sequence ని **instruction cycle** (లేదా **fetch-execute cycle**, **machine cycle**) అంటారు. CPU switch on అయినప్పటి నుండి off అయ్యేదాకా, ఇదే cycle ని **అనంతంగా, billions of times per second** repeat చేస్తుంది. ప్రతి instruction కి 4 basic phases:
@@ -1066,6 +1091,12 @@ Topic 7 లో చూశాం — non-pipelined CPU లో, ఒక instruction 
 5. **WB** (Writeback) — result ని register కి రాయి
 
 **కీలక insight:** Pipelining ఒక్క instruction యొక్క *latency* ని తగ్గించదు (అదే 5 stages). కానీ **throughput** ని dramatically పెంచుతుంది — ideal గా ప్రతి clock cycle కి ఒక instruction *complete* అవుతుంది (5 stages full అయ్యాక). అంటే 5 రెట్లు ఎక్కువ instructions/second.
+
+<div class="fig">
+<div class="cap">Pipelining · instructions ని అతివ్యాప్తి చేయడం</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">PIPELINING — assembly line లాంటిది</text><text class="t-xs" x="0" y="44">Pipeline లేకుండా</text><rect class="n" x="60" y="54" width="94" height="30" rx="3"/><text class="t-sm mid" x="107" y="74">Fetch</text><rect class="n" x="160" y="54" width="94" height="30" rx="3"/><text class="t-sm mid" x="207" y="74">Decode</text><rect class="n" x="260" y="54" width="94" height="30" rx="3"/><text class="t-sm mid" x="307" y="74">Execute</text><rect class="n" x="360" y="54" width="94" height="30" rx="3"/><text class="t-sm mid" x="407" y="74">Memory</text><rect class="n" x="460" y="54" width="94" height="30" rx="3"/><text class="t-sm mid" x="507" y="74">Write</text><text class="t-sm" x="580" y="74">instruction 1</text><text class="t-xs" x="0" y="112">Pipeline తో — ప్రతి cycle lo ఒక కొత్త instruction మొదలు</text><rect class="n-acc" x="60" y="122" width="68" height="30" rx="3"/><text class="t-w-sm mid" x="94" y="142">Fetch</text><rect class="n-acc" x="134" y="122" width="68" height="30" rx="3"/><text class="t-w-sm mid" x="168" y="142">Decode</text><rect class="n-acc" x="208" y="122" width="68" height="30" rx="3"/><text class="t-w-sm mid" x="242" y="142">Execute</text><rect class="n-acc" x="282" y="122" width="68" height="30" rx="3"/><text class="t-w-sm mid" x="316" y="142">Memory</text><rect class="n-acc" x="356" y="122" width="68" height="30" rx="3"/><text class="t-w-sm mid" x="390" y="142">Write</text><rect class="n-info" x="134" y="158" width="68" height="30" rx="3"/><text class="t-sm mid" x="168" y="178">Fetch</text><rect class="n-info" x="208" y="158" width="68" height="30" rx="3"/><text class="t-sm mid" x="242" y="178">Decode</text><rect class="n-info" x="282" y="158" width="68" height="30" rx="3"/><text class="t-sm mid" x="316" y="178">Execute</text><rect class="n-info" x="356" y="158" width="68" height="30" rx="3"/><text class="t-sm mid" x="390" y="178">Memory</text><rect class="n-info" x="430" y="158" width="68" height="30" rx="3"/><text class="t-sm mid" x="464" y="178">Write</text><rect class="n" x="208" y="194" width="68" height="30" rx="3"/><text class="t-sm mid" x="242" y="214">Fetch</text><rect class="n" x="282" y="194" width="68" height="30" rx="3"/><text class="t-sm mid" x="316" y="214">Decode</text><rect class="n" x="356" y="194" width="68" height="30" rx="3"/><text class="t-sm mid" x="390" y="214">Execute</text><rect class="n" x="430" y="194" width="68" height="30" rx="3"/><text class="t-sm mid" x="464" y="214">Memory</text><rect class="n" x="504" y="194" width="68" height="30" rx="3"/><text class="t-sm mid" x="538" y="214">Write</text><rect class="n-good" x="0" y="236" width="366" height="86" rx="4"/><text class="t mid" x="183" y="258">లాభం</text><text class="t-sm mid" x="183" y="280">5 stages = సిద్ధాంతంలో 5 రెట్లు throughput</text><text class="t-sm mid" x="183" y="296">ఒక instruction యొక్క latency మారదు —</text><text class="t-sm mid" x="183" y="312">కానీ సెకనుకి ఎక్కువ instructions పూర్తవుతాయి</text><rect class="n-bad" x="384" y="236" width="366" height="86" rx="4"/><text class="t mid" x="567" y="258">Hazards</text><text class="t-sm mid" x="567" y="280">Data hazard — తర్వాతిది ముందుదాని ఫలితం కోసం వేచి</text><text class="t-sm mid" x="567" y="296">Control hazard — branch ఎటు వెళ్తుందో తెలియదు</text><text class="t-sm mid" x="567" y="312">పరిష్కారం: forwarding, branch prediction</text></svg>
+<div class="note"><b>Branch misprediction ఖరీదు:</b> CPU తప్పు దారిలో 15–20 instructions ముందుకి వెళ్ళి, అన్నిటినీ పారేసి మళ్ళీ మొదలుపెట్టాలి. అందుకే ఊహించదగిన branches ఉన్న code వేగంగా నడుస్తుంది — sorted array మీద loop unsorted కంటే వేగం కావడానికి కారణం ఇదే.</div>
+</div>
 
 ### Real-life Scenario
 
@@ -1205,6 +1236,11 @@ A: Branch prediction వల్ల. Loop లో `if (arr[i] > threshold)` ఉం�
 
 **Idea:** ఎక్కువగా వాడే data ని fast layers (దగ్గర) లో, అరుదుగా వాడేది slow layers (దూరం) లో పెట్టు. Hardware/OS automatically data ని layers మధ్య move చేస్తాయి (cache, paging). నీకు ఇది transparent — నువ్వు `arr[i]` రాస్తే, అది register లో ఉందా, cache లో ఉందా, RAM లో ఉందా అనేది hardware handle చేస్తుంది. కానీ ఆ *ఎక్కడ ఉంది* అనేదే నీ code speed ని 100x దాకా మారుస్తుంది.
 
+<div class="fig">
+<div class="cap">Memory Hierarchy · వేగం vs సైజు</div>
+<svg viewBox="0 0 750 382"><text class="t-xs" x="0" y="14">MEMORY HIERARCHY — పైకి వెళ్తే వేగం, కిందికి వెళ్తే సైజు</text><rect class="n-acc" x="295" y="26" width="160" height="36" rx="3"/><text class="t-w mid" x="375" y="49">Registers</text><text class="t-sm" x="0" y="49">~1 ns</text><text class="t-sm" x="660" y="49">కొన్ని bytes</text><rect class="n-acc" x="245" y="68" width="260" height="36" rx="3"/><text class="t-w mid" x="375" y="91">L1 cache</text><text class="t-sm" x="0" y="91">~1 ns</text><text class="t-sm" x="660" y="91">32–64 KB</text><rect class="n-info" x="195" y="110" width="360" height="36" rx="3"/><text class="t mid" x="375" y="133">L2 / L3 cache</text><text class="t-sm" x="0" y="133">~10 ns</text><text class="t-sm" x="660" y="133">కొన్ని MB</text><rect class="n" x="145" y="152" width="460" height="36" rx="3"/><text class="t mid" x="375" y="175">RAM</text><text class="t-sm" x="0" y="175">~100 ns</text><text class="t-sm" x="660" y="175">GBs</text><rect class="n-soft" x="95" y="194" width="560" height="36" rx="3"/><text class="t mid" x="375" y="217">SSD</text><text class="t-sm" x="0" y="217">~100 µs</text><text class="t-sm" x="660" y="217">TBs</text><rect class="n-soft" x="45" y="236" width="660" height="36" rx="3"/><text class="t mid" x="375" y="259">HDD / network</text><text class="t-sm" x="0" y="259">~10 ms</text><text class="t-sm" x="660" y="259">అపరిమితం</text><rect class="n-acc" x="0" y="286" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="308">ఈ సంఖ్యలు ఎందుకు ముఖ్యం</text><text class="t-w-sm mid" x="375" y="330">L1 నుంచి RAM కి = 100 రెట్లు నెమ్మది. RAM నుంచి SSD కి = 1000 రెట్లు.</text><text class="t-w-sm mid" x="375" y="346">అందుకే cache-friendly code (వరుస memory access) చాలా వేగం —</text><text class="t-w-sm mid" x="375" y="362">అదే array linked list కంటే ఆచరణలో ఎందుకు వేగమో వివరిస్తుంది.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Memory hierarchy = నీ study desk setup.**
@@ -1332,6 +1368,11 @@ A: Temporal locality = ఇప్పుడు access చేసిన data త్�
 A: లేదు — RAM access ~100 ns = ~200 clock cycles (3 GHz CPU మీద). అందుకే cache లేకపోతే CPU ప్రతి memory access కి వందల cycles idle గా wait చేయాల్సి వస్తుంది. Cache (L1 ~4 cycles, L2 ~12, L3 ~40) ఈ gap ని bridge చేస్తుంది. ఈ "CPU-memory speed gap" నే memory wall / von Neumann bottleneck అంటారు.
 
 ## 10. Cache — hit/miss, mapping, cache-friendly code
+
+<div class="fig">
+<div class="cap">Cache · hit/miss మరియు locality</div>
+<svg viewBox="0 0 750 304"><text class="t-xs" x="0" y="14">CACHE — hit, miss, మరియు locality</text><rect class="n" x="0" y="26" width="140" height="44" rx="3"/><text class="t mid" x="70" y="53">CPU</text><line class="ln-acc" x1="144" y1="48" x2="186" y2="48" marker-end="url(#aa)"/><rect class="n-acc" x="190" y="26" width="150" height="44" rx="3"/><text class="t-w mid" x="265" y="46">L1 cache</text><text class="t-w-sm mid" x="265" y="62">hit? → 1 ns</text><line class="ln-dash" x1="344" y1="48" x2="386" y2="48" marker-end="url(#a)"/><text class="t-sm mid" x="365" y="40">miss</text><rect class="n-info" x="390" y="26" width="150" height="44" rx="3"/><text class="t mid" x="465" y="46">L2/L3</text><text class="t-sm mid" x="465" y="62">~10 ns</text><line class="ln-dash" x1="544" y1="48" x2="586" y2="48" marker-end="url(#a)"/><rect class="n-soft" x="590" y="26" width="160" height="44" rx="3"/><text class="t mid" x="670" y="46">RAM</text><text class="t-sm mid" x="670" y="62">~100 ns</text><rect class="n-good" x="0" y="86" width="366" height="102" rx="4"/><text class="t mid" x="183" y="108">Temporal locality</text><text class="t-sm mid" x="183" y="130">ఇప్పుడే వాడినది మళ్ళీ వాడతారు</text><text class="t-sm mid" x="183" y="146">→ cache lo ఉంచడం విలువైనది</text><text class="t-sm mid" x="183" y="162">ఉదా: loop variable</text><rect class="n-good" x="384" y="86" width="366" height="102" rx="4"/><text class="t mid" x="567" y="108">Spatial locality</text><text class="t-sm mid" x="567" y="130">పక్కనున్నది కూడా వాడతారు</text><text class="t-sm mid" x="567" y="146">→ ఒక్క byte కాదు, మొత్తం cache line</text><text class="t-sm mid" x="567" y="162">ఉదా: array traversal</text><rect class="n-acc" x="0" y="208" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="230">Cache-friendly code — ఒక ఆచరణాత్మక ఉదాహరణ</text><text class="t-w-sm mid" x="375" y="252">2D array ని <tspan class="t-acc">row-major</tspan> గా తిరగడం (a[i][j] lo j లోపలి loop) — memory వరుసగా ఉంటుంది.</text><text class="t-w-sm mid" x="375" y="268">Column-major గా తిరిగితే — ప్రతి access కొత్త cache line → 10 రెట్లు నెమ్మది కావొచ్చు.</text><text class="t-w-sm mid" x="375" y="284">ఒకే algorithm, ఒకే complexity — కానీ నిజ ప్రపంచంలో భారీ తేడా.</text></svg>
+</div>
 
 ### వివరణ
 

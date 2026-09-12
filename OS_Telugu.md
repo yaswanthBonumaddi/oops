@@ -1,12 +1,27 @@
-# Operating Systems (OS) - తెలుగు గైడ్ (SSE Fundamentals)
+<!-- style: editorial -->
+<!-- footer: Operating Systems · SSE Fundamentals · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత Operating Systems మళ్ళీ జీవితంలో మర్చిపోలేవు. OS అస్సలు తెలియని వ్యక్తిని — ZERO నుండి — Senior Software Engineer (SSE) interview crack చేసే స్థాయికి తీసుకెళ్లడమే లక్ష్యం. ప్రతి concept కి ఒక vivid real-life analogy, ఎందుకు ఉంది / ఎప్పుడు matter అవుతుంది, ఒక ASCII diagram, trade-offs, gotchas, మరియు interview దృష్టి (అడిగే ప్రశ్న + crisp సమాధానం) — అన్నీ ఉంటాయి. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> **నీ background:** నీకు JavaScript / React / Node.js / MongoDB (MERN) తెలుసు, కానీ CS degree లేదు, OS అస్సలు చదవలేదు. అందుకే ఇక్కడ ప్రతి OS concept ని వీలైనంత వరకు నీ **web/Node.js knowledge** తో connect చేస్తాను (ఉదా: "Node.js event loop vs OS threads", "libuv thread pool", "MongoDB connection = ఒక process/socket"). దీంతో కొత్త concept కూడా already తెలిసిన దానితో ముడిపడి బుర్రలో నిలిచిపోతుంది.
->
-> **లక్ష్యం:** Programming వచ్చిన కానీ OS fundamentals తెలియని engineer ని absolute basics నుండి SSE interview-ready వరకు తీసుకెళ్లడం. Best-teacher style — intuition first, formalism తర్వాత. ఇది CS-fundamentals set లో ఒక భాగం: `DSA_00_Foundations_Telugu.md`, `OOPS_Telugu.md`, `HLD_Telugu.md`, `LLD_Telugu.md`, `SystemDesign_Go_Telugu.md` లతో కలిపి చదువు.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">OS</div>
+<div class="kicker">Operating Systems · SSE Fundamentals</div>
+<div class="rule"></div>
+<div class="cover-title">Operating<br>Systems</div>
+<div class="lede">Process vs thread, scheduling, deadlock, virtual memory — "ఇది ఎందుకు నెమ్మది?" అనే ప్రతి ప్రశ్నకి మూలం ఇక్కడే.</div>
+<div class="sub">CS fundamentals — self-taught / non-CS background నుంచి వచ్చినవారికి SSE interview lo అడిగే లోతు వరకు. ప్రతి concept ని MERN / JavaScript ప్రపంచంతో ముడిపెట్టి.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -172,6 +187,11 @@ User mode code కి hardware directly access లేదు కదా. మరి
 
 కీలక insight: **ఒకే program → చాలా processes.** ఉదా: `node server.js` ని రెండు terminals లో run చేస్తే → రెండు వేరే processes (వేరే PID, వేరే memory), కానీ అదే program. అలాగే Chrome లో ప్రతి tab ఒక వేరే process (అందుకే ఒక tab crash అయినా మిగతావి బతుకుతాయి).
 
+<div class="fig">
+<div class="cap">Process memory layout · stack, heap, data, text</div>
+<svg viewBox="0 0 750 338"><text class="t-xs" x="0" y="14">ఒక PROCESS యొక్క memory</text><rect class="n-acc" x="0" y="26" width="200" height="38" rx="3"/><text class="t-w mid" x="100" y="50">Stack</text><text class="t-sm" x="216" y="50">function calls, local variables · కిందికి పెరుగుతుంది</text><rect class="n" x="0" y="72" width="200" height="38" rx="3"/><text class="t mid" x="100" y="96">↓  ↑</text><text class="t-sm" x="216" y="96">ఖాళీ ప్రాంతం — ఇద్దరూ ఒకరివైపు ఒకరు</text><rect class="n-acc" x="0" y="118" width="200" height="38" rx="3"/><text class="t-w mid" x="100" y="142">Heap</text><text class="t-sm" x="216" y="142">malloc / new · పైకి పెరుగుతుంది</text><rect class="n-info" x="0" y="164" width="200" height="38" rx="3"/><text class="t mid" x="100" y="188">Data</text><text class="t-sm" x="216" y="188">global &amp; static variables</text><rect class="n-good" x="0" y="210" width="200" height="38" rx="3"/><text class="t mid" x="100" y="234">Text</text><text class="t-sm" x="216" y="234">program యొక్క machine code (read-only)</text><rect class="n-acc" x="0" y="262" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="284">Stack overflow మరియు heap ఎందుకు ఢీకొంటాయి</text><text class="t-w-sm mid" x="375" y="306">Stack కిందికి, heap పైకి — మధ్యలో ఖాళీ. అది అయిపోతే ఒకటి రెండోదాన్ని ఢీకొడుతుంది.</text><text class="t-w-sm mid" x="375" y="322">అనంత recursion → stack overflow. Memory leak → heap exhaustion.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Program vs Process = recipe పుస్తకం vs వంట session.**
@@ -333,6 +353,12 @@ Unix/Linux లో కొత్త process create చేయడం రెండు
 ఒక్క వాక్యంలో: **Process = ఇల్లు (own memory); Thread = ఆ ఇంట్లో పని చేసే మనిషి. ఒకే ఇంట్లో అనేక మనుషులు (threads) common వస్తువులు (heap) వాడతారు, కానీ ఒక్కొక్కరికీ own notebook (stack).**
 
 **ఎందుకు threads?** ఒకే process లో అనేక పనులు *ఏకకాలంలో (parallel/concurrent)* చేయడానికి. ఉదా: ఒక video app లో — ఒక thread video decode చేస్తుంది, ఒకటి audio, ఒకటి UI. Process కంటే thread create/switch చేయడం **చాలా చౌక** (memory share చేస్తారు కాబట్టి).
+
+<div class="fig">
+<div class="cap">Process vs Thread · ఏది ఏం పంచుకుంటుంది</div>
+<svg viewBox="0 0 750 306"><text class="t-xs" x="0" y="14">PROCESS — పూర్తిగా వేరు · THREAD — memory పంచుకుంటాయి</text><rect class="n" x="0" y="26" width="360" height="170" rx="5"/><text class="t mid" x="180" y="48">Process A</text><rect class="n-info" x="20" y="60" width="150" height="28" rx="3"/><text class="t mid" x="95" y="79">Code</text><rect class="n-info" x="190" y="60" width="150" height="28" rx="3"/><text class="t mid" x="265" y="79">Data</text><rect class="n-info" x="20" y="96" width="320" height="28" rx="3"/><text class="t mid" x="180" y="115">Heap — పంచుకుంటారు</text><rect class="n-acc" x="20" y="132" width="100" height="52" rx="3"/><text class="t-w mid" x="70" y="156">Thread 1</text><text class="t-w-sm mid" x="70" y="172">sonta stack</text><rect class="n-acc" x="130" y="132" width="100" height="52" rx="3"/><text class="t-w mid" x="180" y="156">Thread 2</text><text class="t-w-sm mid" x="180" y="172">sonta stack</text><rect class="n-acc" x="240" y="132" width="100" height="52" rx="3"/><text class="t-w mid" x="290" y="156">Thread 3</text><text class="t-w-sm mid" x="290" y="172">sonta stack</text><rect class="n" x="390" y="26" width="360" height="170" rx="5"/><text class="t mid" x="570" y="48">Process B</text><rect class="n-info" x="410" y="60" width="320" height="70" rx="4"/><text class="t mid" x="570" y="82">పూర్తిగా వేరే memory</text><text class="t-sm mid" x="570" y="104">A తో ఏమీ పంచుకోదు</text><text class="t-acc mid" x="570" y="120">మాట్లాడాలంటే IPC కావాలి</text><rect class="n-good" x="0" y="210" width="366" height="86" rx="4"/><text class="t mid" x="183" y="232">Thread ఎందుకు వేగం</text><text class="t-sm mid" x="183" y="254">Context switch చౌక — memory map మారదు</text><text class="t-sm mid" x="183" y="270">Data పంచుకోవడం ఉచితం (అదే heap)</text><rect class="n-bad" x="384" y="210" width="366" height="86" rx="4"/><text class="t mid" x="567" y="232">Thread ప్రమాదం</text><text class="t-sm mid" x="567" y="254">ఒక thread crash → మొత్తం process</text><text class="t-sm mid" x="567" y="270">Shared memory → race conditions, locks</text></svg>
+<div class="note"><b>ప్రతి thread కి సొంతం:</b> stack, registers, program counter. <b>పంచుకునేవి:</b> code, data, heap, open files. ఈ ఒక్క వాక్యం interview lo చాలు.</div>
+</div>
 
 ### Real-life Scenario
 
@@ -662,6 +688,11 @@ Context switch **overhead** రెండు రకాలు:
 
 గుర్తుంచుకో: **TAT = CT − AT**, **WT = TAT − BT**.
 
+<div class="fig">
+<div class="cap">CPU Scheduling · FCFS, SJF, Round Robin</div>
+<svg viewBox="0 0 750 328"><text class="t-xs" x="0" y="14">SCHEDULING ALGORITHMS — Gantt పోలిక</text><text class="t-xs" x="0" y="44">FCFS — వచ్చిన క్రమంలో</text><rect class="n" x="0" y="54" width="300" height="28" rx="3"/><text class="t mid" x="150" y="73">P1 (దీర్ఘం)</text><rect class="n-acc" x="304" y="54" width="120" height="28" rx="3"/><text class="t-w mid" x="364" y="73">P2</text><rect class="n" x="428" y="54" width="100" height="28" rx="3"/><text class="t mid" x="478" y="73">P3</text><text class="t-acc" x="546" y="74">P2 చిన్నదైనా వేచి ఉంది</text><text class="t-xs" x="0" y="110">SJF — చిన్నది ముందు</text><rect class="n-acc" x="0" y="120" width="120" height="28" rx="3"/><text class="t-w mid" x="60" y="139">P2</text><rect class="n" x="124" y="120" width="100" height="28" rx="3"/><text class="t mid" x="174" y="139">P3</text><rect class="n" x="228" y="120" width="300" height="28" rx="3"/><text class="t mid" x="378" y="139">P1</text><text class="t-good" x="546" y="140">సగటు wait తక్కువ</text><text class="t-xs" x="0" y="176">ROUND ROBIN — time slice</text><rect class="n-acc" x="0" y="186" width="84" height="28" rx="3"/><text class="t-w mid" x="42" y="205">P1</text><rect class="n" x="88" y="186" width="84" height="28" rx="3"/><text class="t mid" x="130" y="205">P2</text><rect class="n-acc" x="176" y="186" width="84" height="28" rx="3"/><text class="t-w mid" x="218" y="205">P3</text><rect class="n" x="264" y="186" width="84" height="28" rx="3"/><text class="t mid" x="306" y="205">P1</text><rect class="n-acc" x="352" y="186" width="84" height="28" rx="3"/><text class="t-w mid" x="394" y="205">P2</text><rect class="n" x="440" y="186" width="84" height="28" rx="3"/><text class="t mid" x="482" y="205">P3</text><text class="t-sm" x="546" y="206">అందరికీ న్యాయం</text><rect class="n-acc" x="0" y="232" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="254">Trade-off</text><text class="t-w-sm mid" x="375" y="276">SJF సగటు wait time కి <tspan class="t-acc">optimal</tspan> — కానీ దీర్ఘమైన jobs starve అవుతాయి.</text><text class="t-w-sm mid" x="375" y="292">Round Robin న్యాయం — కానీ context switch overhead పెరుగుతుంది.</text><text class="t-w-sm mid" x="375" y="308">Time quantum ఎంచుకోవడం కీలకం: చాలా చిన్నది → overhead · చాలా పెద్దది → FCFS అయిపోతుంది.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Scheduling algorithms = supermarket లో billing counter policies.**
@@ -925,6 +956,11 @@ Context switch **overhead** రెండు రకాలు:
 ```
 
 ఈ 3 steps మధ్యలో context switch జరిగితే — విపత్తు.
+
+<div class="fig">
+<div class="cap">Race condition · counter++ ఎందుకు సురక్షితం కాదు</div>
+<svg viewBox="0 0 750 322"><text class="t-xs" x="0" y="14">RACE CONDITION — counter++ నిజానికి మూడు పనులు</text><rect class="n" x="0" y="26" width="240" height="40" rx="3"/><text class="t mid" x="120" y="51">1 · READ counter</text><line class="ln-acc" x1="244" y1="46" x2="286" y2="46" marker-end="url(#aa)"/><rect class="n" x="290" y="26" width="220" height="40" rx="3"/><text class="t mid" x="400" y="51">2 · ADD 1</text><line class="ln-acc" x1="514" y1="46" x2="556" y2="46" marker-end="url(#aa)"/><rect class="n" x="560" y="26" width="190" height="40" rx="3"/><text class="t mid" x="655" y="51">3 · WRITE back</text><text class="t-xs" x="0" y="92">రెండు threads interleave అయితే</text><rect class="n-acc" x="0" y="104" width="360" height="30" rx="3"/><text class="t-w-sm mid" x="180" y="124">T1: read (5)</text><rect class="n-info" x="370" y="104" width="380" height="30" rx="3"/><text class="t-sm mid" x="560" y="124">T2: read (5)</text><rect class="n-acc" x="0" y="138" width="360" height="30" rx="3"/><text class="t-w-sm mid" x="180" y="158">T1: write (6)</text><rect class="n-info" x="370" y="138" width="380" height="30" rx="3"/><text class="t-sm mid" x="560" y="158">T2: write (6)</text><text class="t-acc mid" x="375" y="190">రెండు increments — కానీ ఫలితం 6, 7 కాదు</text><rect class="n-good" x="0" y="210" width="366" height="102" rx="4"/><text class="t mid" x="183" y="232">పరిష్కారాలు</text><text class="t-sm mid" x="183" y="254">Mutex — critical section ని lock చేయడం</text><text class="t-sm mid" x="183" y="270">Atomic operation — hardware స్థాయిలో</text><text class="t-sm mid" x="183" y="286">ఒకే thread కి పరిమితం చేయడం</text><rect class="n-bad" x="384" y="210" width="366" height="102" rx="4"/><text class="t mid" x="567" y="232">ఎందుకు debug కష్టం</text><text class="t-sm mid" x="567" y="254">Timing మీద ఆధారపడుతుంది — ప్రతిసారీ జరగదు</text><text class="t-sm mid" x="567" y="270">Debugger పెడితే timing మారి bug మాయమవుతుంది</text><text class="t-sm mid" x="567" y="286">అందుకే "Heisenbug" అంటారు</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -1265,6 +1301,11 @@ Semaphores powerful కానీ **ప్రమాదకరం** — `wait`/`sig
 
 **Deadlock** = రెండు (లేదా ఎక్కువ) processes, ఒక్కొక్కటి ఇంకోది పట్టుకున్న resource కోసం wait చేస్తూ — **ఎవరూ ముందుకు కదలని** పరిస్థితి. అందరూ శాశ్వతంగా ఆగిపోతారు (frozen). Dining philosophers (Topic 9) దీనికి perfect example.
 
+<div class="fig">
+<div class="cap">Deadlock · నాలుగు షరతులు</div>
+<svg viewBox="0 0 750 308"><text class="t-xs" x="0" y="14">COFFMAN — నాలుగూ ఒకేసారి ఉంటేనే deadlock</text><rect class="n-acc" x="0" y="26" width="240" height="36" rx="3"/><text class="t-w mid" x="120" y="49">1 · Mutual exclusion</text><text class="t-sm" x="256" y="49">ఒక resource ని ఒకేసారి ఒక్కరే</text><rect class="n-acc" x="0" y="70" width="240" height="36" rx="3"/><text class="t-w mid" x="120" y="93">2 · Hold and wait</text><text class="t-sm" x="256" y="93">ఒకటి పట్టుకుని ఇంకోదాని కోసం వేచి</text><rect class="n-acc" x="0" y="114" width="240" height="36" rx="3"/><text class="t-w mid" x="120" y="137">3 · No preemption</text><text class="t-sm" x="256" y="137">బలవంతంగా లాక్కోలేం</text><rect class="n-acc" x="0" y="158" width="240" height="36" rx="3"/><text class="t-w mid" x="120" y="181">4 · Circular wait</text><text class="t-sm" x="256" y="181">A → B → C → A</text><circle cx="560" cy="60" r="20" fill="#17203a"/><text class="t-w mid" x="560" y="65">A</text><circle cx="660" cy="110" r="20" fill="#17203a"/><text class="t-w mid" x="660" y="115">B</text><circle cx="560" cy="160" r="20" fill="#17203a"/><text class="t-w mid" x="560" y="165">C</text><line class="ln-acc" x1="578" y1="70" x2="644" y2="102" marker-end="url(#aa)"/><line class="ln-acc" x1="650" y1="128" x2="578" y2="152" marker-end="url(#aa)"/><line class="ln-acc" x1="552" y1="138" x2="552" y2="82" marker-end="url(#aa)"/><text class="t-acc mid" x="610" y="192">circular wait</text><rect class="n-good" x="0" y="212" width="750" height="86" rx="4"/><text class="t mid" x="375" y="234">పరిష్కారం — ఏ ఒక్కదాన్ని విరగ్గొట్టినా చాలు</text><text class="t-sm mid" x="375" y="256">ఆచరణలో <tspan class="t-acc">circular wait</tspan> ని విరగ్గొట్టడం సులభం:</text><text class="t-sm mid" x="375" y="272">అన్ని locks ని ఎప్పుడూ <tspan class="t-acc">ఒకే క్రమంలో</tspan> తీసుకోవడం (ఉదా. id ప్రకారం).</text><text class="t-sm mid" x="375" y="288">Database lo, multi-threaded code lo — ఇదే అత్యంత ఆచరణీయమైన నియమం.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Real-life:** ఒక ఇరుకు వంతెన మీద రెండు cars ఎదురెదురుగా వచ్చాయి — రెండూ సగం వంతెన మీద ఆగాయి. Car A ముందుకు వెళ్ళాలంటే B వెనక్కి వెళ్ళాలి; B ముందుకు వెళ్ళాలంటే A వెనక్కి వెళ్ళాలి. ఇద్దరూ "నువ్వు ముందు కదులు" అని wait చేస్తారు — **ఎవరూ కదలరు, traffic frozen.** ఇదే deadlock. లేదా: నీ చేతిలో pen ఉంది, నాకు కావాలి; నా చేతిలో paper ఉంది, నీకు కావాలి; ఇద్దరం "ముందు నువ్వు ఇవ్వు" అంటే — ఇద్దరం stuck.
@@ -1525,6 +1566,11 @@ Deadlock రానివ్వు, కానీ అప్పుడప్పు�
 
 ఒక్క వాక్యంలో: **Paging = process memory ని "పేజీలుగా" చించి, RAM యొక్క ఏ ఖాళీ అరలో అయినా పెట్టడం; ఏ page ఎక్కడ ఉందో page table చెబుతుంది.**
 
+<div class="fig">
+<div class="cap">Paging · virtual address ఎలా అనువదించబడుతుంది</div>
+<svg viewBox="0 0 750 258"><text class="t-xs" x="0" y="14">VIRTUAL → PHYSICAL · page table మరియు TLB</text><rect class="n" x="0" y="26" width="160" height="40" rx="3"/><text class="t mid" x="80" y="44">Virtual address</text><text class="t-sm mid" x="80" y="60">page# + offset</text><line class="ln-acc" x1="164" y1="46" x2="206" y2="46" marker-end="url(#aa)"/><rect class="n-acc" x="210" y="26" width="150" height="40" rx="3"/><text class="t-w mid" x="285" y="44">TLB</text><text class="t-w-sm mid" x="285" y="60">cache — hit అయితే వేగం</text><line class="ln-dash" x1="285" y1="70" x2="285" y2="100" marker-end="url(#a)"/><text class="t-sm mid" x="330" y="92">miss</text><rect class="n-info" x="210" y="104" width="150" height="40" rx="3"/><text class="t mid" x="285" y="122">Page Table</text><text class="t-sm mid" x="285" y="138">memory lo</text><line class="ln-acc" x1="364" y1="46" x2="406" y2="46" marker-end="url(#aa)"/><line class="ln" x1="364" y1="124" x2="406" y2="124" marker-end="url(#a)"/><rect class="n-good" x="410" y="66" width="160" height="40" rx="3"/><text class="t mid" x="490" y="84">Physical address</text><text class="t-sm mid" x="490" y="100">frame# + offset</text><rect class="n-bad" x="590" y="26" width="160" height="120" rx="4"/><text class="t mid" x="670" y="48">Page fault</text><text class="t-sm mid" x="670" y="70">Page memory lo లేదు</text><text class="t-sm mid" x="670" y="86">→ disk నుంచి తేవాలి</text><text class="t-sm mid" x="670" y="102">→ ~10⁵ రెట్లు నెమ్మది</text><text class="t-sm mid" x="670" y="118">ఇదే thrashing కి మూలం</text><rect class="n-acc" x="0" y="162" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="184">ఎందుకు virtual memory</text><text class="t-w-sm mid" x="375" y="206">1 · ప్రతి process కి "నాకు మొత్తం memory ఉంది" అనే భ్రమ — isolation</text><text class="t-w-sm mid" x="375" y="222">2 · RAM కంటే పెద్ద programs నడపడం (disk ని పొడిగింపుగా వాడటం)</text><text class="t-w-sm mid" x="375" y="238">3 · Fragmentation సమస్య పోతుంది — pages ఎక్కడైనా ఉండొచ్చు</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Paging = ఒక పుస్తకంలోని పేజీలను వేర్వేరు lockers లో దాచడం.**
@@ -1725,6 +1771,11 @@ Segmented address = **[ segment number (s) | offset (d) ]**. Segment table ల�
 **Demand Paging** = దీన్ని అమలు చేసే విధానం — **page అవసరమైనప్పుడు మాత్రమే** (on demand) disk నుండి RAM కి తీసుకురావడం. Program start అయినప్పుడు ఏ page ని load చేయరు (lazy loading); access చేసినప్పుడే load.
 
 ఒక్క వాక్యంలో: **Virtual memory = "RAM కంటే పెద్ద program run చేయవచ్చు" అనే illusion; demand paging = అవసరమైన పేజీలు మాత్రమే, అవసరమైనప్పుడే RAM కి తేవడం.**
+
+<div class="fig">
+<div class="cap">Page replacement · FIFO, LRU, Clock</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">PAGE REPLACEMENT — memory నిండినప్పుడు ఎవరిని బయటికి</text><rect class="n" x="0" y="26" width="180" height="38" rx="3"/><text class="t mid" x="90" y="50">FIFO</text><text class="t-sm" x="196" y="50">ముందు వచ్చినది ముందు · Belady anomaly ఉంది</text><rect class="n-acc" x="0" y="72" width="180" height="38" rx="3"/><text class="t-w mid" x="90" y="96">LRU</text><text class="t-sm" x="196" y="96">చాలాసేపు వాడనిది · ఆచరణలో ఉత్తమం</text><rect class="n-info" x="0" y="118" width="180" height="38" rx="3"/><text class="t mid" x="90" y="142">Optimal</text><text class="t-sm" x="196" y="142">భవిష్యత్తులో ఎక్కువసేపు అవసరం లేనిది</text><rect class="n-good" x="0" y="164" width="180" height="38" rx="3"/><text class="t mid" x="90" y="188">Clock</text><text class="t-sm" x="196" y="188">LRU యొక్క చౌక అంచనా · నిజ OS lo ఇదే</text><rect class="n-bad" x="0" y="220" width="366" height="102" rx="4"/><text class="t mid" x="183" y="242">Belady anomaly</text><text class="t-sm mid" x="183" y="264">FIFO lo — frames <tspan class="t-acc">పెంచితే</tspan> page faults పెరగొచ్చు!</text><text class="t-sm mid" x="183" y="280">ఇది ప్రతి సహజ అంచనాకి విరుద్ధం</text><text class="t-sm mid" x="183" y="296">LRU lo ఇది జరగదు (stack algorithm)</text><rect class="n-acc" x="384" y="220" width="366" height="102" rx="4"/><text class="t-w mid" x="567" y="242">Thrashing</text><text class="t-w-sm mid" x="567" y="264">Process లకి కావలసినంత memory లేకపోతే —</text><text class="t-w-sm mid" x="567" y="280">ఎక్కువ సమయం paging lo, పని lo కాదు</text><text class="t-w-sm mid" x="567" y="296">పరిష్కారం: working set ని లెక్కించి, processes తగ్గించడం</text></svg>
+</div>
 
 ### Real-life Scenario
 

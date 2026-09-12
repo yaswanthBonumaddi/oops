@@ -1,12 +1,27 @@
-# JavaScript - పూర్తి తెలుగు గైడ్ (End-to-End, SDE2 & SSE)
+<!-- style: editorial -->
+<!-- footer: JavaScript · End-to-End · SDE2 & SSE · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత JavaScript మళ్ళీ జీవితంలో మర్చిపోలేవు. ప్రతి concept కి ఒక real-life analogy, ఎప్పుడు/ఎందుకు వాడాలి, trade-offs, gotchas (సాధారణ తప్పులు), లోపల ఏం జరుగుతుంది (internals — execution context, hoisting, prototype chain, event loop, coercion rules, garbage collection), మరియు interview దృష్టి — అన్నీ ఉంటాయి.
->
-> **లక్ష్యం:** general programming తెలిసిన కానీ JavaScript ని లోతుగా తెలుసుకోవాలనుకునే engineer ని absolute basics నుండి deep internals వరకు తీసుకెళ్లడం. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> ఇది modern JavaScript (ES2020+) మీద ఆధారపడి ఉంది. JavaScript లోని **deep OOP, design patterns, SOLID, prototype-based class internals** కి companion గా `OOPS_Telugu.md` ఉంది — ఆ topics అక్కడ ఇంకా లోతుగా చూడవచ్చు. ఈ guide భాష మొత్తాన్ని (language end-to-end) cover చేస్తుంది.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">JS</div>
+<div class="kicker">JavaScript · End-to-End · SDE2 &amp; SSE</div>
+<div class="rule"></div>
+<div class="cover-title">JavaScript</div>
+<div class="lede">Event loop, closures, prototypes, promises, `this` — భాష లోపల ఏం జరుగుతోందో తెలిస్తే bugs ఊహించగలరు.</div>
+<div class="sub">ఇది <code>OOPS_Telugu.pdf</code> కి జోడీ — అది objects మీద దృష్టి, ఇది భాష మొత్తం మీద. React / Node ఏదైనా — పునాది ఇదే.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -618,6 +633,11 @@ A: మొదటి JS implementation లో type ని tag bits తో store �
 ---
 
 ## 5. Type Coercion & Conversion
+
+<div class="fig">
+<div class="cap">Type Coercion · == యొక్క ఉచ్చులు</div>
+<svg viewBox="0 0 750 372"><text class="t-xs" x="0" y="14">== ఎందుకు ప్రమాదకరం — coercion నియమాలు</text><rect class="n" x="0" y="26" width="220" height="32" rx="3"/><text class="t-sm mono mid" x="110" y="47">0 == "0"</text><rect class="n-good" x="230" y="26" width="90" height="32" rx="3"/><text class="t-sm mid" x="275" y="47">true</text><text class="t-sm" x="336" y="47">string → number</text><rect class="n" x="0" y="66" width="220" height="32" rx="3"/><text class="t-sm mono mid" x="110" y="87">0 == []</text><rect class="n-good" x="230" y="66" width="90" height="32" rx="3"/><text class="t-sm mid" x="275" y="87">true</text><text class="t-sm" x="336" y="87">[] → "" → 0</text><rect class="n" x="0" y="106" width="220" height="32" rx="3"/><text class="t-sm mono mid" x="110" y="127">"0" == []</text><rect class="n-bad" x="230" y="106" width="90" height="32" rx="3"/><text class="t-sm mid" x="275" y="127">false</text><text class="t-sm" x="336" y="127">"0" vs "" — రెండూ strings</text><rect class="n" x="0" y="146" width="220" height="32" rx="3"/><text class="t-sm mono mid" x="110" y="167">null == undefined</text><rect class="n-good" x="230" y="146" width="90" height="32" rx="3"/><text class="t-sm mid" x="275" y="167">true</text><text class="t-sm" x="336" y="167">ప్రత్యేక నియమం</text><rect class="n" x="0" y="186" width="220" height="32" rx="3"/><text class="t-sm mono mid" x="110" y="207">null == 0</text><rect class="n-bad" x="230" y="186" width="90" height="32" rx="3"/><text class="t-sm mid" x="275" y="207">false</text><text class="t-sm" x="336" y="207">null ఎప్పుడూ number కి మారదు</text><rect class="n" x="0" y="226" width="220" height="32" rx="3"/><text class="t-sm mono mid" x="110" y="247">NaN == NaN</text><rect class="n-bad" x="230" y="226" width="90" height="32" rx="3"/><text class="t-sm mid" x="275" y="247">false</text><text class="t-sm" x="336" y="247">NaN తనకి తానే సమానం కాదు</text><rect class="n-acc" x="0" y="276" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="298">నియమం ఒక్కటే</text><text class="t-w-sm mid" x="375" y="320">ఎప్పుడూ <tspan class="t-acc">===</tspan> వాడండి. == యొక్క నియమాలు ఎవరూ పూర్తిగా గుర్తుంచుకోలేరు.</text><text class="t-w-sm mid" x="375" y="336">ఒకే మినహాయింపు: <code>x == null</code> — ఇది null మరియు undefined రెండింటినీ పట్టుకుంటుంది.</text><text class="t-w-sm mid" x="375" y="352">NaN ని check చేయడానికి <code>Number.isNaN()</code> — == ఎప్పటికీ పని చేయదు.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -1526,6 +1546,11 @@ A: Regular functions లో ఉండే array-like object — pass అయిన
 
 ## 11. Scope & Scope Chain
 
+<div class="fig">
+<div class="cap">Scope Chain · lexical scoping</div>
+<svg viewBox="0 0 750 322"><text class="t-xs" x="0" y="14">SCOPE CHAIN — లోపలి నుంచి బయటికి వెతకడం</text><rect class="n" x="0" y="26" width="450" height="180" rx="5"/><text class="t mid" x="225" y="48">Global scope</text><rect class="n-info" x="30" y="62" width="390" height="28" rx="3"/><text class="t mid" x="225" y="81">const a = 1</text><rect class="n" x="30" y="100" width="390" height="90" rx="4"/><text class="t mid" x="225" y="122">outer() scope</text><rect class="n-info" x="60" y="136" width="330" height="24" rx="3"/><text class="t mid" x="225" y="153">const b = 2</text><rect class="n-acc" x="60" y="166" width="330" height="20" rx="3"/><text class="t-w-sm mid" x="225" y="181">inner() — a, b, c అన్నీ చూడగలదు</text><rect class="n-good" x="470" y="40" width="280" height="120" rx="4"/><text class="t mid" x="610" y="62">వెతికే క్రమం</text><text class="t-sm mid" x="610" y="84">1 · నా సొంత scope</text><text class="t-sm mid" x="610" y="100">2 · నా parent scope</text><text class="t-sm mid" x="610" y="116">3 · … global దాకా</text><text class="t-sm mid" x="610" y="132">4 · దొరకకపోతే ReferenceError</text><rect class="n-bad" x="0" y="226" width="750" height="86" rx="4"/><text class="t mid" x="375" y="248">ఒక దిక్కు మాత్రమే</text><text class="t-sm mid" x="375" y="270">Inner outer ని చూడగలదు; outer inner ని <tspan class="t-acc">ఎప్పటికీ</tspan> చూడలేదు.</text><text class="t-sm mid" x="375" y="286">Scope chain <tspan class="t-acc">code ఎక్కడ రాశారో</tspan> దాని మీద ఆధారపడుతుంది (lexical), ఎక్కడి నుంచి పిలిచారో దాని మీద కాదు.</text><text class="t-sm mid" x="375" y="302">ఇదే closures పని చేయడానికి కారణం.</text></svg>
+</div>
+
 ### వివరణ
 
 **Scope** అంటే — ఒక variable **ఎక్కడ నుండి access చేయగలం** అనే ప్రాంతం. JavaScript లో 3 rakala scopes: **Global, Function, Block.** ఒక variable కనిపించకపోతే, JS **scope chain** ద్వారా బయటి scopes లో వెతుకుతుంది. ఈ వెతికే విధానం **lexical (static)** — code ఎక్కడ **రాశారో** బట్టి నిర్ణయం అవుతుంది, ఎక్కడ **call చేశారో** బట్టి కాదు.
@@ -1653,6 +1678,11 @@ A: `var` function-scoped — ఏ block లో declare చేసినా, దగ
 ---
 
 ## 12. Hoisting deep
+
+<div class="fig">
+<div class="cap">Hoisting · var, let, const మరియు TDZ</div>
+<svg viewBox="0 0 750 350"><text class="t-xs" x="0" y="14">HOISTING — declaration పైకి, assignment కాదు</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">var</text><text class="t-sm mid" x="183" y="70">Declaration hoist · undefined తో initialise</text><text class="t-sm mid" x="183" y="86">console.log(x) → undefined (error కాదు)</text><text class="t-sm mid" x="183" y="102">Function-scoped</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">let / const</text><text class="t-sm mid" x="567" y="70">Hoist అవుతాయి కానీ <tspan class="t-acc">TDZ</tspan> lo</text><text class="t-sm mid" x="567" y="86">చదివితే → ReferenceError</text><text class="t-sm mid" x="567" y="102">Block-scoped</text><text class="t-xs" x="0" y="166">TEMPORAL DEAD ZONE</text><rect class="n-bad" x="0" y="178" width="250" height="40" rx="3"/><text class="t mid" x="125" y="196">TDZ</text><text class="t-sm mid" x="125" y="212">declaration దాకా</text><rect class="n-good" x="255" y="178" width="495" height="40" rx="3"/><text class="t mid" x="502" y="203">ఇక్కడి నుంచి వాడొచ్చు</text><text class="t-acc mid" x="255" y="236">↑ let x = 5 ఇక్కడ</text><rect class="n-acc" x="0" y="254" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="276">ఎందుకు TDZ ఉంది</text><text class="t-w-sm mid" x="375" y="298">var యొక్క "undefined" ప్రవర్తన bugs ని <tspan class="t-acc">దాచేస్తుంది</tspan> — తప్పు అక్కడ కనిపించదు.</text><text class="t-w-sm mid" x="375" y="314">TDZ తప్పుని సరిగ్గా అది జరిగిన చోటే బయటపెడుతుంది.</text><text class="t-w-sm mid" x="375" y="330">అందుకే ఆధునిక code lo var ఎప్పుడూ వాడకూడదు — const default, అవసరమైతే let.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -2236,6 +2266,11 @@ A: `Function.prototype.myBind = function(context, ...preset) { const fn = this; 
 ---
 
 ## 16. Higher-Order Functions & Callbacks
+
+<div class="fig">
+<div class="cap">Closure · scope ని మోసుకెళ్ళే function</div>
+<svg viewBox="0 0 750 292"><text class="t-xs" x="0" y="14">CLOSURE — function తన పుట్టిన scope ని మోసుకెళ్తుంది</text><rect class="n" x="0" y="26" width="400" height="150" rx="5"/><text class="t mid" x="200" y="48">outer() యొక్క scope</text><rect class="n-info" x="30" y="62" width="340" height="34" rx="3"/><text class="t mid" x="200" y="84">let count = 0</text><rect class="n-acc" x="30" y="106" width="340" height="56" rx="4"/><text class="t-w mid" x="200" y="128">function inner()</text><text class="t-w-sm mid" x="200" y="146">count++ — బయటి variable ని చూస్తుంది</text><line class="ln-acc" x1="404" y1="134" x2="470" y2="134" marker-end="url(#aa)"/><text class="t-sm mid" x="437" y="126">return</text><rect class="n-good" x="480" y="96" width="270" height="86" rx="4"/><text class="t mid" x="615" y="118">outer() ముగిసినా</text><text class="t-sm mid" x="615" y="140">count memory lo ఉండిపోతుంది —</text><text class="t-sm mid" x="615" y="156">inner ఇంకా దాన్ని పట్టుకుని ఉంది.</text><text class="t-sm mid" x="615" y="172">Garbage collector తీసేయలేదు.</text><rect class="n-good" x="0" y="196" width="366" height="86" rx="4"/><text class="t mid" x="183" y="218">ఎక్కడ పనికొస్తుంది</text><text class="t-sm mid" x="183" y="240">Private state (module pattern)</text><text class="t-sm mid" x="183" y="256">Function factories · once(), memoize()</text><text class="t-sm mid" x="183" y="272">React hooks లోపల ఇదే యంత్రాంగం</text><rect class="n-bad" x="384" y="196" width="366" height="86" rx="4"/><text class="t mid" x="567" y="218">ఎక్కడ ఇబ్బంది</text><text class="t-sm mid" x="567" y="240">Loop lo var తో closure — అందరూ చివరి విలువ చూస్తారు</text><text class="t-sm mid" x="567" y="256">let వాడితే సరిపోతుంది (block scope)</text><text class="t-sm mid" x="567" y="272">పెద్ద objects ని పట్టుకుంటే memory leak</text></svg>
+</div>
 
 ### వివరణ
 
@@ -3944,6 +3979,12 @@ A: (1) functions, `undefined`, symbols పోతాయి. (2) `Date` string అ
 
 ## 27. Event Loop deep (call stack, Web APIs, task vs microtask queue, rendering, starvation)
 
+<div class="fig">
+<div class="cap">Event Loop · stack, queues, మరియు క్రమం</div>
+<svg viewBox="0 0 750 358"><text class="t-xs" x="0" y="14">EVENT LOOP — JS single-threaded అయినా async ఎలా పని చేస్తుంది</text><rect class="n-acc" x="0" y="26" width="220" height="130" rx="4"/><text class="t-w mid" x="110" y="48">Call Stack</text><text class="t-w-sm mid" x="110" y="70">main()</text><text class="t-w-sm mid" x="110" y="86">fetchData()</text><text class="t-w-sm mid" x="110" y="102">← ఇక్కడ ఒక్కటే నడుస్తుంది</text><line class="ln-acc" x1="224" y1="60" x2="286" y2="60" marker-end="url(#aa)"/><text class="t-sm mid" x="255" y="52">setTimeout</text><rect class="n-info" x="290" y="26" width="200" height="60" rx="4"/><text class="t mid" x="390" y="48">Web APIs</text><text class="t-sm mid" x="390" y="70">timer, fetch, DOM — browser</text><line class="ln-acc" x1="390" y1="90" x2="390" y2="120" marker-end="url(#aa)"/><rect class="n" x="290" y="124" width="200" height="56" rx="4"/><text class="t mid" x="390" y="146">Macrotask queue</text><text class="t-sm mid" x="390" y="168">setTimeout, setInterval, I/O</text><rect class="n-good" x="290" y="190" width="200" height="56" rx="4"/><text class="t mid" x="390" y="212">Microtask queue</text><text class="t-sm mid" x="390" y="234">Promise.then, queueMicrotask</text><line class="ln-acc" x1="286" y1="218" x2="120" y2="218" marker-end="url(#aa)"/><line class="ln" x1="286" y1="152" x2="120" y2="170" marker-end="url(#a)"/><rect class="n-acc" x="520" y="90" width="230" height="120" rx="4"/><text class="t-w mid" x="635" y="112">EVENT LOOP నియమం</text><text class="t-w-sm mid" x="635" y="134">Stack ఖాళీ అయినప్పుడు మాత్రమే —</text><text class="t-w-sm mid" x="635" y="150">ముందు <tspan class="t-acc">అన్ని</tspan> microtasks,</text><text class="t-w-sm mid" x="635" y="166">తర్వాత <tspan class="t-acc">ఒక్క</tspan> macrotask.</text><text class="t-w-sm mid" x="635" y="182">అదే Promise setTimeout కంటే</text><text class="t-w-sm mid" x="635" y="198">ముందు నడవడానికి కారణం.</text><rect class="n-bad" x="0" y="262" width="750" height="86" rx="4"/><text class="t mid" x="375" y="284">దీని పరిణామం — starvation</text><text class="t-sm mid" x="375" y="306">Microtask లోపల మళ్ళీ microtask queue చేస్తే — macrotasks ఎప్పటికీ నడవవు.</text><text class="t-sm mid" x="375" y="322">Browser render కూడా ఒక macrotask లాంటిదే → page స్తంభిస్తుంది.</text><text class="t-sm mid" x="375" y="338">అందుకే భారీ recursive promise chains ప్రమాదకరం.</text></svg>
+<div class="note"><b>Interview lo క్లాసిక్ ప్రశ్న:</b> <code>setTimeout(f, 0)</code> మరియు <code>Promise.resolve().then(g)</code> — ఏది ముందు? జవాబు <b>g</b>, ఎందుకంటే microtask queue ఎప్పుడూ ముందు పూర్తిగా ఖాళీ అవుతుంది.</div>
+</div>
+
 ### వివరణ
 
 JavaScript అనేది **single-threaded** language — అంటే ఒకే ఒక్క call stack ఉంటుంది, ఒక సమయంలో ఒకే ఒక్క పని చేస్తుంది. మరి అలాంటప్పుడు network calls, timers, DOM events అన్నీ ఒకేసారి ఎలా handle అవుతున్నాయి? దీనికి సమాధానం **Event Loop**.
@@ -4204,6 +4245,11 @@ try {
 
 ## 29. Promises (states, then/catch/finally, chaining, Promise.all/allSettled/race/any)
 
+<div class="fig">
+<div class="cap">Promises · స్థితులు మరియు chaining</div>
+<svg viewBox="0 0 750 394"><text class="t-xs" x="0" y="14">PROMISE — మూడు స్థితులు, ఒక్కసారే మారతాయి</text><rect class="n-info" x="275" y="26" width="200" height="44" rx="3"/><text class="t mid" x="375" y="53">PENDING</text><line class="ln-acc" x1="320" y1="74" x2="180" y2="102" marker-end="url(#aa)"/><line class="ln-acc" x1="430" y1="74" x2="570" y2="102" marker-end="url(#aa)"/><rect class="n-good" x="80" y="106" width="200" height="44" rx="3"/><text class="t mid" x="180" y="126">FULFILLED</text><text class="t-sm mid" x="180" y="142">.then(value)</text><rect class="n-bad" x="470" y="106" width="200" height="44" rx="3"/><text class="t mid" x="570" y="126">REJECTED</text><text class="t-sm mid" x="570" y="142">.catch(error)</text><text class="t-acc mid" x="180" y="170">settled — ఇక మారదు</text><text class="t-acc mid" x="570" y="170">settled — ఇక మారదు</text><rect class="n-good" x="0" y="196" width="366" height="102" rx="4"/><text class="t mid" x="183" y="218">Chaining</text><text class="t-sm mid" x="183" y="240">ప్రతి .then() ఒక <tspan class="t-acc">కొత్త promise</tspan> ఇస్తుంది</text><text class="t-sm mid" x="183" y="256">Value return చేస్తే → wrap అవుతుంది</text><text class="t-sm mid" x="183" y="272">Promise return చేస్తే → auto-unwrap</text><rect class="n-bad" x="384" y="196" width="366" height="102" rx="4"/><text class="t mid" x="567" y="218">సాధారణ తప్పులు</text><text class="t-sm mid" x="567" y="240">return మర్చిపోవడం → chain తెగుతుంది</text><text class="t-sm mid" x="567" y="256">.catch() లేకపోవడం → unhandled rejection</text><text class="t-sm mid" x="567" y="272">Loop lo await → sequential (నెమ్మది)</text><rect class="n-acc" x="0" y="318" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="340">Promise.all vs allSettled</text><text class="t-w-sm mid" x="375" y="362"><tspan class="t-acc">all</tspan> — ఏదో ఒకటి fail అయితే వెంటనే మొత్తం fail. "అన్నీ కావాలి" అన్నప్పుడు.</text><text class="t-w-sm mid" x="375" y="378"><tspan class="t-acc">allSettled</tspan> — అన్నీ పూర్తయ్యేదాకా ఆగి, ఒక్కో ఫలితాన్నీ report. "ఏవి పోయాయో తెలియాలి" అన్నప్పుడు.</text></svg>
+</div>
+
 ### వివరణ
 
 **Promise** అంటే భవిష్యత్తులో వచ్చే విలువకి (async operation result) ఒక **placeholder object**. ఇది "నేను ఇప్పుడు value ఇవ్వలేను, కానీ తర్వాత తప్పకుండా result లేదా error ఇస్తాను" అనే వాగ్దానం.
@@ -4336,6 +4382,11 @@ withTimeout(fetch("/api/data"), 5000)
 ---
 
 ## 30. async/await (try/catch, sequential vs parallel, top-level await, mistakes)
+
+<div class="fig">
+<div class="cap">async/await · sequential vs parallel</div>
+<svg viewBox="0 0 750 374"><text class="t-xs" x="0" y="14">SEQUENTIAL vs PARALLEL await — ఇది చాలా ముఖ్యం</text><rect class="n-bad" x="0" y="26" width="366" height="110" rx="4"/><text class="t mid" x="183" y="48">Sequential (నెమ్మది)</text><text class="t-sm mono mid" x="183" y="70">const a = await f1();  // 1s</text><text class="t-sm mono mid" x="183" y="86">const b = await f2();  // 1s</text><text class="t-sm mono mid" x="183" y="102">మొత్తం 2 సెకన్లు</text><rect class="n-good" x="384" y="26" width="366" height="110" rx="4"/><text class="t mid" x="567" y="48">Parallel (వేగం)</text><text class="t-sm mono mid" x="567" y="70">const [a,b] = await Promise.all(</text><text class="t-sm mono mid" x="567" y="86">  [f1(), f2()]);</text><text class="t-sm mono mid" x="567" y="102">మొత్తం 1 సెకను</text><rect class="n-bad" x="0" y="156" width="300" height="30" rx="3"/><text class="t mid" x="150" y="176">f1 ▓▓▓▓▓</text><rect class="n-bad" x="310" y="156" width="300" height="30" rx="3"/><text class="t mid" x="460" y="176">f2 ▓▓▓▓▓</text><rect class="n-good" x="0" y="192" width="300" height="30" rx="3"/><text class="t mid" x="150" y="212">f1 ▓▓▓▓▓</text><rect class="n-good" x="0" y="228" width="300" height="30" rx="3"/><text class="t mid" x="150" y="248">f2 ▓▓▓▓▓</text><text class="t-acc" x="630" y="176">2s</text><text class="t-acc" x="630" y="222">1s</text><rect class="n-acc" x="0" y="278" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="300">ఎప్పుడు sequential అవసరం</text><text class="t-w-sm mid" x="375" y="322">రెండోది మొదటి ఫలితం మీద <tspan class="t-acc">ఆధారపడితే</tspan> మాత్రమే.</text><text class="t-w-sm mid" x="375" y="338">ఆధారపడకపోతే — for loop lo await రాయడం ఒక performance bug.</text><text class="t-w-sm mid" x="375" y="354">Loop కావాలంటే: <code>await Promise.all(items.map(async x =&gt; …))</code></text></svg>
+</div>
 
 ### వివరణ
 
@@ -4625,6 +4676,11 @@ Generator function యొక్క execution context ని engine **suspend** �
 ---
 
 ## 32. ES Modules (import/export, dynamic import, CommonJS vs ESM, tree-shaking)
+
+<div class="fig">
+<div class="cap">ES Modules vs CommonJS</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">ES MODULES vs CommonJS</text><rect class="n-acc" x="0" y="26" width="366" height="130" rx="4"/><text class="t-w mid" x="183" y="48">ESM (import/export)</text><text class="t-w-sm mid" x="183" y="70">Static — compile time lo విశ్లేషణ</text><text class="t-w-sm mid" x="183" y="86">Tree-shaking సాధ్యం</text><text class="t-w-sm mid" x="183" y="102">Top-level await</text><text class="t-w-sm mid" x="183" y="118">Live bindings</text><rect class="n-info" x="384" y="26" width="366" height="130" rx="4"/><text class="t mid" x="567" y="48">CommonJS (require)</text><text class="t-sm mid" x="567" y="70">Dynamic — runtime lo</text><text class="t-sm mid" x="567" y="86">Tree-shaking కష్టం</text><text class="t-sm mid" x="567" y="102">Top-level await లేదు</text><text class="t-sm mid" x="567" y="118">Value copy</text><rect class="n-good" x="0" y="176" width="750" height="86" rx="4"/><text class="t mid" x="375" y="198">Tree-shaking ఎందుకు ముఖ్యం</text><text class="t-sm mid" x="375" y="220">import ఏవి వాడుతున్నారో bundler <tspan class="t-acc">ముందే</tspan> తెలుసుకోగలదు — వాడనివి bundle నుంచి తీసేస్తుంది.</text><text class="t-sm mid" x="375" y="236">require() dynamic కాబట్టి అది సాధ్యం కాదు — మొత్తం module bundle lo చేరుతుంది.</text><text class="t-sm mid" x="375" y="252">అందుకే ఆధునిక frontend lo ESM తప్పనిసరి.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -5241,6 +5297,11 @@ Proxy operations engine level లో intercept అవుతాయి — ఏ pro
 
 ## 36. Memory Management & Garbage Collection (reachability, mark-sweep, leaks, WeakRef/FinalizationRegistry)
 
+<div class="fig">
+<div class="cap">Garbage Collection · reachability, reference count కాదు</div>
+<svg viewBox="0 0 750 298"><text class="t-xs" x="0" y="14">GARBAGE COLLECTION — reachability</text><circle cx="80" cy="80" r="26" fill="#e2653a"/><text class="t-w mid" x="80" y="85">root</text><line class="ln" x1="106" y1="80" x2="174" y2="80" marker-end="url(#a)"/><circle cx="200" cy="80" r="20" fill="#17203a"/><text class="t-w mid" x="200" y="85">A</text><line class="ln" x1="222" y1="80" x2="288" y2="80" marker-end="url(#a)"/><circle cx="310" cy="80" r="20" fill="#17203a"/><text class="t-w mid" x="310" y="85">B</text><circle cx="480" cy="80" r="20" fill="#c0463a"/><text class="t-w mid" x="480" y="85">C</text><line class="ln" x1="502" y1="80" x2="568" y2="80" marker-end="url(#a)"/><circle cx="590" cy="80" r="20" fill="#c0463a"/><text class="t-w mid" x="590" y="85">D</text><line class="ln-dash" x1="590" y1="102" x2="502" y2="102" marker-end="url(#a)"/><text class="t-sm mid" x="535" y="140">ఒకదాన్నొకటి చూపుతున్నాయి</text><text class="t-acc mid" x="535" y="158">కానీ root నుంచి చేరలేం → చెత్త</text><rect class="n-good" x="0" y="186" width="366" height="102" rx="4"/><text class="t mid" x="183" y="208">Mark and sweep</text><text class="t-sm mid" x="183" y="230">root నుంచి చేరగలిగే అన్నిటినీ mark చేయడం</text><text class="t-sm mid" x="183" y="246">mark కానివి అన్నీ తీసేయడం</text><text class="t-sm mid" x="183" y="262">Reference counting కాదు — cycles ని handle చేస్తుంది</text><rect class="n-bad" x="384" y="186" width="366" height="102" rx="4"/><text class="t mid" x="567" y="208">Memory leak ఎక్కడ వస్తుంది</text><text class="t-sm mid" x="567" y="230">Global variables · తీసేయని event listeners</text><text class="t-sm mid" x="567" y="246">Closures lo పెద్ద objects · setInterval</text><text class="t-sm mid" x="567" y="262">Detached DOM nodes (JS ఇంకా పట్టుకుంది)</text></svg>
+</div>
+
 ### వివరణ
 
 JavaScript **automatic memory management** — మీరు manually memory allocate/free చేయరు (C లో `malloc`/`free` లేదు). **Garbage Collector (GC)** automatically ఇక అవసరం లేని memory ని విడుదల చేస్తుంది.
@@ -5390,6 +5451,11 @@ cache = null; // ఎప్పుడో GC తర్వాత callback (timing gu
 ---
 
 ## 37. Execution Context & Call Stack deep (creation/execution phase, variable environment)
+
+<div class="fig">
+<div class="cap">Execution Context · creation మరియు execution</div>
+<svg viewBox="0 0 750 410"><text class="t-xs" x="0" y="14">EXECUTION CONTEXT — ప్రతి function call కి ఒకటి</text><rect class="n-acc" x="0" y="26" width="366" height="130" rx="4"/><text class="t-w mid" x="183" y="48">Creation phase</text><text class="t-w-sm mid" x="183" y="70">Variable environment తయారు</text><text class="t-w-sm mid" x="183" y="86">var → undefined · let/const → TDZ</text><text class="t-w-sm mid" x="183" y="102">Function declarations పూర్తిగా</text><text class="t-w-sm mid" x="183" y="118">this నిర్ణయం</text><rect class="n-good" x="384" y="26" width="366" height="130" rx="4"/><text class="t mid" x="567" y="48">Execution phase</text><text class="t-sm mid" x="567" y="70">Code line by line నడుస్తుంది</text><text class="t-sm mid" x="567" y="86">Assignments జరుగుతాయి</text><text class="t-sm mid" x="567" y="102">కొత్త calls → కొత్త context</text><text class="t-xs" x="0" y="186">CALL STACK</text><rect class="n" x="200" y="272" width="350" height="30" rx="3"/><text class="t mid" x="375" y="292">global()</text><rect class="n" x="200" y="238" width="350" height="30" rx="3"/><text class="t mid" x="375" y="258">outer()</text><rect class="n-acc" x="200" y="204" width="350" height="30" rx="3"/><text class="t-w mid" x="375" y="224">inner()</text><text class="t-sm mid" x="375" y="318">పైనున్నది ముగిస్తే pop — కిందిది కొనసాగుతుంది</text><rect class="n-acc" x="0" y="334" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="356">ఇది ఎందుకు తెలియాలి</text><text class="t-w-sm mid" x="375" y="378">Hoisting, TDZ, this binding, closures — ఇవన్నీ ఇక్కడి నుంచే పుడతాయి.</text><text class="t-w-sm mid" x="375" y="394">Stack trace చదవడం కూడా ఇదే — పైనున్నది తాజా call.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -5719,6 +5785,11 @@ DOM operations JavaScript engine (V8) బయట, browser rendering engine (Blink
 ---
 
 ## 39. Events (capturing/bubbling, delegation, addEventListener, custom events, preventDefault)
+
+<div class="fig">
+<div class="cap">Event bubbling &amp; delegation</div>
+<svg viewBox="0 0 750 308"><text class="t-xs" x="0" y="14">EVENT BUBBLING &amp; DELEGATION</text><rect class="n" x="100" y="26" width="550" height="150" rx="5"/><text class="t mid" x="375" y="48">document</text><rect class="n" x="160" y="62" width="430" height="100" rx="4"/><text class="t-acc mid" x="375" y="84">&lt;ul&gt;  ← listener ఇక్కడ</text><rect class="n-acc" x="220" y="98" width="310" height="50" rx="4"/><text class="t-w mid" x="375" y="120">&lt;li&gt;  ← click ఇక్కడ</text><text class="t-w-sm mid" x="375" y="140">event.target</text><line class="ln-acc" x1="375" y1="152" x2="375" y2="90" marker-end="url(#aa)"/><text class="t-acc" x="20" y="120">bubble ↑</text><rect class="n-good" x="0" y="196" width="366" height="102" rx="4"/><text class="t mid" x="183" y="218">Delegation యొక్క లాభం</text><text class="t-sm mid" x="183" y="240">1000 &lt;li&gt; కి 1000 listeners అవసరం లేదు</text><text class="t-sm mid" x="183" y="256">ఒక్క listener &lt;ul&gt; మీద చాలు</text><text class="t-sm mid" x="183" y="272">కొత్తగా చేరిన items కి కూడా పని చేస్తుంది</text><rect class="n-info" x="384" y="196" width="366" height="102" rx="4"/><text class="t mid" x="567" y="218">target vs currentTarget</text><text class="t-sm mid" x="567" y="240"><tspan class="t-acc">target</tspan> = నిజంగా click అయినది</text><text class="t-sm mid" x="567" y="256"><tspan class="t-acc">currentTarget</tspan> = listener ఉన్నది</text><text class="t-sm mid" x="567" y="272">Delegation lo ఈ తేడా కీలకం</text></svg>
+</div>
 
 ### వివరణ
 

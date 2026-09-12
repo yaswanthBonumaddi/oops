@@ -1,8 +1,27 @@
-# JavaScript లో OOP - పూర్తి తెలుగు గైడ్
+<!-- style: editorial -->
+<!-- footer: JavaScript · Objects, Classes, Prototypes · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత OOP మళ్ళీ మర్చిపోలేవు. ప్రతి concept కి real-life scenario, వివరణ, మరియు code ఉంటాయి.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">OOP</div>
+<div class="kicker">JavaScript · Objects, Classes, Prototypes</div>
+<div class="rule"></div>
+<div class="cover-title">Object-Oriented<br>Programming</div>
+<div class="lede">ఈ document చదివిన తర్వాత OOP మళ్ళీ మర్చిపోలేవు. ప్రతి concept కి — <b>diagram</b>, real-life scenario, వివరణ, మరియు run అయ్యే code.</div>
+<div class="sub">ఇది <b>OOP → LLD → HLD</b> ప్రయాణంలో మొదటి మెట్టు. ఇక్కడ నేర్చుకున్న encapsulation, inheritance, polymorphism — అవే <code>LLD_Telugu.pdf</code> lo design patterns గా మారతాయి.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -85,6 +104,11 @@ OOP లో, ఈ real-world ని code లో represent చేయడానిక
 > \***\*Object** = ఆ మొల్డ్ నుండి తయారైన actual car
 
 ఒకే class నుండి వేలాది objects తయారు చేయవచ్చు - ప్రతి object దాని స్వంత data తో.
+
+<div class="fig">
+<div class="cap">Class vs Object · నమూనా మరియు నిజమైన వస్తువు</div>
+<svg viewBox="0 0 750 228"><rect class="n-acc" x="0" y="40" width="240" height="90" rx="4"/><text class="t-w mid" x="120" y="62">class Car</text><text class="t-w-sm mid" x="120" y="84">నమూనా (blueprint) — memory lo ఒక్కటే</text><text class="t-w-sm mid" x="120" y="100">brand · speed · drive()</text><line class="ln-acc" x1="244" y1="60" x2="300" y2="60" marker-end="url(#aa)"/><line class="ln-acc" x1="244" y1="85" x2="300" y2="85" marker-end="url(#aa)"/><line class="ln-acc" x1="244" y1="110" x2="300" y2="110" marker-end="url(#aa)"/><text class="t-sm" x="250" y="34">new Car(…)</text><rect class="n" x="304" y="32" width="140" height="52" rx="4"/><text class="t mid" x="374" y="56">car1</text><text class="t-sm mid" x="374" y="72">Swift · 80</text><rect class="n" x="454" y="32" width="140" height="52" rx="4"/><text class="t mid" x="524" y="56">car2</text><text class="t-sm mid" x="524" y="72">i20 · 60</text><rect class="n" x="604" y="32" width="146" height="52" rx="4"/><text class="t mid" x="677" y="56">car3</text><text class="t-sm mid" x="677" y="72">Nexon · 100</text><text class="t-sm mid" x="527" y="112">ప్రతి object కి <tspan class="t-acc">తన సొంత data</tspan> — కానీ methods అందరికీ ఒకటే</text><text class="t-sm mid" x="527" y="130">(అవి prototype మీద ఉంటాయి — §13 చూడండి)</text><rect class="n-good" x="0" y="150" width="750" height="70" rx="4"/><text class="t mid" x="375" y="172">సారాంశం</text><text class="t-sm mid" x="375" y="194">Class = ఇంటి plan (కాగితం). Object = ఆ plan తో కట్టిన నిజమైన ఇల్లు. Plan ఒక్కటే, ఇళ్ళు</text><text class="t-sm mid" x="375" y="210">ఎన్నయినా.</text></svg>
+</div>
 
 ### Code
 
@@ -192,6 +216,12 @@ Method లో `this` వాడినప్పుడు, ఆ method ని ఏ ob
 > మీరు "నా పేరు Yaswanth" అంటే - "నా" అనే word మీ గురించే మాట్లాడుతోంది.\
 > అదే విధంగా code లో `this` ఆ specific object గురించి మాట్లాడుతుంది.
 
+<div class="fig">
+<div class="cap">this keyword · ఐదు నియమాలు</div>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">this ఎవరిని సూచిస్తుంది — call చేసిన విధానం మీద ఆధారపడుతుంది</text><rect class="n" x="0" y="24" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="48">obj.method()</text><rect class="n-good" x="210" y="24" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="48">ఆ obj</text><text class="t-sm" x="404" y="48">అత్యంత సాధారణం — చుక్కకి ఎడమవైపు ఉన్నది</text><rect class="n" x="0" y="70" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="94">fn()</text><rect class="n-bad" x="210" y="70" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="94">undefined (strict)</text><text class="t-sm" x="404" y="94">object నుంచి విడదీసి పిలిస్తే this పోతుంది</text><rect class="n" x="0" y="116" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="140">new Fn()</text><rect class="n-info" x="210" y="116" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="140">కొత్త object</text><text class="t-sm" x="404" y="140">constructor — new సృష్టించిన object</text><rect class="n" x="0" y="162" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="186">fn.call(x) / bind(x)</text><rect class="n-acc" x="210" y="162" width="180" height="38" rx="4"/><text class="t-w-sm mid" x="300" y="186">x</text><text class="t-sm" x="404" y="186">మనం explicit గా చెప్పినది</text><rect class="n" x="0" y="208" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="232">arrow function</text><rect class="n-good" x="210" y="208" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="232">బయటి scope లోని this</text><text class="t-sm" x="404" y="232">తనకంటూ this లేదు — lexical గా తీసుకుంటుంది</text><rect class="n-bad" x="0" y="254" width="750" height="70" rx="4"/><text class="t mid" x="375" y="276">ఇదే అతి సాధారణమైన bug</text><text class="t-sm mid" x="375" y="298">const f = obj.method;  f();   ← ఇక్కడ this పోయింది. అందుకే React lo constructor lo bind</text><text class="t-sm mid" x="375" y="314">చేసేవాళ్ళు, ఇప్పుడు arrow methods (§36) వాడతారు.</text></svg>
+<div class="note">గుర్తుంచుకోవడానికి ఒక ప్రశ్న: <b>"ఈ function ని ఎవరు, ఎలా పిలిచారు?"</b> — <code>this</code> function ఎక్కడ <i>రాయబడిందో</i> దాని మీద కాదు, ఎలా <i>పిలవబడిందో</i> దాని మీద ఆధారపడుతుంది. Arrow functions ఒక్కటే దీనికి మినహాయింపు.</div>
+</div>
+
 ### Code
 
 ```javascript
@@ -262,6 +292,11 @@ t.startCorrect();
 
 > **ATM machine** లో మీరు balance చూడవచ్చు, డబ్బు తీసుకోవచ్చు - కానీ లోపలి circuits, database direct గా touch చేయలేరు.\
 > ATM అనే machine data ని encapsulate చేస్తుంది. Access కోసం PIN, buttons ఉన్నాయి (controlled access).
+
+<div class="fig">
+<div class="cap">Encapsulation · డేటా చుట్టూ ఒక గోడ, తలుపులతో</div>
+<svg viewBox="0 0 750 314"><rect class="n-soft" x="140" y="20" width="470" height="180" rx="4"/><text class="t mid" x="375" y="115"></text><text class="t mid" x="375" y="42">class BankAccount</text><rect class="n-bad" x="180" y="58" width="390" height="44" rx="4"/><text class="t mid" x="375" y="78">#balance = 5000</text><text class="t-sm mid" x="375" y="94">private — బయటి నుంచి అస్సలు అందదు</text><rect class="n-good" x="180" y="116" width="390" height="36" rx="4"/><text class="t mid" x="375" y="139">+ deposit(amt)</text><rect class="n-good" x="180" y="158" width="390" height="36" rx="4"/><text class="t mid" x="375" y="181">+ getBalance()</text><rect class="n" x="0" y="86" width="120" height="44" rx="4"/><text class="t mid" x="60" y="113">Outside code</text><line class="ln-dash" x1="124" y1="100" x2="176" y2="100" marker-end="url(#a)"/><text class="t-acc mid" x="150" y="82">✗</text><line class="ln" x1="124" y1="130" x2="176" y2="132" marker-end="url(#a)"/><text class="t-sm mid" x="150" y="152">✓ methods</text><rect class="n-info" x="630" y="86" width="120" height="44" rx="4"/><text class="t mid" x="690" y="106">Bank teller</text><text class="t-sm mid" x="690" y="122">నిజ జీవిత సారూప్యం</text><rect class="n-acc" x="0" y="220" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="242">ఎందుకు ఇది ముఖ్యం</text><text class="t-w-sm mid" x="375" y="264">Balance ని నేరుగా మార్చనిస్తే — ఎవరైనా account.balance = -99999 రాయొచ్చు. Method ద్వారా</text><text class="t-w-sm mid" x="375" y="280">మాత్రమే అనుమతిస్తే, ఆ method lo validation పెట్టొచ్చు. Encapsulation అంటే డేటాను దాచడం</text><text class="t-w-sm mid" x="375" y="296">కాదు — <tspan class="mono">నియమాలను ఒకేచోట అమలు చేయడం</tspan>.</text></svg>
+</div>
 
 ### Code - Private Fields తో (`#` symbol)
 
@@ -443,6 +478,11 @@ console.log(user.firstName); // Chaitanya
 > - Vehicle: basic properties (wheels, engine)
 > - Car: Vehicle అన్నీ + extra (doors, AC)
 > - ElectricCar: Car అన్నీ + extra (battery, charging)
+
+<div class="fig">
+<div class="cap">Inheritance · IS-A సంబంధం</div>
+<svg viewBox="0 0 750 328"><rect class="n-acc" x="280" y="14" width="190" height="44" rx="4"/><text class="t-w mid" x="375" y="34">Animal</text><text class="t-w-sm mid" x="375" y="50">name · eat() · sleep()</text><line class="ln" x1="330" y1="88" x2="375" y2="62" marker-end="url(#hollow)"/><line class="ln" x1="560" y1="88" x2="420" y2="62" marker-end="url(#hollow)"/><rect class="n" x="200" y="92" width="260" height="52" rx="4"/><text class="t mid" x="330" y="116">Dog</text><text class="t-sm mid" x="330" y="132">+ bark()  · eat() వారసత్వం</text><rect class="n" x="490" y="92" width="260" height="52" rx="4"/><text class="t mid" x="620" y="116">Cat</text><text class="t-sm mid" x="620" y="132">+ meow() · eat() వారసత్వం</text><line class="ln" x1="330" y1="178" x2="330" y2="148" marker-end="url(#hollow)"/><rect class="n-info" x="200" y="182" width="260" height="52" rx="4"/><text class="t mid" x="330" y="206">Puppy</text><text class="t-sm mid" x="330" y="222">+ play() · bark(), eat() రెండూ</text><rect class="n-good" x="0" y="14" width="170" height="120" rx="4"/><text class="t mid" x="85" y="72">IS-A test</text><text class="t-sm mid" x="85" y="88">Dog IS-A Animal ✓</text><text class="t-sm" x="14" y="76">"is a" అని చదివితే అర్థవంతంగా</text><text class="t-sm" x="14" y="92">ఉంటేనే inheritance.</text><text class="t-acc" x="14" y="118">Car IS-A Engine ✗ — అది HAS-A</text><rect class="n-bad" x="0" y="250" width="750" height="70" rx="4"/><text class="t mid" x="375" y="272">లోతైన hierarchy ఒక ప్రమాదం</text><text class="t-sm mid" x="375" y="294">3 స్థాయిలు దాటితే — parent lo ఒక మార్పు అన్ని children ని విరగ్గొడుతుంది (fragile base</text><text class="t-sm mid" x="375" y="310">class). అందుకే §17: composition over inheritance.</text></svg>
+</div>
 
 ### Code
 
@@ -789,6 +829,11 @@ mongo.ping(); // MongoDB connect అయింది!
 
 ### Runtime Polymorphism
 
+<div class="fig">
+<div class="cap">Polymorphism · ఒకే interface, అనేక రూపాలు</div>
+<svg viewBox="0 0 750 276"><text class="t-xs" x="0" y="14">ఒకే call, వేర్వేరు ప్రవర్తనలు</text><rect class="n-dark" x="0" y="24" width="300" height="44" rx="4"/><text class="t-w mid" x="150" y="50">animals.forEach(a =&gt; a.speak())</text><line class="ln-acc" x1="150" y1="72" x2="80" y2="104" marker-end="url(#aa)"/><line class="ln-acc" x1="150" y1="72" x2="300" y2="104" marker-end="url(#aa)"/><line class="ln-acc" x1="150" y1="72" x2="520" y2="104" marker-end="url(#aa)"/><rect class="n" x="0" y="108" width="180" height="44" rx="4"/><text class="t mid" x="90" y="128">Dog.speak()</text><text class="t-sm mid" x="90" y="144">"భౌ భౌ"</text><rect class="n" x="200" y="108" width="180" height="44" rx="4"/><text class="t mid" x="290" y="128">Cat.speak()</text><text class="t-sm mid" x="290" y="144">"మ్యావ్"</text><rect class="n" x="400" y="108" width="180" height="44" rx="4"/><text class="t mid" x="490" y="128">Cow.speak()</text><text class="t-sm mid" x="490" y="144">"అంబా"</text><text class="t-sm" x="600" y="128">Loop lo ఒక్క if కూడా</text><text class="t-acc" x="600" y="146">లేదు — object తనకి</text><text class="t-acc" x="600" y="164">తెలిసినది తాను చేస్తుంది</text><rect class="n-bad" x="0" y="180" width="366" height="86" rx="4"/><text class="t" x="14" y="202">Polymorphism లేకపోతే</text><text class="t-sm mono" x="14" y="224">if (a.type === "dog") bark();</text><text class="t-sm mono" x="14" y="242">else if (a.type === "cat") meow();</text><text class="t-sm" x="14" y="260">else if … ← కొత్త animal = ఇక్కడ edit</text><rect class="n-good" x="384" y="180" width="366" height="86" rx="4"/><text class="t mid" x="567" y="202">Polymorphism తో</text><text class="t-sm mid" x="567" y="224">కొత్త animal = ఒక కొత్త class. ఈ loop ని ఎప్పటికీ ముట్టుకోనవసరం లేదు — ఇదే Open/Closed</text><text class="t-sm mid" x="567" y="240">Principle.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > Payment system:
@@ -1010,6 +1055,12 @@ Method వెతికేటప్పుడు:
 > మీరు ఒక word చదవలేకపోతే dictionary చూస్తారు, dictionary లో లేకుంటే encyclopedia చూస్తారు...\
 > అదే prototype chain!
 
+<div class="fig">
+<div class="cap">Prototype Chain · JavaScript lo inheritance నిజంగా ఎలా జరుగుతుంది</div>
+<svg viewBox="0 0 750 366"><rect class="n" x="280" y="10" width="190" height="44" rx="4"/><text class="t mid" x="375" y="30">dog = new Dog()</text><text class="t-sm mid" x="375" y="46">{ name: "Tommy" }</text><line class="ln-acc" x1="375" y1="58" x2="375" y2="86" marker-end="url(#aa)"/><text class="t-sm" x="386" y="78">__proto__</text><rect class="n-acc" x="280" y="90" width="190" height="44" rx="4"/><text class="t-w mid" x="375" y="110">Dog.prototype</text><text class="t-w-sm mid" x="375" y="126">bark()</text><line class="ln-acc" x1="375" y1="138" x2="375" y2="166" marker-end="url(#aa)"/><text class="t-sm" x="386" y="158">__proto__</text><rect class="n-acc" x="280" y="170" width="190" height="44" rx="4"/><text class="t-w mid" x="375" y="190">Animal.prototype</text><text class="t-w-sm mid" x="375" y="206">eat()</text><line class="ln-acc" x1="375" y1="218" x2="375" y2="246" marker-end="url(#aa)"/><rect class="n-info" x="280" y="250" width="190" height="44" rx="4"/><text class="t mid" x="375" y="270">Object.prototype</text><text class="t-sm mid" x="375" y="286">toString()</text><line class="ln-acc" x1="375" y1="298" x2="375" y2="320" marker-end="url(#aa)"/><rect class="n-bad" x="300" y="324" width="150" height="32" rx="4"/><text class="t-sm mid" x="375" y="338">null</text><text class="t-sm mid" x="375" y="354">గొలుసు ముగింపు</text><rect class="n-good" x="510" y="90" width="240" height="150" rx="4"/><text class="t" x="524" y="112">dog.eat() ఎలా పని చేస్తుంది</text><text class="t-sm" x="524" y="136">1 · dog lo ఉందా? లేదు.</text><text class="t-sm" x="524" y="154">2 · Dog.prototype lo? లేదు.</text><text class="t-sm" x="524" y="172">3 · Animal.prototype lo? దొరికింది ✓</text><text class="t-sm" x="524" y="200">దొరకకపోతే — గొలుసు చివరిదాకా</text><text class="t-acc" x="524" y="218">వెతికి undefined ఇస్తుంది</text><rect class="n-info" x="0" y="90" width="240" height="150" rx="4"/><text class="t" x="14" y="112">ఎందుకు ఇది ముఖ్యం</text><text class="t-sm" x="14" y="136">Methods ప్రతి object lo copy కావు —</text><text class="t-sm" x="14" y="154">prototype మీద ఒకేసారి ఉంటాయి.</text><text class="t-sm" x="14" y="178">10 లక్షల dogs create చేసినా</text><text class="t-sm" x="14" y="196">bark() ఒక్కటే memory lo.</text><text class="t-acc" x="14" y="218">అదే JS lo inheritance యొక్క</text><text class="t-acc" x="14" y="236">నిజమైన యంత్రాంగం.</text></svg>
+<div class="note"><code>class</code> అనేది JavaScript lo <b>ఒక syntactic sugar</b> — లోపల జరిగేది ఇదే prototype chain. ఈ diagram అర్థమైతే <code>Object.create()</code>, mixins, <code>instanceof</code> — అన్నీ స్పష్టమవుతాయి.</div>
+</div>
+
 ### Code
 
 ```javascript
@@ -1188,6 +1239,11 @@ fish.blowBubbles(); // Nemo bubbles వదులుతోంది!
        HybridCar   <-- Diamond shape!
 ```
 
+<div class="fig">
+<div class="cap">Diamond Problem · బహుళ inheritance ఎందుకు ప్రమాదకరం</div>
+<svg viewBox="0 0 750 332"><rect class="n-acc" x="300" y="10" width="150" height="40" rx="4"/><text class="t-w mid" x="375" y="28">A</text><text class="t-w-sm mid" x="375" y="44">greet()</text><line class="ln" x1="280" y1="84" x2="340" y2="54" marker-end="url(#hollow)"/><line class="ln" x1="470" y1="84" x2="410" y2="54" marker-end="url(#hollow)"/><rect class="n" x="190" y="88" width="180" height="40" rx="4"/><text class="t mid" x="280" y="106">B</text><text class="t-sm mid" x="280" y="122">greet() override</text><rect class="n" x="380" y="88" width="180" height="40" rx="4"/><text class="t mid" x="470" y="106">C</text><text class="t-sm mid" x="470" y="122">greet() override</text><line class="ln" x1="340" y1="162" x2="300" y2="132" marker-end="url(#hollow)"/><line class="ln" x1="410" y1="162" x2="450" y2="132" marker-end="url(#hollow)"/><rect class="n-bad" x="285" y="166" width="180" height="70" rx="4"/><text class="t mid" x="375" y="188">D</text><text class="t-sm mid" x="375" y="210">ఏ greet()?</text><text class="t-acc mid" x="375" y="226">B దా, C దా? — ఇదే diamond problem</text><rect class="n-good" x="0" y="250" width="366" height="72" rx="4"/><text class="t mid" x="183" y="284">JavaScript యొక్క పరిష్కారం</text><text class="t-sm mid" x="183" y="300">బహుళ inheritance ని <tspan class="t-acc">అసలు అనుమతించదు</tspan>. ఒక class కి ఒకే parent. సమస్యే రాకుండా చేయడం.</text><rect class="n-info" x="384" y="250" width="366" height="72" rx="4"/><text class="t mid" x="567" y="272">కావాలంటే — Mixins</text><text class="t-sm mid" x="567" y="294">Object.assign(D.prototype, B, C) — కానీ ఇక్కడ <tspan class="t-acc">చివరిది గెలుస్తుంది</tspan>. క్రమమే నియమం,</text><text class="t-sm mid" x="567" y="310">అస్పష్టత ఉండదు.</text></svg>
+</div>
+
 ### JavaScript లో Class Level లో Problem లేదు
 
 ```javascript
@@ -1331,6 +1387,11 @@ console.log(query);
 
 > **Inheritance**: Manager **is a** Employee **is a** Person\
 > \***\*Composition**: Car **has an** Engine, **has** Wheels, **has** AC
+
+<div class="fig">
+<div class="cap">Composition vs Inheritance · IS-A నా HAS-A నా</div>
+<svg viewBox="0 0 750 446"><text class="t-xs" x="0" y="14">INHERITANCE — గట్టి బంధం (compile time)</text><rect class="n" x="280" y="24" width="190" height="40" rx="4"/><text class="t mid" x="375" y="49">Vehicle</text><line class="ln" x1="200" y1="96" x2="320" y2="68" marker-end="url(#hollow)"/><line class="ln" x1="560" y1="96" x2="430" y2="68" marker-end="url(#hollow)"/><rect class="n" x="110" y="100" width="180" height="40" rx="4"/><text class="t mid" x="200" y="125">Car</text><rect class="n" x="470" y="100" width="180" height="40" rx="4"/><text class="t mid" x="560" y="125">FlyingCar ?</text><text class="t-acc mid" x="375" y="162">"ఎగిరే పడవ" కావాలంటే? ప్రతి కలయికకీ ఒక కొత్త class</text><text class="t-xs" x="0" y="198">COMPOSITION — విడిభాగాలు కలపడం (runtime)</text><rect class="n-acc" x="280" y="208" width="190" height="44" rx="4"/><text class="t-w mid" x="375" y="228">Car</text><text class="t-w-sm mid" x="375" y="244">- engine · - gps</text><line class="ln-acc" x1="330" y1="256" x2="220" y2="288" marker-end="url(#aa)"/><line class="ln-acc" x1="420" y1="256" x2="530" y2="288" marker-end="url(#aa)"/><rect class="n-good" x="110" y="292" width="220" height="40" rx="4"/><text class="t mid" x="220" y="317">Engine</text><rect class="n-good" x="430" y="292" width="220" height="40" rx="4"/><text class="t mid" x="540" y="317">GPS</text><text class="t-sm mid" x="375" y="352">Car HAS-A Engine · భాగాలని runtime lo మార్చొచ్చు, test lo mock చేయొచ్చు</text><rect class="n-acc" x="0" y="368" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="390">నియమం</text><text class="t-w-sm mid" x="375" y="412">IS-A అని చెప్పగలిగితే inheritance. HAS-A అయితే composition. అనుమానం వస్తే — <tspan class="mono">composition</tspan>.</text><text class="t-w-sm mid" x="375" y="428">అది దాదాపు ఎప్పుడూ సురక్షితం.</text></svg>
+</div>
 
 ### Code - Composition
 
@@ -2203,6 +2264,11 @@ JavaScript లో దీనికి `Object.freeze()` మరియు `Object.s
 > Application settings object - ఒకసారి load అయిన తర్వాత మరెవ్వరూ మార్చకూడదు.\
 > Constants object - values fixed గా ఉండాలి.
 
+<div class="fig">
+<div class="cap">freeze vs seal · ఎంత గట్టిగా మూయాలి</div>
+<svg viewBox="0 0 750 262"><rect class="n-good" x="0" y="20" width="366" height="150" rx="4"/><text class="t mid" x="183" y="100">Object.freeze(obj)</text><text class="t-sm" x="14" y="72">✗ కొత్త property కలపడం</text><text class="t-sm" x="14" y="96">✗ ఉన్న property తీసేయడం</text><text class="t-sm" x="14" y="120">✗ విలువ మార్చడం</text><text class="t-acc" x="14" y="152">పూర్తిగా స్తంభింపజేయడం</text><rect class="n-info" x="384" y="20" width="366" height="150" rx="4"/><text class="t mid" x="567" y="100">Object.seal(obj)</text><text class="t-sm" x="398" y="72">✗ కొత్త property కలపడం</text><text class="t-sm" x="398" y="96">✗ ఉన్న property తీసేయడం</text><text class="t-sm" x="398" y="120">✓ విలువ మార్చడం <tspan class="t-acc">సరే</tspan></text><text class="t-acc" x="398" y="152">నిర్మాణం స్థిరం, విలువలు మారొచ్చు</text><rect class="n-bad" x="0" y="186" width="750" height="70" rx="4"/><text class="t mid" x="375" y="208">రెండూ SHALLOW — ఇది తప్పకుండా తెలియాలి</text><text class="t-sm mid" x="375" y="230">obj.address ఒక object అయితే — freeze చేసినా obj.address.city ని మార్చొచ్చు! నిజమైన</text><text class="t-sm mid" x="375" y="246">immutability కి recursive గా freeze చేయాలి (deepFreeze).</text></svg>
+</div>
+
 ### Code
 
 ```javascript
@@ -2688,6 +2754,11 @@ Topic 4 లో arrow function తో `this` problem solve చేశాం. క�
 
 > Button కి `handleClick` method ని event listener కి pass చేసినప్పుడు `this` పోతుంది.\
 > `.bind(this)` తో `this` ని permanent గా attach చేస్తే, ఎక్కడ call చేసినా సరైన object ని చూపిస్తుంది.
+
+<div class="fig">
+<div class="cap">bind, call, apply · this ని మనమే నిర్ణయించడం</div>
+<svg viewBox="0 0 750 274"><text class="t-xs" x="0" y="14">మూడూ this ని explicit గా set చేస్తాయి — తేడా ఎప్పుడు, ఎలా</text><rect class="n-info" x="0" y="26" width="230" height="46" rx="4"/><text class="t-sm mono mid" x="115" y="55">call(obj, a, b)</text><rect class="n" x="240" y="26" width="250" height="46" rx="4"/><text class="t-sm mid" x="365" y="55">వెంటనే పిలుస్తుంది</text><text class="t-sm" x="504" y="55">arguments విడిగా</text><rect class="n-info" x="0" y="82" width="230" height="46" rx="4"/><text class="t-sm mono mid" x="115" y="111">apply(obj, [a, b])</text><rect class="n" x="240" y="82" width="250" height="46" rx="4"/><text class="t-sm mid" x="365" y="111">వెంటనే పిలుస్తుంది</text><text class="t-sm" x="504" y="111">arguments ఒక array గా</text><rect class="n-acc" x="0" y="138" width="230" height="46" rx="4"/><text class="t-w-sm mono mid" x="115" y="167">bind(obj)</text><rect class="n" x="240" y="138" width="250" height="46" rx="4"/><text class="t-sm mid" x="365" y="167">పిలవదు — కొత్త function ఇస్తుంది</text><text class="t-sm" x="504" y="167">తర్వాత ఎప్పుడైనా పిలవొచ్చు</text><rect class="n-good" x="0" y="200" width="750" height="70" rx="4"/><text class="t mid" x="375" y="222">గుర్తుంచుకోవడానికి</text><text class="t-sm mid" x="375" y="244">call = Comma (arguments comma తో) · apply = Array · bind = Bind చేసి తర్వాత వాడటం. మొదటి</text><text class="t-sm mid" x="375" y="260">రెండూ ఇప్పుడే execute; bind మాత్రం ఒక కొత్త function ని తయారు చేసి ఇస్తుంది.</text></svg>
+</div>
 
 ### Code
 

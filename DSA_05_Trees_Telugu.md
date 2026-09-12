@@ -1,4 +1,28 @@
-# DSA: Trees (Binary Tree, BFS, BST) - తెలుగు గైడ్ (LeetCode 150, SSE)
+<!-- style: editorial -->
+<!-- footer: DSA · Trees & BST · తెలుగు గైడ్ -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
+
+<div class="cover">
+<div class="cover-num">05</div>
+<div class="kicker">DSA · Trees &amp; BST</div>
+<div class="rule"></div>
+<div class="cover-title">Trees &amp; BST</div>
+<div class="lede">Traversals, recursion మీద నమ్మకం, BST invariants. Trees అర్థమైతే graphs సులభం.</div>
+<div class="sub">ప్రతి problem కి: <b>ఏ pattern ఇది</b> → ఎందుకు ఆ pattern → dry run → optimal JavaScript code → complexity → edge cases. <code>DSA_Patterns_Telugu.pdf</code> pattern-first దృష్టి; ఈ file ఆ patterns ని నిజమైన LeetCode problems మీద అమలు చేస్తుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
+
 
 > ఈ document చదివిన తర్వాత Binary Tree, BFS (level-order), మరియు BST problems మళ్ళీ జీవితంలో మర్చిపోకూడదు. ప్రతి problem కి — ఎలా ఆలోచించాలి (intuition first), ఒక vivid real-life analogy, "ఈ subtree నుండి నాకు ఏమి కావాలి?" అనే recursive thinking, naive నుండి optimal వరకు thought process, clean commented JavaScript solution, పెన్సిల్‌తో గీసినట్టు dry run, complexity reasoning (recursion stack / tree height తో సహా), pattern takeaway, మరియు edge cases (null root, single node, skewed tree) — అన్నీ ఉంటాయి.
 >
@@ -86,6 +110,11 @@ class TreeNode {
 | **Postorder** (left → right → root) | ముందు children ఇద్దరూ, తర్వాత node | node కి children **నుండి information కావాలి** అప్పుడు (height, sum, "ఈ subtree valid ఆ?") — bottom-up |
 
 గుర్తుంచుకోవడానికి: **"root ఎప్పుడు?"** — Pre = మొదట, In = మధ్యలో, Post = చివర. చాలా tree problems **postorder** (children నుండి answer తెచ్చుకుని node దగ్గర combine) పద్ధతిలో పరిష్కారమవుతాయి.
+
+<div class="fig">
+<div class="cap">Tree DFS · top-down vs bottom-up</div>
+<svg viewBox="0 0 750 388"><text class="t-xs" x="0" y="14">TOP-DOWN — పైనుంచి కిందికి సమాచారం</text><circle cx="120" cy="54" r="20" fill="#17203a"/><text class="t-w mid" x="120" y="59">A</text><circle cx="70" cy="116" r="20" fill="#17203a"/><text class="t-w mid" x="70" y="121">B</text><circle cx="170" cy="116" r="20" fill="#17203a"/><text class="t-w mid" x="170" y="121">C</text><line class="ln" x1="107" y1="70" x2="83" y2="100"/><line class="ln" x1="133" y1="70" x2="157" y2="100"/><line class="ln-acc" x1="146" y1="48" x2="270" y2="48" marker-end="url(#aa)"/><text class="t-sm" x="280" y="44">parent తన విలువని child కి parameter గా పంపుతుంది</text><text class="t-sm mono" x="280" y="64">dfs(node, depthSoFar) → dfs(child, depthSoFar + 1)</text><text class="t-acc" x="280" y="86">ఉదా: path sum, root-to-leaf paths, depth</text><text class="t-xs" x="0" y="158">BOTTOM-UP — కిందినుంచి పైకి జవాబు</text><circle cx="120" cy="198" r="20" fill="#17203a"/><text class="t-w mid" x="120" y="203">A</text><circle cx="70" cy="260" r="20" fill="#17203a"/><text class="t-w mid" x="70" y="265">B</text><circle cx="170" cy="260" r="20" fill="#17203a"/><text class="t-w mid" x="170" y="265">C</text><line class="ln" x1="107" y1="214" x2="83" y2="244"/><line class="ln" x1="133" y1="214" x2="157" y2="244"/><line class="ln-acc" x1="83" y1="246" x2="107" y2="216" marker-end="url(#aa)"/><line class="ln-acc" x1="157" y1="246" x2="133" y2="216" marker-end="url(#aa)"/><text class="t-sm" x="280" y="196">children తమ ఫలితాన్ని return చేస్తారు</text><text class="t-sm mono" x="280" y="216">const l = dfs(left), r = dfs(right); return combine(l, r)</text><text class="t-acc" x="280" y="238">ఉదా: height, diameter, balanced, max path sum</text><rect class="n-acc" x="0" y="292" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="314">ఏది ఎప్పుడు — ఒక్క ప్రశ్న అడగండి</text><text class="t-w-sm mid" x="375" y="336">"ఈ node కి జవాబు చెప్పడానికి — పైనుంచి ఏదైనా కావాలా, కిందినుంచి కావాలా?"</text><text class="t-w-sm mid" x="375" y="352">పైనుంచి (ఇప్పటివరకటి path, depth) → top-down, parameter గా పంపడం</text><text class="t-w-sm mid" x="375" y="368">కిందినుంచి (height, count, subtree sum) → bottom-up, return చేయడం</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -567,6 +596,11 @@ pre=0 → root=3, mid(inorder లో 3)=1
 - **Right ని ముందు build చేయడం:** Preorder కి **తప్పకుండా left ముందు**. Right ముందు build చేస్తే pre pointer తప్పు elements తీసుకుంటుంది.
 - **Slice తో O(n²):** పని చేస్తుంది కానీ interview లో "ఎలా optimize?" అంటే range + map చెప్పాలి.
 - **Duplicate values:** ఈ approach unique values మీద ఆధారపడుతుంది (map single index). Duplicates ఉంటే ఈ method పని చేయదు — constraints unique అని చెప్తాయి.
+<div class="fig">
+<div class="cap">Tree construction · preorder + inorder</div>
+<svg viewBox="0 0 750 386"><text class="t-xs" x="0" y="14">TREE CONSTRUCTION · preorder + inorder</text><rect class="n-acc" x="0" y="26" width="360" height="34" rx="3"/><text class="t-w-sm mono mid" x="180" y="48">preorder: [3, 9, 20, 15, 7]</text><rect class="n-info" x="380" y="26" width="370" height="34" rx="3"/><text class="t-sm mono mid" x="565" y="48">inorder: [9, 3, 15, 20, 7]</text><text class="t-xs" x="0" y="84">preorder మొదటిది ఎప్పుడూ ROOT → 3</text><text class="t-xs" x="0" y="108">inorder lo 3 ని కనుక్కుంటే — ఎడమ [9], కుడి [15,20,7]</text><circle cx="375" cy="150" r="20" fill="#17203a"/><text class="t-w mid" x="375" y="155">3</text><line class="ln" x1="361" y1="164" x2="300" y2="190"/><line class="ln" x1="389" y1="164" x2="450" y2="190"/><circle cx="285" cy="204" r="20" fill="#17203a"/><text class="t-w mid" x="285" y="209">9</text><circle cx="465" cy="204" r="20" fill="#17203a"/><text class="t-w mid" x="465" y="209">20</text><line class="ln" x1="451" y1="218" x2="410" y2="244"/><line class="ln" x1="479" y1="218" x2="520" y2="244"/><circle cx="395" cy="258" r="20" fill="#17203a"/><text class="t-w mid" x="395" y="263">15</text><circle cx="535" cy="258" r="20" fill="#17203a"/><text class="t-w mid" x="535" y="263">7</text><rect class="n-acc" x="0" y="290" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="312">ఎందుకు రెండు traversals అవసరం</text><text class="t-w-sm mid" x="375" y="334">Preorder <tspan class="t-acc">root ఎవరో</tspan> చెప్తుంది. Inorder <tspan class="t-acc">ఎడమ ఎక్కడ ముగుస్తుందో</tspan> చెప్తుంది.</text><text class="t-w-sm mid" x="375" y="350">ఒక్కటే ఉంటే — tree ఆకారం అస్పష్టం (అనేక trees అదే traversal ఇస్తాయి).</text><text class="t-w-sm mid" x="375" y="366">Inorder + postorder కూడా పని చేస్తుంది; preorder + postorder మాత్రం <tspan class="t-acc">సరిపోదు</tspan>.</text></svg>
+</div>
+
 
 ## 6. Construct Binary Tree from Inorder and Postorder Traversal (LeetCode #106) — Medium
 
@@ -1402,6 +1436,11 @@ lca(3): left=lca(5..), right=lca(1..)
 - **Value (`root.val === p.val`) తో compare చేయడం:** values unique కాబట్టి ఇక్కడ పని చేస్తుంది, కానీ nodes duplicate అయ్యే problems లో **reference (`root === p`)** వాడాలి. అలవాటు reference.
 - **`root === p || root === q` దగ్గర కిందకి వెతకడం:** p కనిపించగానే return చేయాలి — ఇద్దరూ ఒకే కొమ్మలో ఒకరు మరొకరి ancestor అయితే, పైవాడే LCA. కిందకి వెతికితే తప్పు.
 - **రెండూ ఒకే subtree లో ఉన్నప్పుడు:** left non-null, right null → non-null పంపడం సరైనది; తొందరపడి "ఏదో ఒకటి కనిపించింది కాబట్టి current LCA" అనకూడదు. **రెండూ non-null** అయితేనే current LCA.
+<div class="fig">
+<div class="cap">LCA · lowest common ancestor</div>
+<svg viewBox="0 0 750 324"><text class="t-xs" x="0" y="14">LCA — lowest common ancestor</text><circle cx="375" cy="44" r="20" fill="#e2653a"/><text class="t-w mid" x="375" y="49">3</text><line class="ln" x1="361" y1="58" x2="300" y2="84"/><line class="ln" x1="389" y1="58" x2="450" y2="84"/><circle cx="285" cy="98" r="20" fill="#17203a"/><text class="t-w mid" x="285" y="103">5</text><circle cx="465" cy="98" r="20" fill="#17203a"/><text class="t-w mid" x="465" y="103">1</text><line class="ln" x1="271" y1="112" x2="220" y2="138"/><line class="ln" x1="299" y1="112" x2="350" y2="138"/><circle cx="205" cy="152" r="20" fill="#17203a"/><text class="t-w mid" x="205" y="157">6</text><circle cx="365" cy="152" r="20" fill="#17203a"/><text class="t-w mid" x="365" y="157">2</text><text class="t-acc mid" x="205" y="192">p</text><text class="t-acc mid" x="465" y="138">q</text><rect class="n-acc" x="540" y="44" width="210" height="110" rx="4"/><text class="t-w mid" x="645" y="66">Recursion</text><text class="t-w-sm mid" x="645" y="88">ఎడమ, కుడి రెండింటిలోనూ</text><text class="t-w-sm mid" x="645" y="104">ఏదో ఒకటి దొరికితే → నేనే LCA</text><text class="t-w-sm mid" x="645" y="120">ఒక వైపు మాత్రమే → దాన్ని పైకి పంపడం</text><rect class="n-good" x="0" y="212" width="366" height="102" rx="4"/><text class="t mid" x="183" y="234">సాధారణ binary tree</text><text class="t-sm mid" x="183" y="256">O(n) — ప్రతి node ని చూడాలి</text><text class="t-sm mid" x="183" y="272">Post-order recursion</text><text class="t-sm mid" x="183" y="288">రెండు children నుంచి సమాచారం</text><rect class="n-info" x="384" y="212" width="366" height="102" rx="4"/><text class="t mid" x="567" y="234">BST అయితే చాలా సులభం</text><text class="t-sm mid" x="567" y="256">రెండూ root కంటే చిన్నవా → ఎడమకి</text><text class="t-sm mid" x="567" y="272">రెండూ పెద్దవా → కుడికి</text><text class="t-sm mid" x="567" y="288">లేకపోతే — ఇదే LCA. O(h)</text></svg>
+</div>
+
 
 ## Pattern: Tree BFS
 
@@ -1414,6 +1453,11 @@ BFS కి ఆయుధం **queue** (FIFO — First In, First Out). ఆలో�
 **కీలక మెలిక — "level by level" గా విడగొట్టడం:** చాలా problems కి కేవలం level order కాదు, **ప్రతి level ని విడిగా** కావాలి (level average, right side view, zigzag). Trick: loop మొదట్లో `size = queue.length` గుర్తుంచుకో — **ఆ క్షణం queue లో ఉన్నవి సరిగ్గా current level nodes**. అప్పుడు `size` సార్లు మాత్రమే dequeue చేస్తే ఒక్క level పూర్తవుతుంది; ఈలోపు enqueue అయిన children next level కి మిగులుతాయి. ఈ "snapshot the size" idea BFS level problems అన్నిటికీ ఆత్మ.
 
 JavaScript లో queue కి **plain array** వాడతాం: `push` = enqueue (వెనుక), `shift` = dequeue (ముందు). (గమనిక: `shift()` O(n) — పెద్ద inputs కి index pointer `head` వాడి O(1) చేయవచ్చు; కింద చూద్దాం.)
+
+<div class="fig">
+<div class="cap">Tree BFS · level order family</div>
+<svg viewBox="0 0 750 308"><text class="t-xs" x="0" y="14">LEVEL ORDER — ఒక్కో స్థాయి పూర్తిగా</text><circle cx="400" cy="46" r="20" fill="#17203a"/><text class="t-w mid" x="400" y="51">1</text><circle cx="320" cy="110" r="20" fill="#17203a"/><text class="t-w mid" x="320" y="115">2</text><circle cx="480" cy="110" r="20" fill="#17203a"/><text class="t-w mid" x="480" y="115">3</text><circle cx="270" cy="174" r="20" fill="#17203a"/><text class="t-w mid" x="270" y="179">4</text><circle cx="370" cy="174" r="20" fill="#17203a"/><text class="t-w mid" x="370" y="179">5</text><line class="ln" x1="387" y1="60" x2="333" y2="96"/><line class="ln" x1="413" y1="60" x2="467" y2="96"/><line class="ln" x1="307" y1="124" x2="283" y2="160"/><line class="ln" x1="333" y1="124" x2="357" y2="160"/><rect class="n-acc" x="0" y="32" width="140" height="28" rx="3"/><text class="t-w-sm mid" x="70" y="51">Level 0 · [1]</text><rect class="n-acc" x="0" y="96" width="140" height="28" rx="3"/><text class="t-w-sm mid" x="70" y="115">Level 1 · [2,3]</text><rect class="n-acc" x="0" y="160" width="140" height="28" rx="3"/><text class="t-w-sm mid" x="70" y="179">Level 2 · [4,5]</text><text class="t-sm" x="540" y="110">Queue వాడాలి — stack కాదు</text><rect class="n-good" x="0" y="212" width="750" height="86" rx="4"/><text class="t mid" x="375" y="234">కీలకమైన ఒక్క line</text><text class="t-sm mid" x="375" y="256">loop మొదట్లో: const size = queue.length</text><text class="t-sm mid" x="375" y="272">ఆ size సార్లు మాత్రమే pop చేస్తే — సరిగ్గా ఒక level పూర్తవుతుంది.</text><text class="t-sm mid" x="375" y="288">ఈ line లేకపోతే levels కలిసిపోతాయి — right side view, zigzag అన్నీ తప్పవుతాయి.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -1827,6 +1871,11 @@ return [[3],[20,9],[15,7]] ✅
 **2. Inorder = Sorted! (అత్యంత కీలకం):** BST ని **inorder** (left → root → right) traverse చేస్తే, values **పెరుగుతున్న (ascending sorted) క్రమంలో** వస్తాయి! ఎందుకంటే ప్రతి node కి ముందు దాని ఎడమ (చిన్నవి), తర్వాత అది, తర్వాత కుడి (పెద్దవి). **BST + "sorted / kth / closest / min difference / range"** అనే మాట వినగానే → **inorder traversal**! ఈ ఒక్క connection చాలా BST problems ని unlock చేస్తుంది.
 
 **Validate కి జాగ్రత్త:** BST valid ఆ అని చూడాలంటే, కేవలం `node.left.val < node.val < node.right.val` (direct children) సరిపోదు — **subtree మొత్తం** నియమం పాటించాలి. అందుకే **bounds (low, high) range** ని కిందకి propagate చేస్తూ ప్రతి node ఆ range లో ఉందా చూస్తాం (కింద #98).
+
+<div class="fig">
+<div class="cap">BST · ప్రతి node కి ఒక పరిధి</div>
+<svg viewBox="0 0 750 308"><text class="t-xs" x="0" y="14">BST INVARIANT · ఎడమ &lt; root &lt; కుడి — ప్రతి node దగ్గరా</text><circle cx="375" cy="50" r="20" fill="#17203a"/><text class="t-w mid" x="375" y="55">8</text><circle cx="275" cy="114" r="20" fill="#17203a"/><text class="t-w mid" x="275" y="119">3</text><circle cx="475" cy="114" r="20" fill="#17203a"/><text class="t-w mid" x="475" y="119">10</text><circle cx="215" cy="178" r="20" fill="#17203a"/><text class="t-w mid" x="215" y="183">1</text><circle cx="335" cy="178" r="20" fill="#17203a"/><text class="t-w mid" x="335" y="183">6</text><line class="ln" x1="361" y1="64" x2="289" y2="100"/><line class="ln" x1="389" y1="64" x2="461" y2="100"/><line class="ln" x1="261" y1="128" x2="229" y2="164"/><line class="ln" x1="289" y1="128" x2="321" y2="164"/><rect class="n-good" x="60" y="36" width="200" height="28" rx="3"/><text class="t-sm mid" x="160" y="55">3 కి పరిధి: (−∞, 8)</text><rect class="n-info" x="500" y="150" width="230" height="28" rx="3"/><text class="t-sm mid" x="615" y="169">6 కి పరిధి: (3, 8)</text><rect class="n-acc" x="0" y="212" width="366" height="86" rx="4"/><text class="t-w mid" x="183" y="234">Inorder traversal</text><text class="t-w-sm mid" x="183" y="256">BST ని inorder చేస్తే — ఎప్పుడూ sorted!</text><text class="t-w-sm mid" x="183" y="272">ఇదే "validate BST", "kth smallest",</text><text class="t-w-sm mid" x="183" y="288">"BST iterator" అన్నిటికీ ఆధారం.</text><rect class="n-bad" x="384" y="212" width="366" height="86" rx="4"/><text class="t mid" x="567" y="234">అతి సాధారణ తప్పు</text><text class="t-sm mid" x="567" y="256">node.left &lt; node అని మాత్రమే check చేయడం.</text><text class="t-sm mid" x="567" y="272">ఇది సరిపోదు — ప్రతి node కి ఒక (min, max)</text><text class="t-sm mid" x="567" y="288">పరిధిని మోసుకెళ్ళాలి. లేకపోతే మనవడు తప్పు.</text></svg>
+</div>
 
 ### Real-life Scenario
 

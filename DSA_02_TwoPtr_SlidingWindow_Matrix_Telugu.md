@@ -1,4 +1,28 @@
-# DSA: Two Pointers, Sliding Window & Matrix - తెలుగు గైడ్ (LeetCode 150, SSE)
+<!-- style: editorial -->
+<!-- footer: DSA · Two Pointers, Sliding Window, Matrix · తెలుగు గైడ్ -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
+
+<div class="cover">
+<div class="cover-num">02</div>
+<div class="kicker">DSA · Two Pointers, Sliding Window, Matrix</div>
+<div class="rule"></div>
+<div class="cover-title">Two Pointers &amp;<br>Sliding Window</div>
+<div class="lede">O(n²) ని O(n) గా మార్చే రెండు అతి ముఖ్యమైన techniques. Interview lo అత్యధికంగా వచ్చేవి ఇవే.</div>
+<div class="sub">ప్రతి problem కి: <b>ఏ pattern ఇది</b> → ఎందుకు ఆ pattern → dry run → optimal JavaScript code → complexity → edge cases. <code>DSA_Patterns_Telugu.pdf</code> pattern-first దృష్టి; ఈ file ఆ patterns ని నిజమైన LeetCode problems మీద అమలు చేస్తుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
+
 
 > ఈ document చదివిన తర్వాత Two Pointers, Sliding Window, Matrix — ఈ మూడు patterns ని మళ్ళీ జీవితంలో మర్చిపోలేవు. DSA అస్సలు తెలియకపోయినా పర్లేదు: ప్రతి problem కి మొదట *ఎలా ఆలోచించాలి* (intuition), తర్వాత brute force నుండి optimal కి ఎలా వెళ్ళాలి, ప్రతి pattern కి real-life analogy, reusable template, dry run, complexity, గుర్తుంచుకోవాల్సినవి, సాధారణ తప్పులు — అన్నీ ఉంటాయి.
 >
@@ -48,6 +72,11 @@
 
 **2. Same-direction (fast-slow pointers) — రెండూ ఒకే వైపు, వేర్వేరు వేగంతో:**
 `slow` నెమ్మదిగా, `fast` వేగంగా — రెండూ ఎడమ నుండి కుడికి. `slow` "ఇప్పటిదాకా ఖరారైన మంచి భాగం" ఎక్కడ ముగిసిందో గుర్తుపెడుతుంది, `fast` ముందుకు వెళ్ళి explore చేస్తుంది. ఇది **in-place array modification** (duplicates తీసేయడం), **subsequence check**, **linked list cycle detection** (Floyd's) లాంటి వాటికి.
+
+<div class="fig">
+<div class="cap">Two Pointers · రెండు రకాలు</div>
+<svg viewBox="0 0 750 292"><text class="t-xs" x="0" y="14">1 · OPPOSITE ENDS — sorted array, రెండు చివరల నుంచి మధ్యకి</text><rect class="n-acc" x="60" y="24" width="52" height="34" rx="3"/><text class="t-w mid" x="86" y="46">2</text><rect class="n" x="115" y="24" width="52" height="34" rx="3"/><text class="t mid" x="141" y="46">7</text><rect class="n" x="170" y="24" width="52" height="34" rx="3"/><text class="t mid" x="196" y="46">11</text><rect class="n-acc" x="225" y="24" width="52" height="34" rx="3"/><text class="t-w mid" x="251" y="46">15</text><text class="t-acc mid" x="86" y="74">L</text><text class="t-acc mid" x="251" y="74">R</text><text class="t-sm" x="360" y="50">sum ఎక్కువైతే R-- · తక్కువైతే L++</text><text class="t-sm" x="360" y="68">Sorted కాబట్టే ఈ నిర్ణయం సాధ్యం</text><text class="t-xs" x="0" y="110">2 · SAME DIRECTION — slow ఖరారైనది, fast explore చేస్తుంది</text><rect class="n-acc" x="60" y="120" width="52" height="34" rx="3"/><text class="t-w mid" x="86" y="142">1</text><rect class="n" x="115" y="120" width="52" height="34" rx="3"/><text class="t mid" x="141" y="142">1</text><rect class="n-acc" x="170" y="120" width="52" height="34" rx="3"/><text class="t-w mid" x="196" y="142">2</text><rect class="n" x="225" y="120" width="52" height="34" rx="3"/><text class="t mid" x="251" y="142">3</text><text class="t-acc mid" x="86" y="170">slow</text><text class="t-sm mid" x="196" y="170">fast</text><text class="t-sm" x="360" y="146">fast కొత్తది కనిపెడితే → slow++ చేసి రాయడం</text><text class="t-sm" x="360" y="164">In-place filtering, cycle detection ఇక్కడే</text><rect class="n-acc" x="0" y="196" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="218">ఏది ఎప్పుడు — ఒక్క ప్రశ్న</text><text class="t-w-sm mid" x="375" y="240">"Sorted అయ్యుందా, మరియు రెండు చివరల మధ్య ఏదో వెతుకుతున్నామా?" → opposite ends</text><text class="t-w-sm mid" x="375" y="256">"In-place గా array ని సరిచేస్తున్నామా, లేక cycle వెతుకుతున్నామా?" → same direction</text><text class="t-w-sm mid" x="375" y="272">రెండింటిలోనూ pointers ఎప్పుడూ వెనక్కి రావు — అదే O(n) కి కారణం.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -536,6 +565,12 @@ Window ఒక **condition** ఆధారంగా పెరుగుతుంద
 - **అత్యంత పొడవైన (longest/max) valid window:** `right` ని పెంచుతూ (expand) window ని పెద్దది చేస్తాం; condition **violate అయినప్పుడు మాత్రమే** `left` ని కదిపి (shrink) తిరిగి valid చేస్తాం. Shrink తర్వాత window size తో max update.
 - **అత్యంత చిన్న (shortest/min) valid window:** `right` ని పెంచుతూ window valid అయ్యేదాకా వెళ్తాం; valid అయ్యాక — **valid గా ఉన్నంతవరకు** `left` ని కదిపి కుంచించి, ప్రతిసారి min update చేస్తాం.
 
+<div class="fig">
+<div class="cap">Sliding Window · expand → shrink → update</div>
+<svg viewBox="0 0 750 358"><text class="t-xs" x="0" y="14">WINDOW ఊపిరి పీల్చుకుంటుంది — right పెంచుతుంది, left కుదిస్తుంది</text><rect class="n-acc" x="60" y="26" width="52" height="34" rx="3"/><text class="t-w mid" x="86" y="48">a</text><text class="t-sm mid" x="86" y="75">0</text><rect class="n-acc" x="115" y="26" width="52" height="34" rx="3"/><text class="t-w mid" x="141" y="48">b</text><text class="t-sm mid" x="141" y="75">1</text><rect class="n-acc" x="170" y="26" width="52" height="34" rx="3"/><text class="t-w mid" x="196" y="48">c</text><text class="t-sm mid" x="196" y="75">2</text><rect class="n" x="225" y="26" width="52" height="34" rx="3"/><text class="t mid" x="251" y="48">a</text><text class="t-sm mid" x="251" y="75">3</text><text class="t-sm" x="360" y="48">right++ → window పెరుగుతుంది</text><rect class="n-acc" x="60" y="110" width="52" height="34" rx="3"/><text class="t-w mid" x="86" y="132">a</text><text class="t-sm mid" x="86" y="159">0</text><rect class="n-acc" x="115" y="110" width="52" height="34" rx="3"/><text class="t-w mid" x="141" y="132">b</text><text class="t-sm mid" x="141" y="159">1</text><rect class="n-acc" x="170" y="110" width="52" height="34" rx="3"/><text class="t-w mid" x="196" y="132">c</text><text class="t-sm mid" x="196" y="159">2</text><rect class="n-acc" x="225" y="110" width="52" height="34" rx="3"/><text class="t-w mid" x="251" y="132">a</text><text class="t-sm mid" x="251" y="159">3</text><text class="t-sm" x="360" y="132">a మళ్ళీ వచ్చింది → invalid</text><rect class="n" x="60" y="194" width="52" height="34" rx="3"/><text class="t mid" x="86" y="216">a</text><text class="t-sm mid" x="86" y="243">0</text><rect class="n-acc" x="115" y="194" width="52" height="34" rx="3"/><text class="t-w mid" x="141" y="216">b</text><text class="t-sm mid" x="141" y="243">1</text><rect class="n-acc" x="170" y="194" width="52" height="34" rx="3"/><text class="t-w mid" x="196" y="216">c</text><text class="t-sm mid" x="196" y="243">2</text><rect class="n-acc" x="225" y="194" width="52" height="34" rx="3"/><text class="t-w mid" x="251" y="216">a</text><text class="t-sm mid" x="251" y="243">3</text><text class="t-sm" x="360" y="216">left++ → మళ్ళీ valid</text><rect class="n-acc" x="0" y="262" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="284">మూడు అడుగుల నమూనా — 80% problems ఇదే</text><text class="t-w-sm mid" x="375" y="306">1 · EXPAND  — right element ని window state lo కలపడం</text><text class="t-w-sm mid" x="375" y="322">2 · SHRINK  — condition విరిగినంతసేపు (while, if కాదు!) left++</text><text class="t-w-sm mid" x="375" y="338">3 · UPDATE  — valid window కి ఫలితాన్ని నవీకరించడం</text></svg>
+<div class="note"><b>⚠ Negative సంఖ్యలు ఉంటే</b> sliding window సాధారణంగా పని చేయదు — window ని కుదిస్తే sum తగ్గుతుందన్న హామీ పోతుంది. అప్పుడు prefix sum + hash map వైపు వెళ్ళాలి.</div>
+</div>
+
 ### Real-life Scenario
 
 > **Fixed window = రైలు కిటికీ నుండి బయటకు చూడటం.** కిటికీ వెడల్పు స్థిరం (k). రైలు కదులుతున్నప్పుడు — కుడివైపు కొత్త దృశ్యం లోపలికి వస్తుంది, ఎడమవైపు పాత దృశ్యం బయటికి పోతుంది. మీరు ఎప్పుడూ **అదే వెడల్పు** ఫ్రేమ్ చూస్తారు, కానీ content జారుతూ మారుతుంది.
@@ -990,6 +1025,11 @@ console.log(minWindow("a", "aa"));              // ""
    - **First row/column ని markers** గా వాడటం (Set Matrix Zeroes).
    - **Sign / extra state ని ఒకే cell లో encode** చేయటం (Game of Life లో `0→1` మార్పుని ప్రత్యేక codes తో).
    - **Transpose + reverse** (matrix ని rotate చేయటానికి O(1) space).
+
+<div class="fig">
+<div class="cap">Matrix · spiral మరియు rotate</div>
+<svg viewBox="0 0 750 304"><text class="t-xs" x="0" y="14">SPIRAL — నాలుగు హద్దులని లోపలికి కుదించడం</text><rect class="n-acc" x="60" y="26" width="50" height="36" rx="3"/><rect class="n-acc" x="114" y="26" width="50" height="36" rx="3"/><rect class="n-acc" x="168" y="26" width="50" height="36" rx="3"/><rect class="n-acc" x="222" y="26" width="50" height="36" rx="3"/><rect class="n" x="60" y="66" width="50" height="36" rx="3"/><rect class="n" x="114" y="66" width="50" height="36" rx="3"/><rect class="n" x="168" y="66" width="50" height="36" rx="3"/><rect class="n" x="222" y="66" width="50" height="36" rx="3"/><rect class="n" x="60" y="106" width="50" height="36" rx="3"/><rect class="n" x="114" y="106" width="50" height="36" rx="3"/><rect class="n" x="168" y="106" width="50" height="36" rx="3"/><rect class="n" x="222" y="106" width="50" height="36" rx="3"/><rect class="n" x="60" y="146" width="50" height="36" rx="3"/><rect class="n" x="114" y="146" width="50" height="36" rx="3"/><rect class="n" x="168" y="146" width="50" height="36" rx="3"/><rect class="n" x="222" y="146" width="50" height="36" rx="3"/><line class="ln-acc" x1="70" y1="44" x2="258" y2="44" marker-end="url(#aa)"/><text class="t-sm" x="300" y="40">top row → right column → bottom row → left column</text><text class="t-sm" x="300" y="58">ఆ తర్వాత హద్దులని ఒక అడుగు లోపలికి</text><rect class="n-good" x="300" y="80" width="450" height="86" rx="4"/><text class="t mid" x="525" y="102">నాలుగు variables</text><text class="t-sm mid" x="525" y="124">top, bottom, left, right</text><text class="t-sm mid" x="525" y="140">ప్రతి pass తర్వాత: top++, bottom--, left++, right--</text><text class="t-sm mid" x="525" y="156">while (top &lt;= bottom &amp;&amp; left &lt;= right)</text><text class="t-xs" x="0" y="208">ROTATE IMAGE 90° — transpose తర్వాత reverse</text><rect class="n" x="0" y="220" width="240" height="74" rx="4"/><text class="t mid" x="120" y="242">1 · Transpose</text><text class="t-sm mid" x="120" y="264">వరుసలు ↔ నిలువు వరుసలు</text><text class="t-sm mid" x="120" y="280">matrix[i][j] ↔ matrix[j][i]</text><line class="ln-acc" x1="248" y1="258" x2="286" y2="258" marker-end="url(#aa)"/><rect class="n-acc" x="292" y="220" width="240" height="74" rx="4"/><text class="t-w mid" x="412" y="242">2 · ప్రతి row ని reverse</text><text class="t-w-sm mid" x="412" y="264">అంతే — 90° clockwise</text><text class="t-sm" x="548" y="250">O(1) space —</text><text class="t-acc" x="548" y="268">కొత్త matrix అవసరం లేదు</text></svg>
+</div>
 
 ### Real-life Scenario
 

@@ -1,14 +1,27 @@
-# System Design in Go - పూర్తి తెలుగు గైడ్ (SDE2 & SSE)
+<!-- style: editorial -->
+<!-- footer: System Design in Go · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత System Design **మళ్ళీ మర్చిపోలేవు** - ప్రతి కష్టమైన component కి **real Go code** తో, "ఒకసారి చదివితే మర్చిపోకూడదు" అనే స్థాయిలో. ఇక్కడ మనం theory కాదు, **end-to-end case studies** చేస్తాం: requirements → estimation → API → data model → architecture → deep dive → **Go implementation of the trickiest part** → bottlenecks/trade-offs.
->
-> ఇది Go నేర్చుకునే siblings కి కొనసాగింపు: `GO_Telugu.md` (Go language basics), `LLD_Go_Telugu.md` (Low-Level Design in Go), `HLD_Go_Telugu.md` (System Design building blocks - load balancing, caching, sharding, CAP, consistent hashing మొదలైనవి).
->
-> **ముఖ్య గమనిక:** ఇది **applied case studies** doc. Load balancer, cache, quorum, Kafka, consistent hashing లాంటి **building blocks** ముందు `HLD_Go_Telugu.md` లో చదువు - ఇక్కడ వాటిని *వాడతాం*, మళ్ళీ from scratch వివరించం. ప్రతి system కి Go ఎందుకు perfect fit అనేది (goroutines for connections, channels for fan-out, `sync` primitives for shared state) **code తో** చూపిస్తాం.
->
-> **లక్ష్యం:** SDE2 (mid-level) మరియు SSE (Senior Software Engineer) system-design rounds ని Go implementations తో confident గా clear చేయడం.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">SD</div>
+<div class="kicker">System Design in Go</div>
+<div class="rule"></div>
+<div class="cover-title">System Design<br>in Go</div>
+<div class="lede">నిజమైన systems ని Go lo — production patterns, observability, deployment.</div>
+<div class="sub">ఇది Go-నిర్దిష్ట అమలు. Language-agnostic design ఆలోచనకి <code>HLD_Design_Problems_Telugu.pdf</code> చూడండి.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -49,6 +62,11 @@
 ---
 
 ## 1. System Design interview framework (7 steps) + Go ఎందుకు
+
+<div class="fig">
+<div class="cap">System design framework · 7 అడుగులు</div>
+<svg viewBox="0 0 750 376"><text class="t-xs" x="0" y="14">7-STEP FRAMEWORK</text><rect class="n-acc" x="0" y="26" width="200" height="32" rx="3"/><text class="t-w mid" x="100" y="47">1 · Clarify</text><text class="t-sm" x="216" y="47">ప్రశ్నలు · scope కుదించడం</text><rect class="n" x="0" y="64" width="200" height="32" rx="3"/><text class="t mid" x="100" y="85">2 · Requirements</text><text class="t-sm" x="216" y="85">functional + non-functional</text><rect class="n" x="0" y="102" width="200" height="32" rx="3"/><text class="t mid" x="100" y="123">3 · Estimation</text><text class="t-sm" x="216" y="123">QPS, storage, bandwidth</text><rect class="n" x="0" y="140" width="200" height="32" rx="3"/><text class="t mid" x="100" y="161">4 · API</text><text class="t-sm" x="216" y="161">endpoints, contracts</text><rect class="n" x="0" y="178" width="200" height="32" rx="3"/><text class="t mid" x="100" y="199">5 · Data model</text><text class="t-sm" x="216" y="199">access pattern → DB choice</text><rect class="n" x="0" y="216" width="200" height="32" rx="3"/><text class="t mid" x="100" y="237">6 · Architecture</text><text class="t-sm" x="216" y="237">components + ఎందుకు</text><rect class="n-acc" x="0" y="254" width="200" height="32" rx="3"/><text class="t-w mid" x="100" y="275">7 · Deep dive</text><text class="t-sm" x="216" y="275">ఒక్క భాగాన్ని లోతుగా</text><rect class="n-acc" x="0" y="300" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="322">Go-నిర్దిష్ట అంశం</text><text class="t-w-sm mid" x="375" y="344">Step 6 lo — "ఈ component ని Go lo ఎలా రాస్తారు?" అని అడుగుతారు.</text><text class="t-w-sm mid" x="375" y="360">Worker pool, channel, context — ఇవి మీ జవాబులో సహజంగా రావాలి.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -118,6 +136,11 @@ System design లో backend services build చేయడానికి Go ఒ�
 - **Think aloud** - silence negative signal.
 
 ## 2. Back-of-envelope Estimation refresher (QPS, storage, bandwidth)
+
+<div class="fig">
+<div class="cap">Estimation · గుర్తుంచుకోవాల్సిన సంఖ్యలు</div>
+<svg viewBox="0 0 750 372"><text class="t-xs" x="0" y="14">ESTIMATION — గుర్తుంచుకోవాల్సిన సంఖ్యలు</text><rect class="n-acc" x="0" y="26" width="200" height="32" rx="3"/><text class="t-w mid" x="100" y="47">1 రోజు</text><text class="t-sm" x="216" y="47">~86,400 సెకన్లు ≈ 10⁵</text><rect class="n-acc" x="0" y="66" width="200" height="32" rx="3"/><text class="t-w mid" x="100" y="87">1 M/day</text><text class="t-sm" x="216" y="87">~12 QPS</text><rect class="n-acc" x="0" y="106" width="200" height="32" rx="3"/><text class="t-w mid" x="100" y="127">1 B/day</text><text class="t-sm" x="216" y="127">~12,000 QPS</text><rect class="n-acc" x="0" y="146" width="200" height="32" rx="3"/><text class="t-w mid" x="100" y="167">Peak factor</text><text class="t-sm" x="216" y="167">avg × 3 నుంచి × 10</text><rect class="n-acc" x="0" y="186" width="200" height="32" rx="3"/><text class="t-w mid" x="100" y="207">1 KB × 1 M</text><text class="t-sm" x="216" y="207">1 GB</text><rect class="n-acc" x="0" y="226" width="200" height="32" rx="3"/><text class="t-w mid" x="100" y="247">L1 cache</text><text class="t-sm" x="216" y="247">~1 ns · RAM ~100 ns · SSD ~100 µs · network ~1 ms</text><rect class="n-good" x="0" y="272" width="750" height="86" rx="4"/><text class="t mid" x="375" y="294">ఎలా వేగంగా లెక్కించాలి</text><text class="t-sm mid" x="375" y="316">సెకన్లని 10⁵ గా అనుకోండి — 86,400 కాదు. లెక్క చాలా సులభమవుతుంది.</text><text class="t-sm mid" x="375" y="332">Order of magnitude చాలు — interviewer ఖచ్చితత్వం కోసం చూడడు.</text><text class="t-sm mid" x="375" y="348">ప్రతి assumption ని బయటికి చెప్పడం ముఖ్యం: "నేను 20% DAU అనుకుంటున్నాను".</text></svg>
+</div>
 
 ### వివరణ
 
@@ -223,6 +246,16 @@ func main() {
 ---
 
 ## 3. Core Go concurrency primitives - reusable toolkit
+
+<div class="fig">
+<div class="cap">Go concurrency toolkit · worker pool, context, errgroup</div>
+<svg viewBox="0 0 750 350"><text class="t-xs" x="0" y="14">GO CONCURRENCY TOOLKIT — ఈ మూడూ దాదాపు ప్రతి design lo</text><rect class="n-acc" x="0" y="26" width="240" height="110" rx="4"/><text class="t-w mid" x="120" y="48">Worker Pool</text><text class="t-w-sm mid" x="120" y="70">N goroutines, ఒక jobs channel</text><text class="t-w-sm mid" x="120" y="86">Unbounded goroutines ని ఆపుతుంది</text><text class="t-w-sm mid" x="120" y="102">Backpressure సహజంగా వస్తుంది</text><rect class="n-good" x="255" y="26" width="240" height="110" rx="4"/><text class="t mid" x="375" y="48">Context</text><text class="t-sm mid" x="375" y="70">Cancellation చెట్టు లాగా వ్యాపిస్తుంది</text><text class="t-sm mid" x="375" y="86">Timeout, deadline</text><text class="t-sm mid" x="375" y="102">ప్రతి function మొదటి parameter</text><rect class="n-info" x="510" y="26" width="240" height="110" rx="4"/><text class="t mid" x="630" y="48">errgroup</text><text class="t-sm mid" x="630" y="70">పలు goroutines, మొదటి error</text><text class="t-sm mid" x="630" y="86">అన్నిటినీ ఆపేస్తుంది</text><text class="t-sm mid" x="630" y="102">Wait() తో సేకరించడం</text><text class="t-xs" x="0" y="166">WORKER POOL — ఆకారం</text><rect class="n" x="0" y="178" width="130" height="40" rx="3"/><text class="t mid" x="65" y="203">Producer</text><line class="ln-acc" x1="134" y1="198" x2="186" y2="198" marker-end="url(#aa)"/><rect class="n-acc" x="190" y="178" width="150" height="40" rx="3"/><text class="t-w mid" x="265" y="196">jobs channel</text><text class="t-w-sm mid" x="265" y="212">buffered</text><line class="ln-acc" x1="344" y1="198" x2="396" y2="166" marker-end="url(#aa)"/><rect class="n-dark" x="400" y="150" width="140" height="28" rx="3"/><text class="t-w-sm mid" x="470" y="169">worker 1</text><line class="ln-acc" x1="344" y1="198" x2="396" y2="200" marker-end="url(#aa)"/><rect class="n-dark" x="400" y="184" width="140" height="28" rx="3"/><text class="t-w-sm mid" x="470" y="203">worker 2</text><line class="ln-acc" x1="344" y1="198" x2="396" y2="234" marker-end="url(#aa)"/><rect class="n-dark" x="400" y="218" width="140" height="28" rx="3"/><text class="t-w-sm mid" x="470" y="237">worker 3</text><line class="ln-acc" x1="544" y1="198" x2="596" y2="198" marker-end="url(#aa)"/><rect class="n-good" x="600" y="178" width="150" height="40" rx="3"/><text class="t mid" x="675" y="203">results channel</text><rect class="n-acc" x="0" y="254" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="276">ఎందుకు ఇది ముఖ్యం</text><text class="t-w-sm mid" x="375" y="298">"ప్రతి request కి ఒక goroutine" — Go lo చౌక, కానీ <tspan class="t-acc">అపరిమితం కాదు</tspan>.</text><text class="t-w-sm mid" x="375" y="314">10 లక్షల jobs వస్తే — 10 లక్షల goroutines memory ని తినేస్తాయి, DB pool ని ముంచేస్తాయి.</text><text class="t-w-sm mid" x="375" y="330">Worker pool = సమాంతరతకి ఒక హద్దు. అదే production Go code lo అత్యంత సాధారణమైన pattern.</text></svg>
+</div>
+
+<div class="fig">
+<div class="cap">Fan-out / Fan-in · Go concurrency pattern</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">FAN-OUT / FAN-IN — Go concurrency యొక్క గుండె</text><rect class="n" x="0" y="86" width="120" height="40" rx="3"/><text class="t mid" x="60" y="111">Source</text><line class="ln-acc" x1="124" y1="106" x2="166" y2="80" marker-end="url(#aa)"/><line class="ln-acc" x1="124" y1="106" x2="166" y2="106" marker-end="url(#aa)"/><line class="ln-acc" x1="124" y1="106" x2="166" y2="132" marker-end="url(#aa)"/><rect class="n-acc" x="170" y="62" width="160" height="22" rx="3"/><text class="t-w-sm mid" x="250" y="78">worker 1</text><rect class="n-acc" x="170" y="88" width="160" height="22" rx="3"/><text class="t-w-sm mid" x="250" y="104">worker 2</text><rect class="n-acc" x="170" y="114" width="160" height="22" rx="3"/><text class="t-w-sm mid" x="250" y="130">worker 3</text><line class="ln-acc" x1="334" y1="80" x2="376" y2="106" marker-end="url(#aa)"/><line class="ln-acc" x1="334" y1="106" x2="376" y2="106" marker-end="url(#aa)"/><line class="ln-acc" x1="334" y1="132" x2="376" y2="106" marker-end="url(#aa)"/><rect class="n-good" x="380" y="86" width="160" height="40" rx="3"/><text class="t mid" x="460" y="111">merged channel</text><line class="ln-acc" x1="544" y1="106" x2="586" y2="106" marker-end="url(#aa)"/><rect class="n" x="590" y="86" width="160" height="40" rx="3"/><text class="t mid" x="670" y="111">Consumer</text><text class="t-acc mid" x="250" y="44">FAN-OUT</text><text class="t-acc mid" x="460" y="64">FAN-IN</text><rect class="n-bad" x="0" y="156" width="750" height="86" rx="4"/><text class="t mid" x="375" y="178">Fan-in lo ముఖ్యమైన detail</text><text class="t-sm mid" x="375" y="200">Merged channel ని <tspan class="t-acc">ఎప్పుడు మూయాలి</tspan>? — అన్ని workers ముగిసినప్పుడు.</text><text class="t-sm mid" x="375" y="216">sync.WaitGroup తో లెక్కించి, ఒక goroutine lo wg.Wait() తర్వాత close(out).</text><text class="t-sm mid" x="375" y="232">ముందే మూస్తే — "send on closed channel" panic. మూయకపోతే — consumer శాశ్వతంగా వేచి ఉంటాడు.</text></svg>
+</div>
 
 ### వివరణ
 
@@ -665,6 +698,11 @@ var ErrExhausted = errors.New("id space exhausted")
 ## 5. Distributed Rate Limiter
 
 > **Real-life Analogy:** **నీటి ట్యాంక్ + కొళాయి.** ట్యాంక్ నిండా tokens (నీళ్ళు) ఉంటాయి, పైనుండి నిర్ణీత rate తో నిండుతుంది (refill). ప్రతి request ఒక token తీసుకుంటుంది (కొళాయి తిప్పడం). ట్యాంక్ ఖాళీ అయితే - wait లేదా reject (429). Bursts allow అవుతాయి (ట్యాంక్ నిండి ఉంటే), కానీ steady state లో refill rate దాటదు.
+
+<div class="fig">
+<div class="cap">Rate limiter in Go · channel-based token bucket</div>
+<svg viewBox="0 0 750 272"><text class="t-xs" x="0" y="14">RATE LIMITER in Go — channel తో token bucket</text><rect class="n-acc" x="0" y="26" width="180" height="44" rx="3"/><text class="t-w mid" x="90" y="46">Ticker</text><text class="t-w-sm mid" x="90" y="62">ప్రతి N ms కి ఒక token</text><line class="ln-acc" x1="184" y1="48" x2="226" y2="48" marker-end="url(#aa)"/><rect class="n" x="230" y="26" width="220" height="44" rx="3"/><text class="t mid" x="340" y="46">buffered chan struct{}</text><text class="t-sm mid" x="340" y="62">capacity = burst</text><line class="ln-acc" x1="454" y1="48" x2="496" y2="48" marker-end="url(#aa)"/><rect class="n-good" x="500" y="26" width="250" height="44" rx="3"/><text class="t mid" x="625" y="53">&lt;-ch  → allow · default → deny</text><rect class="n-acc" x="0" y="96" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="118">ఎందుకు ఇది idiomatic Go</text><text class="t-w-sm mid" x="375" y="140">Lock లేదు, mutex లేదు — channel యొక్క buffer <tspan class="t-acc">అదే</tspan> token bucket.</text><text class="t-w-sm mid" x="375" y="156">select తో default case — non-blocking check (ఖాళీగా ఉంటే వెంటనే deny).</text><text class="t-w-sm mid" x="375" y="172">ఇంకా సులభం: golang.org/x/time/rate — production కి అదే వాడాలి.</text><rect class="n-bad" x="0" y="196" width="750" height="70" rx="4"/><text class="t mid" x="375" y="218">కానీ ఇది single-process మాత్రమే</text><text class="t-sm mid" x="375" y="240">పలు pods ఉంటే — ప్రతి pod కి తన సొంత bucket. నిజమైన limit = pods × limit.</text><text class="t-sm mid" x="375" y="256">Distributed కావాలంటే Redis + Lua (HLD book Problem 02 చూడండి).</text></svg>
+</div>
 
 ### Requirements (Functional + Non-functional)
 
@@ -4603,6 +4641,11 @@ func Presign(secret []byte, path string, exp time.Time) string {
 ## 20. Common Patterns Across Designs (Recap)
 
 > ఇప్పటిదాకా 16 case studies చేశాం. వాటిల్లో **అవే patterns** మళ్ళీ మళ్ళీ వచ్చాయి. ఇవి interview లో ఏ system కైనా reach చేసే "tools" - ఒకసారి పట్టుకుంటే ఏ design అయినా వీటి combination గా కనిపిస్తుంది.
+
+<div class="fig">
+<div class="cap">Common patterns · ప్రతి design lo వచ్చేవి</div>
+<svg viewBox="0 0 750 312"><text class="t-xs" x="0" y="14">DESIGNS అన్నిటిలోనూ తిరిగి వచ్చే భాగాలు</text><rect class="n-acc" x="0" y="26" width="170" height="48" rx="3"/><text class="t-w mid" x="85" y="55">Load balancer</text><text class="t-sm" x="186" y="56">traffic పంచడం + health check</text><rect class="n-acc" x="380" y="26" width="170" height="48" rx="3"/><text class="t-w mid" x="465" y="55">Cache</text><text class="t-sm" x="566" y="56">read-heavy path ని తేలిక చేయడం</text><rect class="n-acc" x="0" y="86" width="170" height="48" rx="3"/><text class="t-w mid" x="85" y="115">Queue</text><text class="t-sm" x="186" y="116">producer/consumer ని విడదీయడం</text><rect class="n" x="380" y="86" width="170" height="48" rx="3"/><text class="t mid" x="465" y="115">Sharded store</text><text class="t-sm" x="566" y="116">data ని విభజించడం</text><rect class="n" x="0" y="146" width="170" height="48" rx="3"/><text class="t mid" x="85" y="175">Worker pool</text><text class="t-sm" x="186" y="176">background పని — Go lo సహజం</text><rect class="n" x="380" y="146" width="170" height="48" rx="3"/><text class="t mid" x="465" y="175">Observability</text><text class="t-sm" x="566" y="176">ఇది లేకపోతే debug అసాధ్యం</text><rect class="n-acc" x="0" y="216" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="238">Interview vyuham</text><text class="t-w-sm mid" x="375" y="260">ఈ ఆరు భాగాలతో మొదటి architecture గీయండి — ఏ problem కైనా ఇది ఒక మంచి మొదలు.</text><text class="t-w-sm mid" x="375" y="276">తర్వాత problem-నిర్దిష్టమైన భాగాన్ని (geo index, trie, ledger) చేర్చడం.</text><text class="t-w-sm mid" x="375" y="292">ఇది "ఖాళీ board" భయాన్ని తీసేస్తుంది.</text></svg>
+</div>
 
 ### Real-life Analogy
 

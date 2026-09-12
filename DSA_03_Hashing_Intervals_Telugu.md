@@ -1,4 +1,28 @@
-# DSA: Hashing & Intervals - తెలుగు గైడ్ (LeetCode 150, SSE)
+<!-- style: editorial -->
+<!-- footer: DSA · Hashing & Intervals · తెలుగు గైడ్ -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
+
+<div class="cover">
+<div class="cover-num">03</div>
+<div class="kicker">DSA · Hashing &amp; Intervals</div>
+<div class="rule"></div>
+<div class="cover-title">Hashing &amp; Intervals</div>
+<div class="lede">HashMap = "ఇంతకుముందు చూశానా?" అనే ప్రశ్నకి O(1) జవాబు. Intervals = sort చేసి ఒక pass.</div>
+<div class="sub">ప్రతి problem కి: <b>ఏ pattern ఇది</b> → ఎందుకు ఆ pattern → dry run → optimal JavaScript code → complexity → edge cases. <code>DSA_Patterns_Telugu.pdf</code> pattern-first దృష్టి; ఈ file ఆ patterns ని నిజమైన LeetCode problems మీద అమలు చేస్తుంది.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
+
 
 > ఈ document చదివిన తర్వాత **Hash Map / Set** మరియు **Intervals** — ఈ రెండు అత్యంత ముఖ్యమైన interview patterns నీ బుర్రలో శాశ్వతంగా నాటుకుపోతాయి. ప్రతి problem కి: ఎలా *ఆలోచించాలి* (naive నుండి optimal దాకా thought process), brute force ఎందుకు fail అవుతుంది, పైన కనిపించే insight, clean runnable JavaScript solution, step-by-step dry run, complexity reasoning, గుర్తుంచుకోవాల్సిన takeaway, మరియు సాధారణ తప్పులు — అన్నీ ఉంటాయి.
 >
@@ -53,6 +77,11 @@
 | **Complement trick** | `target - current` ఉందా అని వెతకడం | Two Sum |
 | **Mapping / bijection** | ఒక దానికి మరొకటి match అవుతోందా | Isomorphic, Word Pattern |
 | **Grouping by key** | ఒకే లక్షణం ఉన్నవాటిని కలపడం | Group Anagrams |
+
+<div class="fig">
+<div class="cap">Hash Map · "ఇంతకుముందు చూశానా?" O(1) lo</div>
+<svg viewBox="0 0 750 330"><text class="t-xs" x="0" y="14">TWO SUM · target = 9 — "complement ఇంతకుముందు చూశానా?"</text><rect class="n" x="60" y="26" width="52" height="34" rx="3"/><text class="t mid" x="86" y="48">2</text><text class="t-sm mid" x="86" y="75">0</text><rect class="n" x="115" y="26" width="52" height="34" rx="3"/><text class="t mid" x="141" y="48">7</text><text class="t-sm mid" x="141" y="75">1</text><rect class="n" x="170" y="26" width="52" height="34" rx="3"/><text class="t mid" x="196" y="48">11</text><text class="t-sm mid" x="196" y="75">2</text><rect class="n" x="225" y="26" width="52" height="34" rx="3"/><text class="t mid" x="251" y="48">15</text><text class="t-sm mid" x="251" y="75">3</text><line class="ln-acc" x1="86" y1="82" x2="86" y2="112" marker-end="url(#aa)"/><rect class="n-acc" x="0" y="116" width="300" height="60" rx="4"/><text class="t-w mid" x="150" y="138">Map: { 2 → 0 }</text><text class="t-w-sm mid" x="150" y="160">9 − 2 = 7 · map lo లేదు → 2 ని చేర్చు</text><line class="ln-acc" x1="141" y1="82" x2="420" y2="112" marker-end="url(#aa)"/><rect class="n-good" x="330" y="116" width="420" height="60" rx="4"/><text class="t mid" x="540" y="138">7 వచ్చినప్పుడు</text><text class="t-sm mid" x="540" y="160">9 − 7 = 2 · map lo ఉంది ✓ → [0, 1]</text><rect class="n-bad" x="0" y="196" width="366" height="86" rx="4"/><text class="t mid" x="183" y="218">Brute force</text><text class="t-sm mid" x="183" y="240">రెండు nested loops → O(n²)</text><text class="t-sm mid" x="183" y="256">10⁴ elements దగ్గరే నెమ్మది</text><rect class="n-good" x="384" y="196" width="366" height="86" rx="4"/><text class="t mid" x="567" y="218">Hash map తో</text><text class="t-sm mid" x="567" y="240">ఒక్క pass, ప్రతి lookup O(1) → O(n)</text><text class="t-sm mid" x="567" y="256">ఖరీదు: O(n) extra space — విలువైన బేరం</text><text class="t-sm mid" x="375" y="306">కీలకం: element ని map lo చేర్చే <tspan class="t-acc">ముందు</tspan> complement ని వెతకడం — లేకపోతే తనని తానే</text><text class="t-sm mid" x="375" y="322">జతచేసుకుంటుంది</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -264,6 +293,11 @@ Input:  s = "badc",  t = "baba"   → Output: false  // d,c రెండూ 'a' 
 
 **Insight:** రెండు hash maps పెట్టు. ప్రతి position i వద్ద, `s[i]↔t[i]` జోడీ ఇప్పటికే ఏర్పడిన నియమానికి విరుద్ధంగా లేదని రెండు వైపులా నిర్ధారించు.
 
+<div class="fig">
+<div class="cap">Hash map · frequency counting మరియు mapping</div>
+<svg viewBox="0 0 750 340"><text class="t-xs" x="0" y="14">FREQUENCY MAP — anagram / isomorphic family</text><rect class="n" x="60" y="26" width="60" height="34" rx="3"/><text class="t mid" x="90" y="48">a</text><rect class="n" x="123" y="26" width="60" height="34" rx="3"/><text class="t mid" x="153" y="48">n</text><rect class="n" x="186" y="26" width="60" height="34" rx="3"/><text class="t mid" x="216" y="48">a</text><rect class="n" x="249" y="26" width="60" height="34" rx="3"/><text class="t mid" x="279" y="48">g</text><line class="ln-acc" x1="320" y1="44" x2="370" y2="44" marker-end="url(#aa)"/><rect class="n-acc" x="390" y="26" width="240" height="58" rx="4"/><text class="t-w mid" x="510" y="48">{ a:2, n:1, g:1 }</text><text class="t-xs" x="0" y="110">రెండు strings పోల్చడం — మూడు మార్గాలు</text><rect class="n-bad" x="0" y="122" width="240" height="102" rx="4"/><text class="t mid" x="120" y="144">Sort చేసి పోల్చడం</text><text class="t-sm mid" x="120" y="166">O(n log n)</text><text class="t-sm mid" x="120" y="182">కానీ code ఒక్క line</text><rect class="n-good" x="255" y="122" width="240" height="102" rx="4"/><text class="t mid" x="375" y="144">ఒక map, ++ మరియు --</text><text class="t-sm mid" x="375" y="166">O(n) · ఒక్క pass</text><text class="t-sm mid" x="375" y="182">చివర్లో అన్నీ 0 అయితే anagram</text><rect class="n-info" x="510" y="122" width="240" height="102" rx="4"/><text class="t mid" x="630" y="144">26-length array</text><text class="t-sm mid" x="630" y="166">అక్షరాలు మాత్రమే అయితే</text><text class="t-sm mid" x="630" y="182">Map కంటే వేగం, O(1) space</text><rect class="n-acc" x="0" y="244" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="266">Isomorphic / word pattern — ఒక సూక్ష్మత</text><text class="t-w-sm mid" x="375" y="288">ఒక map సరిపోదు — <tspan class="t-acc">రెండు</tspan> maps కావాలి (a→x మరియు x→a).</text><text class="t-w-sm mid" x="375" y="304">లేకపోతే "badc" → "baba" లాంటివి తప్పుగా true అవుతాయి.</text><text class="t-w-sm mid" x="375" y="320">ఇది ఒక bijection check — ఒక దిక్కు mapping సరిపోదు.</text></svg>
+</div>
+
 ### Brute Force
 
 ప్రతి జత positions (i, j) చూసి consistency check: `s[i]==s[j]` అయితే `t[i]==t[j]` అవ్వాలి, మరియు tReverse కూడా.
@@ -384,6 +418,11 @@ pattern = "abba", s = "dog dog dog dog"  → false  // a,b రెండూ dog �
 ముందు `s` ని words గా విడదీయాలి (`split(' ')`). తర్వాత `pattern.length` మరియు `words.length` సమానం కాకపోతే వెంటనే `false` (ప్రతి letter కి ఒక word కావాలి కదా).
 
 **Insight:** `char → word` (map1) మరియు `word → char` (map2). ప్రతి జతని రెండు maps తో verify చెయ్ — Isomorphic లాగే.
+
+<div class="fig">
+<div class="cap">Insert Interval · ముందు, merge, తర్వాత</div>
+<svg viewBox="0 0 750 324"><text class="t-xs" x="0" y="14">INSERT INTERVAL — మూడు దశలు</text><rect class="n" x="60" y="30" width="120" height="24" rx="3"/><text class="t-sm mid" x="120" y="47">1–3</text><rect class="n" x="220" y="30" width="120" height="24" rx="3"/><text class="t-sm mid" x="280" y="47">6–9</text><rect class="n-acc" x="140" y="62" width="160" height="24" rx="3"/><text class="t-w-sm mid" x="220" y="79">కొత్తది 2–5</text><text class="t-sm" x="380" y="46">ఇప్పటికే sorted — కాబట్టి ఒక్క pass</text><text class="t-xs" x="0" y="116">1 · కొత్తదానికి ముందు ఉన్నవి — అలానే</text><text class="t-xs" x="0" y="150">2 · overlap ఉన్నవన్నీ — merge (min start, max end)</text><text class="t-xs" x="0" y="184">3 · తర్వాత ఉన్నవి — అలానే</text><rect class="n-acc" x="60" y="204" width="280" height="26" rx="3"/><text class="t-w-sm mid" x="200" y="222">1–5 (merged)</text><rect class="n" x="360" y="204" width="120" height="26" rx="3"/><text class="t-sm mid" x="420" y="222">6–9</text><rect class="n-acc" x="0" y="248" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="270">ఎందుకు మూడు దశలు</text><text class="t-w-sm mid" x="375" y="292">Sorted ఉండటం వల్ల — overlap ప్రాంతం ఒకే <tspan class="t-acc">అవిచ్ఛిన్న ముక్క</tspan> గా ఉంటుంది.</text><text class="t-w-sm mid" x="375" y="308">అందుకే ముందు, మధ్య, తర్వాత అని మూడు స్పష్టమైన భాగాలుగా విడగొట్టొచ్చు.</text></svg>
+</div>
 
 ### Brute Force
 
@@ -1250,6 +1289,12 @@ function longestConsecutive(nums) {
 | **Sort by end + greedy** | గరిష్ఠంగా ఎక్కువ non-overlapping / కనిష్ఠ points | Burst Balloons, Non-overlapping |
 | **Sweep line** | events (start/end) ని timeline లో process | Meeting Rooms II |
 | **Grouping ranges** | వరుస numbers ని range గా | Summary Ranges |
+
+<div class="fig">
+<div class="cap">Intervals · sort చేసి ఒక pass</div>
+<svg viewBox="0 0 750 274"><text class="t-xs" x="0" y="14">MERGE INTERVALS · start ప్రకారం sort చేశాక</text><rect class="n" x="60" y="30" width="160" height="22" rx="3"/><text class="t-sm mid" x="140" y="45">1–4</text><rect class="n" x="180" y="56" width="160" height="22" rx="3"/><text class="t-sm mid" x="260" y="71">2–6</text><rect class="n" x="420" y="30" width="140" height="22" rx="3"/><text class="t-sm mid" x="490" y="45">8–10</text><rect class="n" x="500" y="56" width="140" height="22" rx="3"/><text class="t-sm mid" x="570" y="71">9–12</text><line class="ln" x1="0" y1="96" x2="740" y2="96"/><text class="t-xs" x="0" y="124">MERGE చేశాక</text><rect class="n-acc" x="60" y="134" width="280" height="26" rx="3"/><text class="t-w mid" x="200" y="151">1–6</text><rect class="n-acc" x="420" y="134" width="220" height="26" rx="3"/><text class="t-w mid" x="530" y="151">8–12</text><rect class="n-acc" x="0" y="178" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="200">నియమం ఒక్కటే</text><text class="t-w-sm mid" x="375" y="222">కొత్త interval యొక్క start ≤ ప్రస్తుత end అయితే → overlap → end = max(end, కొత్త end)</text><text class="t-w-sm mid" x="375" y="238">లేకపోతే → ప్రస్తుతదాన్ని ఫలితంలో చేర్చి, కొత్తది మొదలుపెట్టడం</text><text class="t-w-sm mid" x="375" y="254">Sort చేయకపోతే ఇది పని చేయదు — sorted ఉండటం వల్లే "ఇక overlap రాదు" అని నమ్మగలం.</text></svg>
+<div class="note"><b>మూడు రకాలు:</b> merge (కలపడం) · insert (కొత్తది చొప్పించడం) · erase overlaps (కనిష్ఠంగా ఎన్ని తీసేయాలి). చివరిది greedy — <i>end</i> ప్రకారం sort చేయాలి, start ప్రకారం కాదు. ఈ తేడా ముఖ్యం.</div>
+</div>
 
 ### Real-life Scenario
 

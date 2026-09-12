@@ -1,12 +1,27 @@
-# Security & Cryptography - తెలుగు గైడ్ (SSE Fundamentals)
+<!-- style: editorial -->
+<!-- footer: Security & Cryptography · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత web security & cryptography మళ్ళీ జీవితంలో మర్చిపోలేవు. Security అస్సలు తెలియని MERN developer ని — ZERO నుండి — Senior Software Engineer (SSE) interview crack చేసే, production లో secure code రాసే స్థాయికి తీసుకెళ్లడమే లక్ష్యం. ప్రతి concept కి ఒక vivid real-life analogy, ఎందుకు/ఎప్పుడు వాడాలి, **the attack + the defense**, real Node/Express code, gotchas, మరియు interview దృష్టి — అన్నీ ఉంటాయి. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> **లక్ష్యం:** MERN (MongoDB, Express, React, Node) తెలిసిన కానీ security అస్సలు తెలియని self-taught engineer ని absolute basics నుండి interview-ready వరకు తీసుకెళ్లడం. Non-CS background అయినా పర్వాలేదు — ప్రతిదీ మొదటి principle నుండి, kitchen/bank/postbox analogies తో నేర్చుకుంటాం. Best-teacher style — intuition first, jargon తర్వాత.
->
-> ఇది `OOPS_Telugu.md`, `HLD_Telugu.md`, `JavaScript_Telugu.md`, `DSA_00_Foundations_Telugu.md` కి కొనసాగింపు. ప్రతి topic web/MERN reality లో (Express APIs, cookies, React, MongoDB) ground చేయబడింది.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">SEC</div>
+<div class="kicker">Security &amp; Cryptography</div>
+<div class="rule"></div>
+<div class="cover-title">Security &amp;<br>Cryptography</div>
+<div class="lede">Hashing vs encryption, TLS handshake, JWT, OAuth, XSS, CSRF, SQL injection — దాడి ఎలా జరుగుతుందో తెలిస్తేనే రక్షణ.</div>
+<div class="sub">CS fundamentals — self-taught / non-CS background నుంచి వచ్చినవారికి SSE interview lo అడిగే లోతు వరకు. ప్రతి concept ని MERN / JavaScript ప్రపంచంతో ముడిపెట్టి.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -377,6 +392,11 @@ A: Crypto చాలా subtle — ఒక్క చిన్న తప్పు (
 
 గుర్తుంచుకో: **"password ని encrypt చేస్తా" అనేది తప్పు ఆలోచన — password ని hash చేయాలి** (Topic 4). Encryption అంటే ఎవరో ఒకరు decrypt చేయగలరు (key ఉంటే) — password కి అది ప్రమాదం.
 
+<div class="fig">
+<div class="cap">Hashing vs Encryption · ఒక దిక్కు vs రెండు దిక్కులు</div>
+<svg viewBox="0 0 750 392"><text class="t-xs" x="0" y="14">HASHING vs ENCRYPTION — ఇది తప్పకుండా తెలియాలి</text><rect class="n" x="0" y="26" width="200" height="44" rx="3"/><text class="t mid" x="100" y="53">password123</text><line class="ln-acc" x1="204" y1="48" x2="246" y2="48" marker-end="url(#aa)"/><rect class="n-acc" x="250" y="26" width="160" height="44" rx="3"/><text class="t-w mid" x="330" y="46">hash()</text><text class="t-w-sm mid" x="330" y="62">ఒక దిక్కు మాత్రమే</text><line class="ln-acc" x1="414" y1="48" x2="456" y2="48" marker-end="url(#aa)"/><rect class="n" x="460" y="26" width="290" height="44" rx="3"/><text class="t mid" x="605" y="53">5f4dcc3b5aa765d6…</text><line class="ln-dash" x1="600" y1="74" x2="220" y2="74" marker-end="url(#a)"/><text class="t-acc mid" x="410" y="90">✗ వెనక్కి తిప్పలేం — అదే ఉద్దేశం</text><rect class="n" x="0" y="110" width="200" height="44" rx="3"/><text class="t mid" x="100" y="137">"secret message"</text><line class="ln-acc" x1="204" y1="132" x2="246" y2="132" marker-end="url(#aa)"/><rect class="n-info" x="250" y="110" width="160" height="44" rx="3"/><text class="t mid" x="330" y="137">encrypt(key)</text><line class="ln-acc" x1="414" y1="132" x2="456" y2="132" marker-end="url(#aa)"/><rect class="n" x="460" y="110" width="290" height="44" rx="3"/><text class="t mid" x="605" y="137">8fa3c1…</text><line class="ln-acc" x1="600" y1="158" x2="220" y2="158" marker-end="url(#aa)"/><text class="t-acc mid" x="410" y="174">✓ key ఉంటే decrypt చేయొచ్చు</text><rect class="n-good" x="0" y="196" width="366" height="86" rx="4"/><text class="t mid" x="183" y="218">Hashing ఎక్కడ</text><text class="t-sm mid" x="183" y="240">Passwords · file integrity · digital signature</text><text class="t-sm mid" x="183" y="256">కావలసినది: మళ్ళీ చదవడం కాదు, పోల్చడం</text><rect class="n-info" x="384" y="196" width="366" height="86" rx="4"/><text class="t mid" x="567" y="218">Encryption ఎక్కడ</text><text class="t-sm mid" x="567" y="240">TLS · disk encryption · messages</text><text class="t-sm mid" x="567" y="256">కావలసినది: అవతలివారు తిరిగి చదవగలగాలి</text><rect class="n-bad" x="0" y="296" width="750" height="86" rx="4"/><text class="t mid" x="375" y="318">అత్యంత సాధారణమైన తప్పు</text><text class="t-sm mid" x="375" y="340">"Password ని encrypt చేశాం" — ఇది <tspan class="t-acc">తప్పు</tspan>. Encrypt అంటే key ఉన్నవాడు చదవగలడు.</text><text class="t-sm mid" x="375" y="356">Password ని ఎప్పుడూ <tspan class="t-acc">hash</tspan> చేయాలి — bcrypt / argon2 తో, salt తో.</text><text class="t-sm mid" x="375" y="372">MD5, SHA-1, SHA-256 కూడా passwords కి సరిపోవు — అవి చాలా వేగం, brute force సులభం.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **Hash = మనిషి వేలిముద్ర (fingerprint).**
@@ -522,6 +542,11 @@ A: రెండు problems: (1) MD5 **collision-broken** + అతి వేగ�
 - Passwords **plaintext** అయితే → అన్ని accounts తక్షణం gone. పైగా users password reuse చేస్తారు కాబట్టి వాళ్ళ Gmail, bank కూడా ప్రమాదం.
 - Passwords **encrypt** చేసినా → decryption key కూడా server లోనే ఉంటుంది; leak అయితే key తో అన్నీ decrypt.
 - Passwords **properly hashed (bcrypt + salt)** అయితే → attacker చేతిలో useless hashes మాత్రమే; original passwords పొందడం అసాధ్యానికి దగ్గర.
+
+<div class="fig">
+<div class="cap">Password storage · plain నుంచి argon2 వరకు</div>
+<svg viewBox="0 0 750 358"><text class="t-xs" x="0" y="14">PASSWORD STORAGE — తప్పు నుంచి సరైనది వరకు</text><rect class="n-bad" x="0" y="26" width="220" height="38" rx="3"/><text class="t mid" x="110" y="50">Plain text</text><text class="t-sm" x="236" y="50">❌ ఎప్పటికీ కాదు</text><rect class="n-bad" x="0" y="72" width="220" height="38" rx="3"/><text class="t mid" x="110" y="96">MD5 / SHA-1</text><text class="t-sm" x="236" y="96">❌ విరిగిపోయాయి · rainbow tables</text><rect class="n-bad" x="0" y="118" width="220" height="38" rx="3"/><text class="t mid" x="110" y="142">SHA-256</text><text class="t-sm" x="236" y="142">⚠ చాలా వేగం → brute force సులభం</text><rect class="n-info" x="0" y="164" width="220" height="38" rx="3"/><text class="t mid" x="110" y="188">SHA-256 + salt</text><text class="t-sm" x="236" y="188">⚠ rainbow tables పోయాయి, కానీ ఇంకా వేగం</text><rect class="n-good" x="0" y="210" width="220" height="38" rx="3"/><text class="t mid" x="110" y="234">bcrypt / argon2</text><text class="t-sm" x="236" y="234">✓ ఉద్దేశపూర్వకంగా నెమ్మది + salt built-in</text><rect class="n-acc" x="0" y="262" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="284">ఎందుకు "నెమ్మది" ఇక్కడ మంచిది</text><text class="t-w-sm mid" x="375" y="306">SHA-256 తో GPU సెకనుకి బిలియన్ల guesses చేయగలదు.</text><text class="t-w-sm mid" x="375" y="322">bcrypt cost factor 12 → ఒక్కో hash ~250 ms. దాడి చేసేవాడికి అది అసాధ్యం చేస్తుంది.</text><text class="t-w-sm mid" x="375" y="338">Login కి 250 ms ఫర్వాలేదు — ఆ ఆలస్యమే రక్షణ.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -713,6 +738,11 @@ A: Salt secret కాదు — rainbow tables (precomputation) ఆపడం ద
 | **Authentication** | Authenticity | **impersonation** — నువ్వు నిజంగా `google.com` తోనే మాట్లాడుతున్నావని certificate నిరూపిస్తుంది |
 
 మూడోది (authentication) చాలా మంది మర్చిపోతారు కానీ కీలకం — encryption ఉన్నా, నువ్వు attacker server తో encrypt చేస్తుంటే వృథా. Certificate "ఇది నిజమైన google server" అని guarantee చేస్తుంది.
+
+<div class="fig">
+<div class="cap">TLS handshake · asymmetric తో symmetric key ని పంపడం</div>
+<svg viewBox="0 0 750 348"><text class="t-xs" x="0" y="14">TLS HANDSHAKE — HTTPS lo ఏం జరుగుతుంది</text><rect class="n" x="30" y="26" width="140" height="30" rx="3"/><text class="t mid" x="100" y="46">Browser</text><rect class="n" x="580" y="26" width="140" height="30" rx="3"/><text class="t mid" x="650" y="46">Server</text><line class="ln-thin" x1="100" y1="60" x2="100" y2="236"/><line class="ln-thin" x1="650" y1="60" x2="650" y2="236"/><line class="ln-acc" x1="104" y1="84" x2="644" y2="84" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="76">ClientHello — నేను ఈ ciphers support చేస్తాను</text><line class="ln-acc" x1="646" y1="116" x2="106" y2="116" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="108">ServerHello + Certificate (public key)</text><text class="t-sm mid" x="375" y="140">Certificate ని CA తో verify చేయడం</text><line class="ln-acc" x1="104" y1="180" x2="644" y2="180" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="172">Session key ని public key తో encrypt చేసి పంపడం</text><text class="t-sm mid" x="375" y="204">ఇక నుంచి symmetric encryption తో వేగంగా</text><rect class="n-acc" x="0" y="252" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="274">ఎందుకు రెండు రకాల encryption</text><text class="t-w-sm mid" x="375" y="296">Asymmetric (public/private) సురక్షితం కానీ <tspan class="t-acc">నెమ్మది</tspan> — పెద్ద data కి పనికిరాదు.</text><text class="t-w-sm mid" x="375" y="312">Symmetric వేగం కానీ key ని ఎలా పంచుకోవాలి?</text><text class="t-w-sm mid" x="375" y="328">పరిష్కారం: asymmetric తో <tspan class="t-acc">ఒక్క symmetric key</tspan> ని సురక్షితంగా పంపి, తర్వాత అంతా symmetric.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -1050,6 +1080,11 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9 . eyJ1c2VySWQiOiI0MiIsInJvbGUiOiJhZG1pbiJ9 
 
 **అత్యంత ముఖ్యమైన insight:** header, payload కేవలం **base64-encoded — encrypted కాదు!** ఎవరైనా వాటిని decode చేసి చదవగలరు (jwt.io లో paste చేస్తే). అంటే **JWT payload లో ఎప్పుడూ password, credit card లాంటి secrets పెట్టకూడదు.** JWT గోప్యత (confidentiality) ఇవ్వదు — అది **integrity + authenticity** మాత్రమే ఇస్తుంది (signature ద్వారా tamper detect).
 
+<div class="fig">
+<div class="cap">JWT · header, payload, signature</div>
+<svg viewBox="0 0 750 292"><text class="t-xs" x="0" y="14">JWT — మూడు భాగాలు, చుక్కలతో వేరు చేసినవి</text><rect class="n-acc" x="0" y="26" width="230" height="50" rx="3"/><text class="t-w mid" x="115" y="49">HEADER</text><text class="t-w-sm mid" x="115" y="65">alg: HS256, typ: JWT</text><text class="t mid" x="240" y="56">.</text><rect class="n-info" x="250" y="26" width="250" height="50" rx="3"/><text class="t mid" x="375" y="49">PAYLOAD</text><text class="t-sm mid" x="375" y="65">userId, role, exp</text><text class="t mid" x="510" y="56">.</text><rect class="n-good" x="520" y="26" width="230" height="50" rx="3"/><text class="t mid" x="635" y="49">SIGNATURE</text><text class="t-sm mid" x="635" y="65">HMAC(header.payload, secret)</text><rect class="n-bad" x="0" y="96" width="750" height="86" rx="4"/><text class="t mid" x="375" y="118">JWT గురించిన అతి పెద్ద అపోహ</text><text class="t-sm mid" x="375" y="140">Payload <tspan class="t-acc">encrypt కాలేదు</tspan> — అది కేవలం base64. ఎవరైనా చదవగలరు.</text><text class="t-sm mid" x="375" y="156">Signature అది <tspan class="t-acc">మారలేదు</tspan> అని మాత్రమే నిరూపిస్తుంది — దాచదు.</text><text class="t-sm mid" x="375" y="172">కాబట్టి JWT lo password, card number లాంటివి ఎప్పుడూ పెట్టకూడదు.</text><rect class="n-good" x="0" y="196" width="366" height="86" rx="4"/><text class="t mid" x="183" y="218">లాభం</text><text class="t-sm mid" x="183" y="240">Stateless — server session store అవసరం లేదు</text><text class="t-sm mid" x="183" y="256">Microservices మధ్య పంచుకోవడం సులభం</text><rect class="n-bad" x="384" y="196" width="366" height="86" rx="4"/><text class="t mid" x="567" y="218">ఇబ్బంది</text><text class="t-sm mid" x="567" y="240">Revoke చేయడం కష్టం — expiry దాకా చెల్లుతుంది</text><text class="t-sm mid" x="567" y="256">పరిష్కారం: short TTL + refresh token</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **JWT = concert wristband (tamper-proof band).** Concert లో entry దగ్గర ఒకసారి ID verify చేసి, నీ చేతికి ఒక **hologram wristband** కడతారు.
@@ -1217,6 +1252,11 @@ A: కొన్ని JWT libraries header లోని `alg` ని గుడ�
 **OAuth 2.0 = delegated authorization.** ఒక app కి, నీ **password ఇవ్వకుండా**, నీ తరపున మరో service లో limited access ఇవ్వడం. ఉదా: ఒక photo-printing app కి నీ Google Photos చూసే permission ఇవ్వాలి — కానీ నీ Google password ఇవ్వడం ప్రమాదం (అది full access, forever). OAuth దీన్ని పరిష్కరిస్తుంది: Google నీ password అడక్కుండా, ఆ app కి ఒక **scoped, revocable access token** ఇస్తుంది ("photos read మాత్రమే, ఇంకేమీ కాదు").
 
 **కీలక తేడా:** OAuth 2.0 అసలు **authorization** (access delegation) కోసం, **authentication** (login) కోసం కాదు. కానీ "Login with Google" లో మనకి కావలసింది login (identity). అందుకే దాని పైన ఒక layer — **OpenID Connect (OIDC)** — వచ్చింది, ఇది authentication ని add చేస్తుంది (**ID token** ద్వారా). అంటే: **"Login with Google" = OIDC (authentication) on top of OAuth 2.0 (authorization).**
+
+<div class="fig">
+<div class="cap">OAuth 2.0 · authorisation code flow</div>
+<svg viewBox="0 0 750 342"><text class="t-xs" x="0" y="14">OAUTH 2.0 — "Login with Google"</text><rect class="n" x="0" y="26" width="140" height="36" rx="3"/><text class="t mid" x="70" y="49">User</text><rect class="n-acc" x="300" y="26" width="150" height="36" rx="3"/><text class="t-w mid" x="375" y="48">మన App</text><rect class="n-good" x="600" y="26" width="150" height="36" rx="3"/><text class="t mid" x="675" y="49">Google</text><line class="ln-thin" x1="70" y1="66" x2="70" y2="230"/><line class="ln-thin" x1="375" y1="66" x2="375" y2="230"/><line class="ln-thin" x1="675" y1="66" x2="675" y2="230"/><line class="ln-acc" x1="74" y1="86" x2="371" y2="86" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="78">"Login with Google" click</text><line class="ln-acc" x1="379" y1="116" x2="671" y2="116" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="108">Google కి redirect</text><line class="ln-dash" x1="74" y1="146" x2="671" y2="146" marker-end="url(#a)"/><text class="t-sm mid" x="375" y="138">User Google lo login</text><line class="ln-acc" x1="671" y1="176" x2="379" y2="176" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="168">code తో తిరిగి redirect</text><line class="ln-acc" x1="379" y1="206" x2="671" y2="206" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="198">code → token (server side)</text><rect class="n-acc" x="0" y="246" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="268">కీలకమైన భద్రతా అంశాలు</text><text class="t-w-sm mid" x="375" y="290"><tspan class="t-acc">code</tspan> ని token కి మార్చడం ఎప్పుడూ <tspan class="t-acc">server side</tspan> — client secret బయటపడకూడదు.</text><text class="t-w-sm mid" x="375" y="306"><tspan class="t-acc">state</tspan> parameter తప్పనిసరి — CSRF దాడిని ఆపుతుంది.</text><text class="t-w-sm mid" x="375" y="322">PKCE — mobile / SPA కి (client secret దాచలేని చోట).</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -1400,6 +1440,11 @@ Attacker XSS తో ఏం చేయగలడు:
 | **DOM-based** | client-side JS లోనే | JS untrusted data ని DOM కి unsafe గా రాస్తే | `el.innerHTML = location.hash` |
 
 **Stored అత్యంత ప్రమాదకరం** — ఒక్కసారి inject చేస్తే, ఆ page చూసే ప్రతి user affected (worm లా వ్యాపిస్తుంది — పాత MySpace "Samy" worm ఇలానే).
+
+<div class="fig">
+<div class="cap">XSS vs CSRF · ఎవరు ఎవరిని నమ్ముతున్నారు</div>
+<svg viewBox="0 0 750 262"><text class="t-xs" x="0" y="14">XSS vs CSRF — రెండూ వేరే దాడులు</text><rect class="n-bad" x="0" y="26" width="366" height="120" rx="4"/><text class="t mid" x="183" y="48">XSS — దాడి చేసేవాడి CODE మన site lo నడుస్తుంది</text><text class="t-sm mid" x="183" y="70">User input ని sanitise చేయకుండా page lo పెట్టడం</text><text class="t-sm mid" x="183" y="86">&lt;script&gt; ట్యాగ్ నడిచి cookies దొంగిలిస్తుంది</text><text class="t-sm mid" x="183" y="102">రక్షణ: output ని escape చేయడం, CSP header,</text><text class="t-sm mid" x="183" y="118">React default గా escape చేస్తుంది ✓</text><rect class="n-bad" x="384" y="26" width="366" height="120" rx="4"/><text class="t mid" x="567" y="48">CSRF — వేరే site నుంచి మన API కి request</text><text class="t-sm mid" x="567" y="70">User login అయ్యే ఉన్నాడు; cookie ఆటోమేటిక్ గా వెళ్తుంది</text><text class="t-sm mid" x="567" y="86">దాడి site ఒక form submit చేస్తుంది</text><text class="t-sm mid" x="567" y="102">రక్షణ: CSRF token, SameSite cookie,</text><text class="t-sm mid" x="567" y="118">state మార్చే పనులకి GET వాడకపోవడం</text><rect class="n-acc" x="0" y="166" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="188">ఒక్క వాక్యంలో తేడా</text><text class="t-w-sm mid" x="375" y="210"><tspan class="t-acc">XSS</tspan> = మన site మీద నమ్మకాన్ని దుర్వినియోగం చేయడం (user మన pageని నమ్ముతాడు).</text><text class="t-w-sm mid" x="375" y="226"><tspan class="t-acc">CSRF</tspan> = user మీద మన site కి ఉన్న నమ్మకాన్ని దుర్వినియోగం చేయడం (మనం cookie ని నమ్ముతాం).</text><text class="t-w-sm mid" x="375" y="242">ఈ ఒక్క తేడాని చెప్పగలిగితే interview lo ఈ ప్రశ్న పూర్తయినట్టే.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -1696,6 +1741,11 @@ A: (1) **SameSite=Lax/Strict** cookie — modern primary defense; cross-site POS
 A: **Token ని Authorization header లో** పంపితే — CSRF-immune, ఎందుకంటే browser custom headers ని cross-site auto-attach చేయదు, attacker header set చేయలేడు. కానీ **JWT ని cookie లో** store చేస్తే, అది auto-sent కాబట్టి మళ్ళీ CSRF vulnerable → SameSite కావాలి. అలాగే header approach XSS కి vulnerable (JS token చదవగలదు) — ఇది trade-off.
 
 ## 11. SQL / NoSQL Injection
+
+<div class="fig">
+<div class="cap">SQL Injection · ఎలా జరుగుతుంది, ఎలా ఆపాలి</div>
+<svg viewBox="0 0 750 326"><text class="t-xs" x="0" y="14">SQL INJECTION — ఎలా జరుగుతుంది</text><rect class="n-bad" x="0" y="26" width="750" height="58" rx="4"/><text class="t mid" x="375" y="48">"SELECT * FROM users WHERE name = '" + input + "'"</text><text class="t-sm mono mid" x="375" y="70">input = admin' OR '1'='1  → WHERE name = 'admin' OR '1'='1' → అందరూ</text><rect class="n-good" x="0" y="100" width="366" height="110" rx="4"/><text class="t mid" x="183" y="122">పరిష్కారం — parameterised query</text><text class="t-sm mid" x="183" y="144">db.query("… WHERE name = ?", [input])</text><text class="t-sm mid" x="183" y="160">Driver input ని <tspan class="t-acc">data</tspan> గా పంపుతుంది</text><text class="t-sm mid" x="183" y="176">ఎప్పటికీ SQL గా parse కాదు</text><rect class="n-bad" x="384" y="100" width="366" height="110" rx="4"/><text class="t mid" x="567" y="122">సరిపోని "పరిష్కారాలు"</text><text class="t-sm mid" x="567" y="144">Escaping చేతితో — ఎప్పుడో ఒకటి మిస్ అవుతుంది</text><text class="t-sm mid" x="567" y="160">Blocklist ("DROP" ని block చేయడం) — దాటించొచ్చు</text><text class="t-sm mid" x="567" y="176">ORM వాడినా — raw query lo అదే ప్రమాదం</text><rect class="n-acc" x="0" y="230" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="252">లోతైన రక్షణ</text><text class="t-w-sm mid" x="375" y="274">Parameterised queries (ప్రాథమికం) + least-privilege DB user (app కి DROP అవసరం లేదు)</text><text class="t-w-sm mid" x="375" y="290">+ input validation + error messages lo SQL వివరాలు చూపకపోవడం.</text><text class="t-w-sm mid" x="375" y="306">NoSQL lo కూడా ఇదే — <code>{ $ne: null }</code> లాంటి object injection.</text></svg>
+</div>
 
 ### వివరణ
 

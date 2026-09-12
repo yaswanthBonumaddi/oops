@@ -1,14 +1,27 @@
-# Computer Networks (CN) - తెలుగు గైడ్ (SSE Fundamentals)
+<!-- style: editorial -->
+<!-- footer: Computer Networks · SSE Fundamentals · తెలుగు గైడ్ -->
 
-> ఈ document చదివిన తర్వాత Computer Networks మళ్ళీ జీవితంలో మర్చిపోలేవు. Networking theory అస్సలు తెలియని వ్యక్తిని — ZERO నుండి — Senior Software Engineer (SSE) interview crack చేసే స్థాయికి తీసుకెళ్లడమే లక్ష్యం. ప్రతి concept కి ఒక vivid real-life analogy (postal system, phone call, రోడ్లు), ఎందుకు/ఎప్పుడు, ASCII diagram, comparison table, worked example (subnetting math), మరియు interview దృష్టి — అన్నీ ఉంటాయి. "ఒకసారి చదివితే జీవితంలో మర్చిపోకూడదు."
->
-> **నీ నేపథ్యం (ఈ guide ఎవరి కోసం):** నువ్వు MERN developer వి — JavaScript, React, Node, `fetch()`, HTTP, REST APIs రోజూ వాడతావు. కానీ CS background లేదు, networking theory ZERO. అంటే నువ్వు ఇప్పటికే **networks ని వాడుతున్నావు** (ప్రతి `fetch()` ఒక network call), కానీ **లోపల ఏం జరుగుతుందో** తెలియదు. ఈ guide ఆ gap ని పూరిస్తుంది — నీకు తెలిసిన web knowledge (fetch, HTTP, WebSockets, cookies) ని పునాదిగా వాడి, కింద ఉన్న theory అంతా connect చేస్తుంది.
->
-> **లక్ష్యం:** "నేను ఒక `fetch("https://api.com/users")` రాస్తే, browser నుండి server దాకా ఏం జరుగుతుంది?" అనే ప్రశ్నకి — DNS, TCP handshake, TLS, IP packets, routers, ports — ప్రతి layer లో ఏం జరుగుతుందో పూర్తిగా, గట్టిగా చెప్పగలగాలి. అదే SSE interview అడిగేది.
->
-> ఇది CS-fundamentals set లో భాగం — `OOPS_Telugu.md`, `GO_Telugu.md`, `HLD_Go_Telugu.md`, `SystemDesign_Go_Telugu.md`, మరియు `DSA_00..10` docs కి కొనసాగింపు. Best-teacher style — intuition first, formalism తర్వాత.
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a9b0be"/></marker>
+<marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e2653a"/></marker>
+<marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+<marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#17203a"/></marker>
+<marker id="diao" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="12" markerHeight="10" orient="auto-start-reverse"><path d="M0,5 L7,0 L14,5 L7,10 z" fill="#fff" stroke="#6f7889" stroke-width="1.2"/></marker>
+</defs>
+</svg>
 
----
+<div class="cover">
+<div class="cover-num">CN</div>
+<div class="kicker">Computer Networks · SSE Fundamentals</div>
+<div class="rule"></div>
+<div class="cover-title">Computer<br>Networks</div>
+<div class="lede">Request browser నుంచి server కి ఎలా వెళ్తుంది — ప్రతి పొర, ప్రతి handshake, ప్రతి packet. <b>Diagram లతో.</b></div>
+<div class="sub">CS fundamentals — self-taught / non-CS background నుంచి వచ్చినవారికి SSE interview lo అడిగే లోతు వరకు. ప్రతి concept ని MERN / JavaScript ప్రపంచంతో ముడిపెట్టి.</div>
+<div class="spacer"></div>
+<div class="cover-foot"><span>తెలుగు + English</span><span>Yaswanth · Reference</span></div>
+</div>
 
 ## విషయ సూచిక (Table of Contents)
 
@@ -249,6 +262,12 @@ Data ని network గుండా పంపడానికి రెండు 
         ↓ data కిందకి వెళ్తుంది ↓ network cable లోకి
 ```
 
+<div class="fig">
+<div class="cap">OSI · ఏడు పొరలు</div>
+<svg viewBox="0 0 750 398"><rect class="n-acc" x="0" y="10" width="300" height="34" rx="3"/><text class="t-w mid" x="150" y="32">7 · Application</text><text class="t-sm" x="316" y="32">HTTP, DNS, SMTP — మనం రాసే code</text><rect class="n" x="0" y="50" width="300" height="34" rx="3"/><text class="t mid" x="150" y="72">6 · Presentation</text><text class="t-sm" x="316" y="72">Encryption, compression, encoding</text><rect class="n" x="0" y="90" width="300" height="34" rx="3"/><text class="t mid" x="150" y="112">5 · Session</text><text class="t-sm" x="316" y="112">Connection ని నిర్వహించడం</text><rect class="n-acc" x="0" y="130" width="300" height="34" rx="3"/><text class="t-w mid" x="150" y="152">4 · Transport</text><text class="t-sm" x="316" y="152">TCP / UDP — port, reliability</text><rect class="n-acc" x="0" y="170" width="300" height="34" rx="3"/><text class="t-w mid" x="150" y="192">3 · Network</text><text class="t-sm" x="316" y="192">IP — routing, ఏ దారిలో వెళ్ళాలి</text><rect class="n" x="0" y="210" width="300" height="34" rx="3"/><text class="t mid" x="150" y="232">2 · Data Link</text><text class="t-sm" x="316" y="232">MAC address, frames, switch</text><rect class="n" x="0" y="250" width="300" height="34" rx="3"/><text class="t mid" x="150" y="272">1 · Physical</text><text class="t-sm" x="316" y="272">Cable, radio, bits</text><line class="ln-acc" x1="320" y1="296" x2="320" y2="318" marker-end="url(#aa)"/><rect class="n-acc" x="0" y="322" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="344">ఆచరణలో గుర్తుంచుకోవాల్సినవి 4 మాత్రమే</text><text class="t-w-sm mid" x="375" y="366">Application (7) · Transport (4) · Network (3) · Data Link (2)</text><text class="t-w-sm mid" x="375" y="382">Layers 5, 6 ఆచరణలో TCP/IP model lo Application lo కలిసిపోయాయి.</text></svg>
+<div class="note"><b>మెమొనిక్ (పైనుంచి కిందికి):</b> <i>All People Seem To Need Data Processing</i>. కానీ నిజమైన అర్థం: <b>ప్రతి పొర తన కింది పొర ఏం చేస్తోందో పట్టించుకోదు</b> — HTTP కి cable రాగి నా fibre నా అనేది తెలియదు. అదే abstraction యొక్క శక్తి.</div>
+</div>
+
 ### Real-life Scenario
 
 > **OSI 7 layers = ఒక company లో ఒక ఉత్తరం పంపే process (CEO నుండి postman దాకా).** నీ company CEO వేరే company CEO కి message పంపాలనుకుంటున్నాడు:
@@ -413,6 +432,11 @@ TCP/IP, OSI యొక్క కొన్ని layers ని కలిపేస�
 | **Protocol dependency** | Protocol-independent (general) | TCP/IP protocols చుట్టూ built |
 
 **గుర్తుంచుకో:** TCP/IP model లో top 3 OSI layers (App, Presentation, Session) → ఒక్క **Application** layer అయ్యాయి. Bottom 2 (Data Link, Physical) → ఒక్క **Network Access/Link** layer అయ్యాయి. Middle రెండు (Transport, Network) same గా ఉన్నాయి. **అందుకే HTTP, TLS, DNS అన్నీ "application layer" అని మనం రోజూ అంటాం** — TCP/IP prspective.
+
+<div class="fig">
+<div class="cap">Encapsulation · headers యొక్క ఉల్లిపొరలు</div>
+<svg viewBox="0 0 750 346"><text class="t-xs" x="0" y="14">ENCAPSULATION — ప్రతి పొర తన header ని చుట్టుతుంది</text><rect class="n-acc" x="300" y="26" width="150" height="32" rx="3"/><text class="t-w mid" x="375" y="47">Data</text><line class="ln-acc" x1="375" y1="62" x2="375" y2="80" marker-end="url(#aa)"/><rect class="n" x="250" y="84" width="250" height="32" rx="3"/><text class="t mid" x="375" y="105">TCP header + Data</text><line class="ln-acc" x1="375" y1="120" x2="375" y2="138" marker-end="url(#aa)"/><rect class="n" x="200" y="142" width="350" height="32" rx="3"/><text class="t mid" x="375" y="163">IP header + TCP + Data</text><line class="ln-acc" x1="375" y1="178" x2="375" y2="196" marker-end="url(#aa)"/><rect class="n" x="150" y="200" width="450" height="32" rx="3"/><text class="t mid" x="375" y="221">Frame header + IP + TCP + Data + trailer</text><text class="t-sm" x="0" y="104">Transport</text><text class="t-sm" x="0" y="162">Network</text><text class="t-sm" x="0" y="220">Data Link</text><text class="t-sm" x="620" y="104">port</text><text class="t-sm" x="620" y="162">IP address</text><text class="t-sm" x="620" y="220">MAC address</text><rect class="n-good" x="0" y="252" width="750" height="86" rx="4"/><text class="t mid" x="375" y="274">అవతలి వైపు తిరగబడుతుంది</text><text class="t-sm mid" x="375" y="296">Receiver ప్రతి పొరలో తన header ని తీసేసి, మిగిలినది పైకి పంపుతుంది —</text><text class="t-sm mid" x="375" y="312">దీన్ని decapsulation అంటారు. ఉత్తరాన్ని కవర్ల మీద కవర్లు వేసి పంపి, అటువైపు ఒక్కొక్కటిగా</text><text class="t-sm mid" x="375" y="328">విప్పడం లాంటిది.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -680,6 +704,11 @@ HUB (dumb):                    SWITCH (smart):
 **Network Layer (Layer 3) = packet ని ఒక network నుండి వేరే network కి, routers గుండా, source నుండి destination కి చేర్చడం.** Data Link layer local (పక్క device) అయితే, Network layer **global** — internet అంతటా, ఏ దారిలో వెళ్ళాలో (routing) నిర్ణయిస్తుంది. దీని రెండు కీలక పనులు: **(1) logical addressing (IP), (2) routing (path selection).**
 
 ఇది CN లో అత్యంత content-heavy topic — IP addresses, subnetting math, NAT, DHCP అన్నీ ఇక్కడే. నెమ్మదిగా చదువు.
+
+<div class="fig">
+<div class="cap">Subnetting · CIDR ఎలా చదవాలి</div>
+<svg viewBox="0 0 750 284"><text class="t-xs" x="0" y="14">SUBNETTING · 192.168.1.0/24</text><rect class="n-acc" x="0" y="26" width="370" height="44" rx="3"/><text class="t-w mid" x="185" y="46">11000000.10101000.00000001</text><text class="t-w-sm mono mid" x="185" y="62">network (24 bits)</text><rect class="n" x="376" y="26" width="374" height="44" rx="3"/><text class="t mid" x="563" y="46">.00000000</text><text class="t-sm mono mid" x="563" y="62">host (8 bits)</text><rect class="n-good" x="0" y="86" width="366" height="102" rx="4"/><text class="t mid" x="183" y="108">/24 అంటే</text><text class="t-sm mid" x="183" y="130">మొదటి 24 bits = network</text><text class="t-sm mid" x="183" y="146">మిగిలిన 8 = hosts → 2⁸ = 256</text><text class="t-sm mid" x="183" y="162">ఉపయోగించదగినవి 254 (network + broadcast పోను)</text><rect class="n-info" x="384" y="86" width="366" height="102" rx="4"/><text class="t mid" x="567" y="108">/26 గా విడగొడితే</text><text class="t-sm mid" x="567" y="130">2 bits network కి వెళ్తాయి</text><text class="t-sm mid" x="567" y="146">4 subnets × 64 addresses</text><text class="t-sm mid" x="567" y="162">ఒక్కో దానిలో 62 usable</text><rect class="n-acc" x="0" y="208" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="230">ఒక సూత్రం</text><text class="t-w-sm mid" x="375" y="252">Hosts = 2^(32 − prefix) − 2 · Subnets = 2^(కొత్త prefix − పాత prefix)</text><text class="t-w-sm mid" x="375" y="268">CIDR చిన్నదైతే (/16) పెద్ద network · పెద్దదైతే (/30) చిన్నది. ఇది తిరగబడి ఉంటుంది.</text></svg>
+</div>
 
 ### Real-life Scenario
 
@@ -971,6 +1000,12 @@ Server:  "OK, అది నీది (24 గంటలు)"      → ACK (acknowl
 **Transport Layer (Layer 4) = end-to-end communication + reliability.** Network layer (IP) packet ని destination *computer* కి చేరుస్తుంది. కానీ ఆ computer లో **ఏ application** కి? (browser? Node server? email?) — దాన్ని Transport layer **ports** ద్వారా చూస్తుంది. అలాగే data నమ్మకంగా (reliable), సరైన order లో చేరిందా అని ఇక్కడే చూస్తారు.
 
 రెండు ప్రధాన protocols: **TCP** (reliable, ordered) మరియు **UDP** (fast, unreliable). నీ ప్రతి `fetch()` TCP వాడుతుంది. ఇది CN interview యొక్క **అత్యంత ముఖ్యమైన topic** — TCP handshake దాదాపు ప్రతి interview లో అడుగుతారు.
+
+<div class="fig">
+<div class="cap">TCP · three-way handshake, మరియు UDP తో పోలిక</div>
+<svg viewBox="0 0 750 324"><text class="t-xs" x="0" y="14">THREE-WAY HANDSHAKE</text><rect class="n" x="30" y="26" width="140" height="30" rx="3"/><text class="t mid" x="100" y="46">Client</text><rect class="n" x="580" y="26" width="140" height="30" rx="3"/><text class="t mid" x="650" y="46">Server</text><line class="ln-thin" x1="100" y1="60" x2="100" y2="200"/><line class="ln-thin" x1="650" y1="60" x2="650" y2="200"/><line class="ln-acc" x1="104" y1="84" x2="644" y2="84" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="76">SYN  (seq = x)</text><line class="ln-acc" x1="646" y1="116" x2="106" y2="116" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="108">SYN-ACK  (seq = y, ack = x+1)</text><line class="ln-acc" x1="104" y1="148" x2="644" y2="148" marker-end="url(#aa)"/><text class="t-sm mid" x="375" y="140">ACK  (ack = y+1)</text><text class="t-acc mid" x="375" y="180">ఇప్పుడు connection ఏర్పడింది — data పంపొచ్చు</text><rect class="n-good" x="0" y="212" width="366" height="102" rx="4"/><text class="t mid" x="183" y="234">TCP</text><text class="t-sm mid" x="183" y="256">Connection ఏర్పరుస్తుంది · క్రమం హామీ</text><text class="t-sm mid" x="183" y="272">పోయిన packets ని మళ్ళీ పంపుతుంది</text><text class="t-sm mid" x="183" y="288">Flow + congestion control</text><text class="t-sm mid" x="183" y="304">నెమ్మది కానీ నమ్మదగినది</text><rect class="n-info" x="384" y="212" width="366" height="102" rx="4"/><text class="t mid" x="567" y="234">UDP</text><text class="t-sm mid" x="567" y="256">Handshake లేదు · క్రమం లేదు</text><text class="t-sm mid" x="567" y="272">పోతే పోయినట్టే</text><text class="t-sm mid" x="567" y="288">Header 8 bytes (TCP 20+)</text><text class="t-sm mid" x="567" y="304">వేగం — video call, gaming, DNS</text></svg>
+<div class="note"><b>ఎందుకు మూడు అడుగులు?</b> రెండు సరిపోవు — ఇద్దరూ "నా sequence number ఇది" అని చెప్పి, అవతలివారు దాన్ని <i>విన్నారని</i> నిర్ధారించుకోవాలి. అందుకే: నేను చెప్పాను → నువ్వు విన్నావు + నీది చెప్పావు → నేను విన్నాను.</div>
+</div>
 
 ### Real-life Scenario
 
@@ -1374,6 +1409,11 @@ WebSocket:       C⟷S (persistent), రెండువైపులా ఎప్
 1. **Request-Response model:** Client అడుగుతుంది (request), server జవాబిస్తుంది (response). Server తనంతట తానుగా మాట్లాడదు.
 2. **Stateless:** ప్రతి request స్వతంత్రం. Server గత request ని గుర్తుంచుకోదు. (State కావాలంటే cookies/tokens వాడతాం — కింద.)
 
+<div class="fig">
+<div class="cap">HTTP versions · head-of-line blocking</div>
+<svg viewBox="0 0 750 252"><text class="t-xs" x="0" y="14">HTTP/1.1 → 2 → 3</text><rect class="n-bad" x="0" y="26" width="240" height="110" rx="4"/><text class="t mid" x="120" y="48">HTTP/1.1</text><text class="t-sm mid" x="120" y="70">ఒక connection = ఒక request</text><text class="t-sm mid" x="120" y="86">Head-of-line blocking</text><text class="t-sm mid" x="120" y="102">6 connections workaround</text><rect class="n-info" x="255" y="26" width="240" height="110" rx="4"/><text class="t mid" x="375" y="48">HTTP/2</text><text class="t-sm mid" x="375" y="70">Multiplexing — ఒకే connection</text><text class="t-sm mid" x="375" y="86">Header compression · server push</text><text class="t-sm mid" x="375" y="102">కానీ TCP స్థాయిలో ఇంకా HOL</text><rect class="n-good" x="510" y="26" width="240" height="110" rx="4"/><text class="t mid" x="630" y="48">HTTP/3 (QUIC)</text><text class="t-sm mid" x="630" y="70">UDP మీద</text><text class="t-sm mid" x="630" y="86">Stream స్థాయిలో స్వతంత్రం</text><text class="t-sm mid" x="630" y="102">Connection migration (WiFi→4G)</text><rect class="n-acc" x="0" y="156" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="178">Head-of-line blocking అంటే</text><text class="t-w-sm mid" x="375" y="200">ఒక packet పోతే — దాని వెనక ఉన్నవన్నీ ఆగిపోతాయి, అవి వేరే requests వైనా సరే.</text><text class="t-w-sm mid" x="375" y="216">HTTP/2 దీన్ని application స్థాయిలో పరిష్కరించింది, కానీ TCP స్థాయిలో అలానే ఉంది.</text><text class="t-w-sm mid" x="375" y="232">HTTP/3 UDP కి మారి — ఒక stream పోతే మిగతావి ఆగవు. అదే అసలు మెరుగుదల.</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **HTTP = restaurant లో waiter తో మాట్లాడటం.**
@@ -1762,6 +1802,11 @@ Actual HTTP data పంపేముందు, TLS handshake జరుగుత�
 
 **ఎందుకు అవసరం?** IP addresses గుర్తుంచుకోవడం కష్టం (140.82.112.3 vs github.com). పైగా IPs మారొచ్చు (server మారితే) కానీ domain name అలాగే ఉంటుంది. DNS ఈ layer of indirection ఇస్తుంది.
 
+<div class="fig">
+<div class="cap">DNS · పేరు నుంచి IP వరకు</div>
+<svg viewBox="0 0 750 308"><text class="t-xs" x="0" y="14">DNS RESOLUTION · www.example.com</text><rect class="n" x="0" y="26" width="130" height="40" rx="3"/><text class="t mid" x="65" y="51">Browser</text><line class="ln" x1="134" y1="46" x2="180" y2="46" marker-end="url(#a)"/><rect class="n" x="184" y="26" width="150" height="40" rx="3"/><text class="t mid" x="259" y="44">OS / Resolver</text><text class="t-sm mid" x="259" y="60">cache చూస్తుంది</text><line class="ln-acc" x1="338" y1="46" x2="384" y2="46" marker-end="url(#aa)"/><rect class="n-acc" x="388" y="26" width="150" height="40" rx="3"/><text class="t-w mid" x="463" y="44">Root server</text><text class="t-w-sm mid" x="463" y="60">.com ఎక్కడ?</text><line class="ln-acc" x1="463" y1="70" x2="463" y2="96" marker-end="url(#aa)"/><rect class="n-acc" x="388" y="100" width="150" height="40" rx="3"/><text class="t-w mid" x="463" y="118">TLD (.com)</text><text class="t-w-sm mid" x="463" y="134">example.com ఎక్కడ?</text><line class="ln-acc" x1="463" y1="144" x2="463" y2="170" marker-end="url(#aa)"/><rect class="n-good" x="388" y="174" width="150" height="40" rx="3"/><text class="t mid" x="463" y="192">Authoritative</text><text class="t-sm mid" x="463" y="208">IP ఇదిగో</text><line class="ln-acc" x1="384" y1="194" x2="180" y2="194" marker-end="url(#aa)"/><text class="t-acc mid" x="280" y="186">93.184.216.34</text><rect class="n-info" x="560" y="90" width="190" height="102" rx="4"/><text class="t mid" x="655" y="112">ప్రతి అడుగులోనూ CACHE</text><text class="t-sm mid" x="655" y="134">Browser → OS → ISP → root</text><text class="t-sm mid" x="655" y="150">TTL ముగిసేదాకా</text><text class="t-sm mid" x="655" y="166">అందుకే చాలా lookups</text><text class="t-sm mid" x="655" y="182">root దాకా వెళ్ళవు</text><rect class="n-acc" x="0" y="232" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="254">DNS = ఇంటర్నెట్ యొక్క ఫోన్ డైరెక్టరీ</text><text class="t-w-sm mid" x="375" y="276">పేరు (www.example.com) → చిరునామా (93.184.216.34). Records: A (IPv4), AAAA (IPv6),</text><text class="t-w-sm mid" x="375" y="292">CNAME (మారుపేరు), MX (mail), TXT (verification), NS (ఏ nameserver).</text></svg>
+</div>
+
 ### Real-life Scenario
 
 > **DNS = phone contacts + telephone enquiry (180-directory).** నీకు friend పేరు "Ravi" గుర్తుంది, phone number గుర్తు లేదు. నువ్వు contacts లో "Ravi" వెతికి number పొందుతావు (name → number). Contacts లో లేకపోతే enquiry service కి call చేసి అడుగుతావు.
@@ -1921,6 +1966,11 @@ DNS కేవలం name→IP కాదు — ఇది scalability కి ఒ�
 ఇది **అత్యంత classic system-design/networking interview question** — "You type `https://github.com` in the browser and press Enter. Walk me through everything that happens until the page renders." ఈ ఒక్క ప్రశ్న నీకు CN మొత్తం తెలుసా అని test చేస్తుంది — DNS, TCP, TLS, HTTP, routing, rendering — అన్నీ ఇక్కడ కలుస్తాయి.
 
 ఈ topic ప్రత్యేకం — ఇది కొత్త concept కాదు, **ఇప్పటివరకు నేర్చుకున్నవన్నీ ఒక కథలా (story) కలపడం.** ఈ story ని గట్టిగా పట్టుకో — interview లో నీళ్ళులా చెప్పగలగాలి.
+
+<div class="fig">
+<div class="cap">URL enter చేస్తే ఏం జరుగుతుంది</div>
+<svg viewBox="0 0 750 196"><text class="t-xs" x="0" y="14">URL enter చేస్తే — పూర్తి ప్రయాణం</text><rect class="n-acc" x="0" y="26" width="118" height="56" rx="3"/><text class="t-w mid" x="59" y="59">DNS</text><text class="t-w-sm mid" x="59" y="70">పేరు → IP</text><line class="ln" x1="120" y1="54" x2="124" y2="54" marker-end="url(#a)"/><rect class="n-acc" x="126" y="26" width="118" height="56" rx="3"/><text class="t-w mid" x="185" y="59">TCP</text><text class="t-w-sm mid" x="185" y="70">3-way handshake</text><line class="ln" x1="246" y1="54" x2="250" y2="54" marker-end="url(#a)"/><rect class="n-acc" x="252" y="26" width="118" height="56" rx="3"/><text class="t-w mid" x="311" y="59">TLS</text><text class="t-w-sm mid" x="311" y="70">certificate + keys</text><line class="ln" x1="372" y1="54" x2="376" y2="54" marker-end="url(#a)"/><rect class="n" x="378" y="26" width="118" height="56" rx="3"/><text class="t mid" x="437" y="59">HTTP</text><text class="t-sm mid" x="437" y="70">GET request</text><line class="ln" x1="498" y1="54" x2="502" y2="54" marker-end="url(#a)"/><rect class="n" x="504" y="26" width="118" height="56" rx="3"/><text class="t mid" x="563" y="59">Server</text><text class="t-sm mid" x="563" y="70">render / API</text><line class="ln" x1="624" y1="54" x2="628" y2="54" marker-end="url(#a)"/><rect class="n" x="630" y="26" width="118" height="56" rx="3"/><text class="t mid" x="689" y="59">Browser</text><text class="t-sm mid" x="689" y="70">parse, paint</text><rect class="n-acc" x="0" y="100" width="750" height="86" rx="4"/><text class="t-w mid" x="375" y="122">ఇది ఎందుకు favourite interview ప్రశ్న</text><text class="t-w-sm mid" x="375" y="144">ఒక్క ప్రశ్నలో — DNS, TCP, TLS, HTTP, caching, rendering అన్నీ తాకొచ్చు.</text><text class="t-w-sm mid" x="375" y="160">మీరు ఎంత లోతుకి వెళ్తారో దాన్ని బట్టి మీ స్థాయి తెలుస్తుంది.</text><text class="t-w-sm mid" x="375" y="176">SSE స్థాయి: DNS caching పొరలు, TLS session resumption, HTTP/2 multiplexing, critical rendering path.</text></svg>
+</div>
 
 ### Real-life Scenario
 

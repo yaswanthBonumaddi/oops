@@ -29,39 +29,42 @@
 2. Class మరియు Object
 3. Constructor
 4. this keyword
-5. Encapsulation (Private Fields)
+5. Encapsulation
 6. Getters మరియు Setters
 7. Inheritance (వారసత్వం)
 8. Constructor Chaining - super()
 9. Method Overriding
 10. Abstraction
-11. Polymorphism (Runtime + Compile-time)
+11. Polymorphism
 12. Static Methods మరియు Properties
 13. Prototype Chain
 14. Mixins - Multiple Inheritance Simulation
 15. Diamond Problem
 16. Method Chaining
-17. Composition vs Inheritance
-18. Complete Real-world Example (School System)
-19. Memory Tips Table
-20. Private Methods
-21. Custom Error Classes (Error Inheritance)
-22. toString() మరియు valueOf() Override
-23. Object.create()
-24. Factory Functions
-25. Singleton Pattern
-26. Object Immutability - Object.freeze() మరియు Object.seal()
-27. Symbol.iterator - Objects ని Iterable చేయడం
-28. Duck Typing
-29. Protected Simulation (Public/Private/Protected)
-30. Operator Overloading Simulation
-31. bind(), call(), apply() - this ని Explicit గా Bind చేయడం
-32. SOLID Principles
-33. Modern Class Features (Static Blocks, Brand Checks, Symbol.hasInstance)
-34. Async in OOP (async methods, Promises, for await)
-35. Generators మరియు Iterators (function\*, yield)
-36. Class Fields మరియు Arrow Methods (Auto-bind)
-37. Symbols, new.target మరియు Reflection
+17. Complete Real-world Example - School Management System
+18. Memory Tips Table - మర్చిపోకూడదంటే
+19. Private Methods
+20. Custom Error Classes (Error Inheritance)
+21. toString() మరియు valueOf() Override
+22. Object.create() - Prototype-based Object Creation
+23. Factory Functions - Class కి Alternative
+24. Object Immutability - Object.freeze() మరియు Object.seal()
+25. Symbol.iterator - Objects ని Iterable చేయడం
+26. Protected Simulation (Public/Private/Protected)
+27. Operator Overloading Simulation
+28. bind(), call(), apply() - this ని Explicit గా Bind చేయడం
+29. Modern Class Features (ES2022+)
+30. Async in OOP (async methods, Promises, for await)
+31. Generators మరియు Iterators (function\*, yield)
+32. Class Fields మరియు Arrow Methods (Auto-bind)
+33. Symbols, new.target మరియు Reflection
+
+<div class="box">
+<div class="lab">ఈ doc ఏమి కవర్ చేస్తుంది, ఏమి చేయదు</div>
+ఇది <b>భాషా స్థాయి</b> doc — JavaScript lo objects నిజంగా ఎలా పనిచేస్తాయి: classes, prototype chain, <code>this</code>, private fields, mixins, generators, symbols.<br><br>
+<b>Design స్థాయి</b> విషయాలు — SOLID, Singleton, Composition over Inheritance, program-to-interface — ఇక్కడ ఉద్దేశపూర్వకంగా <b>లేవు</b>. అవి <b><code>LLD_Telugu.pdf</code></b> lo ఉన్నాయి (వరుసగా §5, §10, §7, §9), ఎందుకంటే అవి JavaScript గురించి కాదు — <i>ఏ భాషలోనైనా</i> class లని ఎలా అమర్చాలి అనే దాని గురించి. ఒకే విషయాన్ని రెండు books lo సగం సగం చెప్పడం కంటే, ఒక చోట పూర్తిగా చెప్పడం మేలు.<br><br>
+<b>క్రమం:</b> ఇది → <code>LLD_Telugu.pdf</code> → <code>LLD_Design_Problems_Telugu.pdf</code>.
+</div>
 
 ---
 
@@ -218,7 +221,7 @@ Method లో `this` వాడినప్పుడు, ఆ method ని ఏ ob
 
 <div class="fig">
 <div class="cap">this keyword · ఐదు నియమాలు</div>
-<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">this ఎవరిని సూచిస్తుంది — call చేసిన విధానం మీద ఆధారపడుతుంది</text><rect class="n" x="0" y="24" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="48">obj.method()</text><rect class="n-good" x="210" y="24" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="48">ఆ obj</text><text class="t-sm" x="404" y="48">అత్యంత సాధారణం — చుక్కకి ఎడమవైపు ఉన్నది</text><rect class="n" x="0" y="70" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="94">fn()</text><rect class="n-bad" x="210" y="70" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="94">undefined (strict)</text><text class="t-sm" x="404" y="94">object నుంచి విడదీసి పిలిస్తే this పోతుంది</text><rect class="n" x="0" y="116" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="140">new Fn()</text><rect class="n-info" x="210" y="116" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="140">కొత్త object</text><text class="t-sm" x="404" y="140">constructor — new సృష్టించిన object</text><rect class="n" x="0" y="162" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="186">fn.call(x) / bind(x)</text><rect class="n-acc" x="210" y="162" width="180" height="38" rx="4"/><text class="t-w-sm mid" x="300" y="186">x</text><text class="t-sm" x="404" y="186">మనం explicit గా చెప్పినది</text><rect class="n" x="0" y="208" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="232">arrow function</text><rect class="n-good" x="210" y="208" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="232">బయటి scope లోని this</text><text class="t-sm" x="404" y="232">తనకంటూ this లేదు — lexical గా తీసుకుంటుంది</text><rect class="n-bad" x="0" y="254" width="750" height="70" rx="4"/><text class="t mid" x="375" y="276">ఇదే అతి సాధారణమైన bug</text><text class="t-sm mid" x="375" y="298">const f = obj.method;  f();   ← ఇక్కడ this పోయింది. అందుకే React lo constructor lo bind</text><text class="t-sm mid" x="375" y="314">చేసేవాళ్ళు, ఇప్పుడు arrow methods (§36) వాడతారు.</text></svg>
+<svg viewBox="0 0 750 332"><text class="t-xs" x="0" y="14">this ఎవరిని సూచిస్తుంది — call చేసిన విధానం మీద ఆధారపడుతుంది</text><rect class="n" x="0" y="24" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="48">obj.method()</text><rect class="n-good" x="210" y="24" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="48">ఆ obj</text><text class="t-sm" x="404" y="48">అత్యంత సాధారణం — చుక్కకి ఎడమవైపు ఉన్నది</text><rect class="n" x="0" y="70" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="94">fn()</text><rect class="n-bad" x="210" y="70" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="94">undefined (strict)</text><text class="t-sm" x="404" y="94">object నుంచి విడదీసి పిలిస్తే this పోతుంది</text><rect class="n" x="0" y="116" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="140">new Fn()</text><rect class="n-info" x="210" y="116" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="140">కొత్త object</text><text class="t-sm" x="404" y="140">constructor — new సృష్టించిన object</text><rect class="n" x="0" y="162" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="186">fn.call(x) / bind(x)</text><rect class="n-acc" x="210" y="162" width="180" height="38" rx="4"/><text class="t-w-sm mid" x="300" y="186">x</text><text class="t-sm" x="404" y="186">మనం explicit గా చెప్పినది</text><rect class="n" x="0" y="208" width="200" height="38" rx="4"/><text class="t-sm mono mid" x="100" y="232">arrow function</text><rect class="n-good" x="210" y="208" width="180" height="38" rx="4"/><text class="t-sm mid" x="300" y="232">బయటి scope లోని this</text><text class="t-sm" x="404" y="232">తనకంటూ this లేదు — lexical గా తీసుకుంటుంది</text><rect class="n-bad" x="0" y="254" width="750" height="70" rx="4"/><text class="t mid" x="375" y="276">ఇదే అతి సాధారణమైన bug</text><text class="t-sm mid" x="375" y="298">const f = obj.method;  f();   ← ఇక్కడ this పోయింది. అందుకే React lo constructor lo bind</text><text class="t-sm mid" x="375" y="314">చేసేవాళ్ళు, ఇప్పుడు arrow methods (§32) వాడతారు.</text></svg>
 <div class="note">గుర్తుంచుకోవడానికి ఒక ప్రశ్న: <b>"ఈ function ని ఎవరు, ఎలా పిలిచారు?"</b> — <code>this</code> function ఎక్కడ <i>రాయబడిందో</i> దాని మీద కాదు, ఎలా <i>పిలవబడిందో</i> దాని మీద ఆధారపడుతుంది. Arrow functions ఒక్కటే దీనికి మినహాయింపు.</div>
 </div>
 
@@ -481,7 +484,7 @@ console.log(user.firstName); // Chaitanya
 
 <div class="fig">
 <div class="cap">Inheritance · IS-A సంబంధం</div>
-<svg viewBox="0 0 750 328"><rect class="n-acc" x="280" y="14" width="190" height="44" rx="4"/><text class="t-w mid" x="375" y="34">Animal</text><text class="t-w-sm mid" x="375" y="50">name · eat() · sleep()</text><line class="ln" x1="330" y1="88" x2="375" y2="62" marker-end="url(#hollow)"/><line class="ln" x1="560" y1="88" x2="420" y2="62" marker-end="url(#hollow)"/><rect class="n" x="200" y="92" width="260" height="52" rx="4"/><text class="t mid" x="330" y="116">Dog</text><text class="t-sm mid" x="330" y="132">+ bark()  · eat() వారసత్వం</text><rect class="n" x="490" y="92" width="260" height="52" rx="4"/><text class="t mid" x="620" y="116">Cat</text><text class="t-sm mid" x="620" y="132">+ meow() · eat() వారసత్వం</text><line class="ln" x1="330" y1="178" x2="330" y2="148" marker-end="url(#hollow)"/><rect class="n-info" x="200" y="182" width="260" height="52" rx="4"/><text class="t mid" x="330" y="206">Puppy</text><text class="t-sm mid" x="330" y="222">+ play() · bark(), eat() రెండూ</text><rect class="n-good" x="0" y="14" width="170" height="120" rx="4"/><text class="t mid" x="85" y="72">IS-A test</text><text class="t-sm mid" x="85" y="88">Dog IS-A Animal ✓</text><text class="t-sm" x="14" y="76">"is a" అని చదివితే అర్థవంతంగా</text><text class="t-sm" x="14" y="92">ఉంటేనే inheritance.</text><text class="t-acc" x="14" y="118">Car IS-A Engine ✗ — అది HAS-A</text><rect class="n-bad" x="0" y="250" width="750" height="70" rx="4"/><text class="t mid" x="375" y="272">లోతైన hierarchy ఒక ప్రమాదం</text><text class="t-sm mid" x="375" y="294">3 స్థాయిలు దాటితే — parent lo ఒక మార్పు అన్ని children ని విరగ్గొడుతుంది (fragile base</text><text class="t-sm mid" x="375" y="310">class). అందుకే §17: composition over inheritance.</text></svg>
+<svg viewBox="0 0 750 328"><rect class="n-acc" x="280" y="14" width="190" height="44" rx="4"/><text class="t-w mid" x="375" y="34">Animal</text><text class="t-w-sm mid" x="375" y="50">name · eat() · sleep()</text><line class="ln" x1="330" y1="88" x2="375" y2="62" marker-end="url(#hollow)"/><line class="ln" x1="560" y1="88" x2="420" y2="62" marker-end="url(#hollow)"/><rect class="n" x="200" y="92" width="260" height="52" rx="4"/><text class="t mid" x="330" y="116">Dog</text><text class="t-sm mid" x="330" y="132">+ bark()  · eat() వారసత్వం</text><rect class="n" x="490" y="92" width="260" height="52" rx="4"/><text class="t mid" x="620" y="116">Cat</text><text class="t-sm mid" x="620" y="132">+ meow() · eat() వారసత్వం</text><line class="ln" x1="330" y1="178" x2="330" y2="148" marker-end="url(#hollow)"/><rect class="n-info" x="200" y="182" width="260" height="52" rx="4"/><text class="t mid" x="330" y="206">Puppy</text><text class="t-sm mid" x="330" y="222">+ play() · bark(), eat() రెండూ</text><rect class="n-good" x="0" y="14" width="170" height="120" rx="4"/><text class="t mid" x="85" y="72">IS-A test</text><text class="t-sm mid" x="85" y="88">Dog IS-A Animal ✓</text><text class="t-sm" x="14" y="76">"is a" అని చదివితే అర్థవంతంగా</text><text class="t-sm" x="14" y="92">ఉంటేనే inheritance.</text><text class="t-acc" x="14" y="118">Car IS-A Engine ✗ — అది HAS-A</text><rect class="n-bad" x="0" y="250" width="750" height="70" rx="4"/><text class="t mid" x="375" y="272">లోతైన hierarchy ఒక ప్రమాదం</text><text class="t-sm mid" x="375" y="294">3 స్థాయిలు దాటితే — parent lo ఒక మార్పు అన్ని children ని విరగ్గొడుతుంది (fragile base</text><text class="t-sm mid" x="375" y="310">class). అందుకే LLD_Telugu §7 — composition over inheritance.</text></svg>
 </div>
 
 ### Code
@@ -1376,108 +1379,7 @@ console.log(query);
 
 ---
 
-## 17. Composition vs Inheritance
-
-### వివరణ
-
-- **Inheritance**: "is-a" relationship -&gt; Dog **is a** Animal
-- **Composition**: "has-a" relationship -&gt; Car **has a** Engine
-
-### Real-life Scenario
-
-> **Inheritance**: Manager **is a** Employee **is a** Person\
-> \***\*Composition**: Car **has an** Engine, **has** Wheels, **has** AC
-
-<div class="fig">
-<div class="cap">Composition vs Inheritance · IS-A నా HAS-A నా</div>
-<svg viewBox="0 0 750 446"><text class="t-xs" x="0" y="14">INHERITANCE — గట్టి బంధం (compile time)</text><rect class="n" x="280" y="24" width="190" height="40" rx="4"/><text class="t mid" x="375" y="49">Vehicle</text><line class="ln" x1="200" y1="96" x2="320" y2="68" marker-end="url(#hollow)"/><line class="ln" x1="560" y1="96" x2="430" y2="68" marker-end="url(#hollow)"/><rect class="n" x="110" y="100" width="180" height="40" rx="4"/><text class="t mid" x="200" y="125">Car</text><rect class="n" x="470" y="100" width="180" height="40" rx="4"/><text class="t mid" x="560" y="125">FlyingCar ?</text><text class="t-acc mid" x="375" y="162">"ఎగిరే పడవ" కావాలంటే? ప్రతి కలయికకీ ఒక కొత్త class</text><text class="t-xs" x="0" y="198">COMPOSITION — విడిభాగాలు కలపడం (runtime)</text><rect class="n-acc" x="280" y="208" width="190" height="44" rx="4"/><text class="t-w mid" x="375" y="228">Car</text><text class="t-w-sm mid" x="375" y="244">- engine · - gps</text><line class="ln-acc" x1="330" y1="256" x2="220" y2="288" marker-end="url(#aa)"/><line class="ln-acc" x1="420" y1="256" x2="530" y2="288" marker-end="url(#aa)"/><rect class="n-good" x="110" y="292" width="220" height="40" rx="4"/><text class="t mid" x="220" y="317">Engine</text><rect class="n-good" x="430" y="292" width="220" height="40" rx="4"/><text class="t mid" x="540" y="317">GPS</text><text class="t-sm mid" x="375" y="352">Car HAS-A Engine · భాగాలని runtime lo మార్చొచ్చు, test lo mock చేయొచ్చు</text><rect class="n-acc" x="0" y="368" width="750" height="70" rx="4"/><text class="t-w mid" x="375" y="390">నియమం</text><text class="t-w-sm mid" x="375" y="412">IS-A అని చెప్పగలిగితే inheritance. HAS-A అయితే composition. అనుమానం వస్తే — <tspan class="mono">composition</tspan>.</text><text class="t-w-sm mid" x="375" y="428">అది దాదాపు ఎప్పుడూ సురక్షితం.</text></svg>
-</div>
-
-### Code - Composition
-
-```javascript
-// Composition - parts తో object తయారు చేయడం
-class Engine {
-  constructor(horsepower) {
-    this.horsepower = horsepower;
-  }
-
-  start() {
-    console.log(`Engine (${this.horsepower}HP) start అయింది!`);
-  }
-
-  stop() {
-    console.log("Engine stop అయింది.");
-  }
-}
-
-class GPS {
-  navigate(destination) {
-    console.log(`${destination} కి navigate చేస్తున్నాం...`);
-  }
-}
-
-class AirConditioner {
-  on() {
-    console.log("AC on చేయబడింది!");
-  }
-  off() {
-    console.log("AC off చేయబడింది.");
-  }
-}
-
-// Car has-a Engine, has-a GPS, has-a AirConditioner
-class Car {
-  constructor(model, horsepower) {
-    this.model = model;
-    // Composition - objects as properties
-    this.engine = new Engine(horsepower);
-    this.gps = new GPS();
-    this.ac = new AirConditioner();
-  }
-
-  startJourney(destination) {
-    console.log(`\n${this.model} journey మొదలు:`);
-    this.engine.start();
-    this.ac.on();
-    this.gps.navigate(destination);
-  }
-
-  endJourney() {
-    console.log(`\n${this.model} journey ముగింపు:`);
-    this.ac.off();
-    this.engine.stop();
-  }
-}
-
-const car = new Car("Tesla Model 3", 450);
-car.startJourney("Hyderabad");
-// Tesla Model 3 journey మొదలు:
-// Engine (450HP) start అయింది!
-// AC on చేయబడింది!
-// Hyderabad కి navigate చేస్తున్నాం...
-
-car.endJourney();
-// Tesla Model 3 journey ముగింపు:
-// AC off చేయబడింది.
-// Engine stop అయింది.
-```
-
-### Inheritance vs Composition - ఎప్పుడు ఏది వాడాలి?
-
-| Situation                             | వాడాల్సినది              |
-| ------------------------------------- | ------------------------ |
-| "is-a" relationship (Dog is Animal)   | **Inheritance**          |
-| "has-a" relationship (Car has Engine) | **Composition**          |
-| Simple hierarchy                      | **Inheritance**          |
-| Flexible, loosely coupled code        | **Composition**          |
-| Multiple sources from behaviour       | **Composition / Mixins** |
-
-> **Rule of thumb:** "Favour composition over inheritance" - complex hierarchies వద్దు.
-
----
-
-## 18. Complete Real-world Example - School Management System
+## 17. Complete Real-world Example - School Management System
 
 అన్ని OOP concepts ఒకే example లో చూద్దాం!
 
@@ -1660,7 +1562,7 @@ try {
 
 ---
 
-## 19. Memory Tips Table - మర్చిపోకూడదంటే
+## 18. Memory Tips Table - మర్చిపోకూడదంటే
 
 | Concept               | గుర్తుంచుకోవడానికి Trick                                            |
 | --------------------- | ------------------------------------------------------------------- |
@@ -1742,7 +1644,7 @@ _JavaScript OOP - Complete Telugu Guide_
 
 ---
 
-## 20. Private Methods
+## 19. Private Methods
 
 ### వివరణ
 
@@ -1827,7 +1729,7 @@ console.log(acc.getBalance(1234)); // 8000
 
 ---
 
-## 21. Custom Error Classes (Error Inheritance)
+## 20. Custom Error Classes (Error Inheritance)
 
 ### వివరణ
 
@@ -1937,7 +1839,7 @@ try {
 
 ---
 
-## 22. toString() మరియు valueOf() Override
+## 21. toString() మరియు valueOf() Override
 
 ### వివరణ
 
@@ -2037,7 +1939,7 @@ console.log(d2 - d1); // milliseconds difference (number subtraction)
 
 ---
 
-## 23. Object.create() - Prototype-based Object Creation
+## 22. Object.create() - Prototype-based Object Creation
 
 ### వివరణ
 
@@ -2087,7 +1989,7 @@ pureObj.key = "value";
 
 ---
 
-## 24. Factory Functions - Class కి Alternative
+## 23. Factory Functions - Class కి Alternative
 
 ### వివరణ
 
@@ -2173,86 +2075,7 @@ dog.sleep(); // Tommy నిద్రపోతోంది.
 
 ---
 
-## 25. Singleton Pattern
-
-### వివరణ
-
-**Singleton** అంటే ఒక class నుండి **ఒకే ఒక instance** మాత్రమే create అవ్వాలి అనే design pattern.\
-Global state manage చేయడానికి వాడతాం.
-
-### Real-life Scenario
-
-> Application లో **database connection** ఒక్కటే ఉండాలి - ప్రతిసారి new connection తెరవకూడదు.\
-> \***\*Logger** ఒక్కటే ఉండాలి - అన్ని places నుండి same logger వాడాలి.
-
-### Code
-
-```javascript
-class DatabaseConnection {
-  static #instance = null; // Private static - single instance store
-
-  #connection;
-  #queryCount = 0;
-
-  // Private constructor - directly `new` చేయలేరు (simulation)
-  constructor(host, port) {
-    if (DatabaseConnection.#instance) {
-      throw new Error(
-        "DatabaseConnection is a Singleton! getInstance() వాడండి.",
-      );
-    }
-    this.#connection = { host, port, connected: true };
-    console.log(`Database connected to ${host}:${port}`);
-  }
-
-  // Static factory method - single instance return చేయడం
-  static getInstance(host = "localhost", port = 5432) {
-    if (!DatabaseConnection.#instance) {
-      DatabaseConnection.#instance = new DatabaseConnection(host, port);
-    }
-    return DatabaseConnection.#instance;
-  }
-
-  query(sql) {
-    this.#queryCount++;
-    console.log(`Query #${this.#queryCount}: ${sql}`);
-    return `Results for: ${sql}`;
-  }
-
-  getQueryCount() {
-    return this.#queryCount;
-  }
-
-  static resetInstance() {
-    DatabaseConnection.#instance = null; // Testing కోసం
-  }
-}
-
-// First call - connection create అవుతుంది
-const db1 = DatabaseConnection.getInstance("db.server.com", 5432);
-// Database connected to db.server.com:5432
-
-// Second call - same instance return అవుతుంది (no new connection!)
-const db2 = DatabaseConnection.getInstance();
-
-console.log(db1 === db2); // true - same object!
-
-db1.query("SELECT * FROM users"); // Query #1: SELECT * FROM users
-db2.query("SELECT * FROM products"); // Query #2: SELECT * FROM products
-
-console.log(db1.getQueryCount()); // 2 (both queries counted on SAME instance)
-
-// Direct new - error!
-try {
-  const db3 = new DatabaseConnection("other.server.com", 5432);
-} catch (e) {
-  console.log(e.message); // DatabaseConnection is a Singleton!
-}
-```
-
----
-
-## 26. Object Immutability - Object.freeze() మరియు Object.seal()
+## 24. Object Immutability - Object.freeze() మరియు Object.seal()
 
 ### వివరణ
 
@@ -2388,7 +2211,7 @@ console.log(checkUser(Status.BANNED)); // 🚫 Access denied
 
 ---
 
-## 27. Symbol.iterator - Objects ని Iterable చేయడం
+## 25. Symbol.iterator - Objects ని Iterable చేయడం
 
 ### వివరణ
 
@@ -2471,96 +2294,7 @@ console.log(firstItem.name); // Rice
 
 ---
 
-## 28. Duck Typing - Interface-like Behaviour
-
-### వివరణ
-
-JavaScript లో official interfaces లేవు.\
-కానీ **Duck Typing** concept వాడతాం:
-
-> "If it walks like a duck and quacks like a duck, it is a duck."\
-> అంటే - object కి ఆ method ఉంటే, అది ఆ type లా treat చేస్తాం.
-
-### Real-life Scenario
-
-> Printable interface: ఏ object కైనా `print()` method ఉంటే, అది printable అని treat చేయవచ్చు.
-
-### Code
-
-```javascript
-// "Interface" simulate - runtime check
-function assertImplements(obj, interfaceName, methods) {
-  for (const method of methods) {
-    if (typeof obj[method] !== "function") {
-      throw new Error(
-        `${obj.constructor.name} must implement "${method}()" from ${interfaceName} interface`,
-      );
-    }
-  }
-}
-
-// Required methods list (like interface definition)
-const DRAWABLE_INTERFACE = ["draw", "resize", "getArea"];
-const SAVEABLE_INTERFACE = ["save", "load"];
-
-class Circle {
-  constructor(radius) {
-    this.radius = radius;
-    assertImplements(this, "Drawable", DRAWABLE_INTERFACE); // Runtime check
-  }
-
-  draw() {
-    console.log(`Circle (r=${this.radius}) drawing...`);
-  }
-  resize(factor) {
-    this.radius *= factor;
-  }
-  getArea() {
-    return Math.PI * this.radius ** 2;
-  }
-}
-
-class Rectangle {
-  constructor(w, h) {
-    this.width = w;
-    this.height = h;
-    assertImplements(this, "Drawable", DRAWABLE_INTERFACE);
-  }
-
-  draw() {
-    console.log(`Rectangle (${this.width}x${this.height}) drawing...`);
-  }
-  resize(factor) {
-    this.width *= factor;
-    this.height *= factor;
-  }
-  getArea() {
-    return this.width * this.height;
-  }
-}
-
-// Duck typing - draw() ఉంటే, అది drawable!
-function renderAll(shapes) {
-  shapes.forEach((shape) => {
-    shape.draw();
-    console.log(`  Area: ${shape.getArea().toFixed(2)}`);
-  });
-}
-
-const shapes = [new Circle(5), new Rectangle(4, 6), new Circle(3)];
-
-renderAll(shapes);
-// Circle (r=5) drawing...
-//   Area: 78.54
-// Rectangle (4x6) drawing...
-//   Area: 24.00
-// Circle (r=3) drawing...
-//   Area: 28.27
-```
-
----
-
-## 29. Protected Simulation (Public/Private/Protected)
+## 26. Protected Simulation (Public/Private/Protected)
 
 ### వివరణ
 
@@ -2663,7 +2397,7 @@ console.log(dog.getInfo()); // Tommy (ID: xyz123, Age: 3)
 
 ---
 
-## 30. Operator Overloading Simulation
+## 27. Operator Overloading Simulation
 
 ### వివరణ
 
@@ -2736,7 +2470,7 @@ console.log(`${v1}`); // Vector2D(3, 4)
 
 ---
 
-## 31. bind(), call(), apply() - this ని Explicit గా Bind చేయడం
+## 28. bind(), call(), apply() - this ని Explicit గా Bind చేయడం
 
 ### వివరణ
 
@@ -2840,207 +2574,7 @@ console.log(double(10)); // 20  (2 * 10)
 
 ---
 
-## 32. SOLID Principles
-
-### వివరణ
-
-**SOLID** అంటే మంచి, maintainable OOP code రాయడానికి 5 design principles. ఇవి Robert C. Martin (Uncle Bob) చెప్పినవి. వీటిని follow చేస్తే code flexible, testable, మరియు easy-to-change గా ఉంటుంది.
-
-| అక్షరం | Principle             | సూత్రం (ఒక్క వాక్యం)                                    |
-| ------ | --------------------- | ------------------------------------------------------- |
-| **S**  | Single Responsibility | ఒక class కి ఒకే ఒక పని (మారడానికి ఒకే కారణం)            |
-| **O**  | Open/Closed           | Extension కి open, modification కి closed               |
-| **L**  | Liskov Substitution   | Parent స్థానంలో child పెట్టినా code పని చేయాలి          |
-| **I**  | Interface Segregation | పెద్ద interface కంటే చిన్న, specific interfaces మంచివి  |
-| **D**  | Dependency Inversion  | Concrete class మీద కాదు, abstraction మీద depend అవ్వాలి |
-
-### S - Single Responsibility Principle
-
-> ఒక class database work, email work, business logic అన్నీ చేస్తే - ఏదో ఒకటి మారితే మొత్తం class touch చేయాలి. బదులుగా ఒక్కో పని ఒక్కో class కి ఇస్తాం.
-
-```javascript
-// WRONG: User class database + email అన్నీ చేస్తోంది
-// CORRECT: బాధ్యతలు విడదీయడం
-class User {
-  constructor(name, email) {
-    this.name = name;
-    this.email = email;
-  }
-}
-
-class UserRepository {
-  // ఒకే బాధ్యత: save/load
-  save(user) {
-    console.log(`${user.name} ని database లో save చేశాం.`);
-  }
-}
-
-class EmailService {
-  // ఒకే బాధ్యత: email పంపడం
-  sendWelcome(user) {
-    console.log(`${user.email} కి welcome email పంపాం.`);
-  }
-}
-
-const u = new User("Yaswanth", "y@mail.com");
-new UserRepository().save(u); // Yaswanth ని database లో save చేశాం.
-new EmailService().sendWelcome(u); // y@mail.com కి welcome email పంపాం.
-```
-
-### O - Open/Closed Principle
-
-> కొత్త shape add చేయాలంటే existing code (Shape, totalArea) మార్చకూడదు - కొత్త class రాస్తే చాలు.
-
-```javascript
-class Shape {
-  area() {
-    throw new Error("area() implement చేయాలి!");
-  }
-}
-
-class Circle extends Shape {
-  constructor(r) {
-    super();
-    this.r = r;
-  }
-  area() {
-    return Math.PI * this.r ** 2;
-  }
-}
-
-class Square extends Shape {
-  constructor(s) {
-    super();
-    this.s = s;
-  }
-  area() {
-    return this.s ** 2;
-  }
-}
-
-// కొత్త shape - పాత code ఏమీ మార్చకుండా add చేయవచ్చు (Open for extension)
-class Triangle extends Shape {
-  constructor(b, h) {
-    super();
-    this.b = b;
-    this.h = h;
-  }
-  area() {
-    return 0.5 * this.b * this.h;
-  }
-}
-
-function totalArea(shapes) {
-  return shapes.reduce((sum, s) => sum + s.area(), 0);
-}
-
-console.log(
-  totalArea([new Circle(2), new Square(3), new Triangle(4, 5)]).toFixed(2),
-);
-// 31.57
-```
-
-### L - Liskov Substitution Principle
-
-> Parent (Bird) ని ఆశించే చోట ఏ child (Sparrow, Penguin) పెట్టినా program break అవ్వకూడదు.
-
-```javascript
-class Bird {
-  move() {
-    console.log("Bird కదులుతోంది.");
-  }
-}
-
-class Sparrow extends Bird {
-  move() {
-    console.log("Sparrow ఎగురుతోంది.");
-  }
-}
-
-class Penguin extends Bird {
-  move() {
-    console.log("Penguin నడుస్తోంది.");
-  } // ఎగరదు, కానీ move() contract ని honour చేస్తుంది
-}
-
-function makeItMove(bird) {
-  bird.move(); // ఏ Bird అయినా substitute చేయవచ్చు
-}
-
-makeItMove(new Sparrow()); // Sparrow ఎగురుతోంది.
-makeItMove(new Penguin()); // Penguin నడుస్తోంది.
-```
-
-### I - Interface Segregation Principle
-
-> Robot కి `eat()` అవసరం లేదు. ఒక పెద్ద interface లో అన్నీ కూరకుండా, చిన్న capabilities (Workable, Eatable) విడదీసి కావలసినవి మాత్రమే combine చేస్తాం (mixins వాడి - Topic 14).
-
-```javascript
-const Workable = (Base) =>
-  class extends Base {
-    work() {
-      console.log(`${this.name} పని చేస్తోంది.`);
-    }
-  };
-const Eatable = (Base) =>
-  class extends Base {
-    eat() {
-      console.log(`${this.name} తింటోంది.`);
-    }
-  };
-
-class Entity {
-  constructor(name) {
-    this.name = name;
-  }
-}
-
-class Human extends Workable(Eatable(Entity)) {} // work + eat రెండూ
-class Robot extends Workable(Entity) {} // work మాత్రమే (eat బలవంతం కాదు)
-
-new Human("Ravi").work(); // Ravi పని చేస్తోంది.
-new Robot("R2D2").work(); // R2D2 పని చేస్తోంది.
-```
-
-### D - Dependency Inversion Principle
-
-> `Notification` ఏ specific channel (SMS/Email) మీద కాకుండా, ఒక `send()` contract మీద depend అవుతుంది. Channel ని బయటి నుండి inject చేస్తాం (dependency injection - Topic 17 composition లాంటిదే).
-
-```javascript
-class SMSChannel {
-  send(msg) {
-    console.log(`SMS: ${msg}`);
-  }
-}
-class EmailChannel {
-  send(msg) {
-    console.log(`Email: ${msg}`);
-  }
-}
-
-class Notification {
-  constructor(channel) {
-    // dependency ని inject చేయడం
-    this.channel = channel;
-  }
-  notify(msg) {
-    this.channel.send(msg);
-  }
-}
-
-new Notification(new SMSChannel()).notify("Hello via SMS"); // SMS: Hello via SMS
-new Notification(new EmailChannel()).notify("Hello via Email"); // Email: Hello via Email
-```
-
-### Key Points
-
-- SOLID = maintainable, testable, flexible OOP code కి guidelines
-- ఈ document లో నేర్చుకున్న inheritance, polymorphism, mixins, composition - అన్నీ ఇక్కడ కలిసి పని చేస్తాయి
-- Real projects లో ఈ principles code quality ని కాపాడతాయి
-
----
-
-## 33. Modern Class Features (ES2022+)
+## 29. Modern Class Features (ES2022+)
 
 ### వివరణ
 
@@ -3110,7 +2644,7 @@ console.log(Account.isAccount("hello")); // false  (primitive - error రాద�
 
 ### Symbol.hasInstance - instanceof ని Customize చేయడం
 
-> `Symbol.hasInstance` override చేస్తే, `instanceof` ఏం చెప్పాలో మనమే నిర్ణయించవచ్చు. ఇక్కడ `area()` method ఉన్న ఏ object అయినా "Shape" గా treat అవుతుంది (duck typing - Topic 28 లాంటిది).
+> `Symbol.hasInstance` override చేస్తే, `instanceof` ఏం చెప్పాలో మనమే నిర్ణయించవచ్చు. ఇక్కడ `area()` method ఉన్న ఏ object అయినా "Shape" గా treat అవుతుంది (duck typing - `LLD_Telugu.md` §9 లాంటిది).
 
 ```javascript
 class Shape {
@@ -3137,7 +2671,7 @@ console.log({} instanceof Shape); // false (area() లేదు)
 
 ---
 
-## 34. Async in OOP (async methods, Promises, for await)
+## 30. Async in OOP (async methods, Promises, for await)
 
 ### వివరణ
 
@@ -3202,11 +2736,11 @@ for await (const order of service.streamOrders()) {
 
 ---
 
-## 35. Generators మరియు Iterators (function\*, yield)
+## 31. Generators మరియు Iterators (function\*, yield)
 
 ### వివరణ
 
-**Generator** = అవసరమైనప్పుడు (lazily), ఒక్కో value ని `yield` చేసే special function (`function*`). Topic 27 లో iterator ని manual గా (`next()`, `{value, done}`) రాశాం - generator అదే పని **చాలా సులభంగా** చేస్తుంది.
+**Generator** = అవసరమైనప్పుడు (lazily), ఒక్కో value ని `yield` చేసే special function (`function*`). Topic 25 లో iterator ని manual గా (`next()`, `{value, done}`) రాశాం - generator అదే పని **చాలా సులభంగా** చేస్తుంది.
 
 ### Real-life Scenario
 
@@ -3222,7 +2756,7 @@ class NumberRange {
     this.end = end;
     this.step = step;
   }
-  // Topic 27 లోని పొడవైన next() code బదులు - ఒక్క generator!
+  // Topic 25 లోని పొడవైన next() code బదులు - ఒక్క generator!
   *[Symbol.iterator]() {
     for (let i = this.start; i <= this.end; i += this.step) {
       yield i; // ఒక్కో value ని ఇక్కడ "pause చేసి" ఇస్తుంది
@@ -3251,7 +2785,7 @@ function* combined() {
 console.log([...combined()]); // [1, 2, 'a', 'b']
 ```
 
-### Manual Iterator (Topic 27) vs Generator
+### Manual Iterator (Topic 25) vs Generator
 
 |          | Manual `[Symbol.iterator]()`     | Generator `*[Symbol.iterator]()` |
 | -------- | -------------------------------- | -------------------------------- |
@@ -3263,7 +2797,7 @@ console.log([...combined()]); // [1, 2, 'a', 'b']
 
 ---
 
-## 36. Class Fields మరియు Arrow Methods (Auto-bind)
+## 32. Class Fields మరియు Arrow Methods (Auto-bind)
 
 ### వివరణ
 
@@ -3271,7 +2805,7 @@ Modern JavaScript లో constructor లేకుండానే **class fields*
 
 ### Real-life Scenario
 
-> Topic 31 లో event handler కి `this` పోకుండా `.bind(this)` వాడాం. Arrow method field (`handleClick = () => {}`) అదే auto-bind ని constructor లో bind రాయకుండానే ఇస్తుంది - React components లో అత్యంత common.
+> Topic 28 లో event handler కి `this` పోకుండా `.bind(this)` వాడాం. Arrow method field (`handleClick = () => {}`) అదే auto-bind ని constructor లో bind రాయకుండానే ఇస్తుంది - React components లో అత్యంత common.
 
 ### Code
 
@@ -3332,7 +2866,7 @@ try {
 
 ---
 
-## 37. Symbols, new.target మరియు Reflection
+## 33. Symbols, new.target మరియు Reflection
 
 ### వివరణ
 

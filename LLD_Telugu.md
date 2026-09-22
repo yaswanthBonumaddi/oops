@@ -29,13 +29,13 @@
 **Part 1 — పునాదులు (Foundations)**
 
 1. LLD అంటే ఏమిటి? (HLD vs LLD)
-2. LLD ని ఎలా approach చేయాలి (Process)
+2. LLD ని ఎలా approach చేయాలి — ఆరు అడుగుల Framework
 3. Class Relationships (Association, Aggregation, Composition, Dependency)
 4. UML Class Diagram చదవడం
 
 **Part 2 — Design Principles**
 
-5\. SOLID (LLD దృష్టితో)\
+5\. SOLID Principles\
 6. DRY, KISS, YAGNI\
 7. Composition over Inheritance\
 8. Law of Demeter (కనీస పరిచయ సూత్రం)\
@@ -73,29 +73,24 @@
 31. Visitor\
 32. Interpreter
 
-**Part 6 — Real-world Case Studies**
+**Part 6 — Beyond GoF (Practical LLD Patterns)**
 
-33\. Parking Lot System\
-34. LRU Cache\
-35. Vending Machine (State pattern)\
-36. Rate Limiter\
-37. Notification Service (Observer + Strategy)\
-38. Elevator System\
-39. Tic-Tac-Toe
+33\. Dependency Injection (DI)\
+34. Object Pool\
+35. Null Object\
+36. Concurrency మరియు Thread-Safety\
+37. Architecture Patterns (MVC / Layered / Pub-Sub)
 
-**Part 7 — Beyond GoF (Practical LLD Patterns**)
+**Part 7 — Interview & Reference**
 
-40\. Dependency Injection (DI)\
-41. Object Pool\
-42. Null Object\
-43. Concurrency మరియు Thread-Safety\
-44. Architecture Patterns (MVC / Layered / Pub-Sub)
+38\. ఏ Pattern ఎప్పుడు వాడాలి? (Cheat Sheet)\
+39. Memory Tips Table
 
-**Part 8 — Interview & Reference**
-
-45\. ఏ Pattern ఎప్పుడు వాడాలి? (Cheat Sheet)\
-46. LLD Interview Framework (5 అడుగులు)\
-47. Memory Tips Table
+<div class="box">
+<div class="lab">ఈ book lo worked problems ఎందుకు లేవు</div>
+Parking Lot, LRU Cache, Elevator, Vending Machine, Rate Limiter, Notification Service — ఈ problems ఇక్కడ <b>ఉద్దేశపూర్వకంగా లేవు</b>. అవి <b><code>LLD_Design_Problems_Telugu.pdf</code></b> lo ఒక్కోటి 6–10 పేజీలుగా, clarifying questions నుంచి interview script వరకు పూర్తిగా ఉన్నాయి. ఒకే problem ని రెండు చోట్లా సగం సగం చెప్పడం కంటే, ఒక చోట పూర్తిగా చెప్పడం మేలు.<br><br>
+<b>వాడే క్రమం:</b> ఈ book = <i>పరికరాల పెట్టె</i> (ఏ pattern ఎప్పుడు, ఎందుకు). ఆ book = <i>ఆ పరికరాలతో 17 నిజమైన problems</i>. మొదట ఇది, తర్వాత అది.
+</div>
 
 ---
 
@@ -143,24 +138,31 @@
 
 ---
 
-## 2. LLD ని ఎలా approach చేయాలి (Process)
+## 2. LLD ని ఎలా approach చేయాలి — ఆరు అడుగుల Framework
 
 ### వివరణ
 
-ఒక problem ("Design a Parking Lot") ఇచ్చినప్పుడు నేరుగా code రాయకూడదు. ఒక క్రమం (process) follow చేయాలి.
+ఒక problem ("Design a Parking Lot") ఇచ్చినప్పుడు నేరుగా code రాయకూడదు. ఒక క్రమం follow చేయాలి.
 
-### 6 అడుగుల Process
+<div class="box">
+<div class="lab">ఇదే ఏకైక framework</div>
+ఈ ఆరు అడుగులే <b><code>LLD_Design_Problems_Telugu.pdf</code></b> lo ఉన్న 17 problems అన్నిటికీ వాడబడతాయి — ఆ book lo ప్రతి problem ఇదే క్రమంలో పరిష్కరించబడింది. ఒకే framework ని రెండు చోట్లా వాడటం ఉద్దేశపూర్వకం: ఇక్కడ నేర్చుకో, అక్కడ 17 సార్లు ఆచరించు.
+</div>
 
-| అడుగు                    | ఏం చేయాలి                       | ఉదా (Parking Lot)                       |
-| ------------------------ | ------------------------------- | --------------------------------------- |
-| 1\. Requirements         | ఏం కావాలో clarify చేయి          | ఎన్ని floors? bike + car?               |
-| 2\. Entities గుర్తించు   | Nouns → classes                 | ParkingLot, Slot, Vehicle, Ticket       |
-| 3\. Attributes + Methods | ప్రతి class కి data + behaviour | Slot: id, isFree, park()                |
-| 4\. Relationships        | classes మధ్య సంబంధం             | Lot **has** Floors, Floor **has** Slots |
-| 5\. Design Patterns      | ఎక్కడ ఏ pattern సరిపోతుంది      | Strategy (fee), Factory (vehicle)       |
-| 6\. Code + Refine        | classes రాసి, SOLID check చేయి  | test చేసి improve చేయి                  |
+### ఆరు అడుగులు — 60 నిమిషాల interview lo
 
-### Nouns → Classes, Verbs → Methods (Trick)
+| # | అడుగు | సమయం | ఏం చేయాలి | ఉదా (Parking Lot) |
+| --- | --- | --- | --- | --- |
+| 1 | **Clarify** | ~5 నిమి | Scope, features, constraints అడుగు | ఎన్ని floors? bike + car? payment ఉందా? |
+| 2 | **Use cases** | ~5 నిమి | ఎవరు ఏం చేస్తారో వాక్యాలుగా రాయి | "A driver parks a car and pays on exit" |
+| 3 | **Nouns → Classes** | ~8 నిమి | Nouns = classes, verbs = methods | `ParkingLot`, `Floor`, `Spot`, `Ticket`, `Vehicle` |
+| 4 | **Class diagram** | ~10 నిమి | Attributes, methods, relationships | Lot **has** Floors, Floor **has** Spots |
+| 5 | **Code** | ~22 నిమి | ముఖ్య classes రాయి, patterns ఇక్కడ వస్తాయి | Strategy (fee), Factory (vehicle) |
+| 6 | **Extend + Q&A** | ~10 నిమి | Follow-up ని ఎదుర్కో, SOLID check | "ఇప్పుడు EV charging కూడా కావాలంటే?" |
+
+> **అత్యంత సాధారణ తప్పు:** అడుగు 1–4 ని దాటవేసి నేరుగా అడుగు 5 కి వెళ్ళడం. Interviewer చూసేది నీ code కాదు — **నీ ఆలోచనా క్రమం**. అడుగు 1–4 lo నువ్వు ఓడిపోతే, perfect code కూడా నిన్ను కాపాడదు.
+
+### Nouns → Classes, Verbs → Methods (అడుగు 3 యొక్క ఉపాయం)
 
 > Requirement వాక్యాలలో **naamavaachakaalu (nouns)** classes అవుతాయి, **kriyalu (verbs)** methods అవుతాయి.
 >
@@ -169,11 +171,27 @@
 > - Nouns → `User`, `Ticket`, `Show` (classes)
 > - Verb → `book()` (method)
 
+### చెప్పకూడని / చెప్పాల్సిన మాటలు
+
+| ❌ చెప్పకు                  | ✅ చెప్పు                             |
+| --------------------------- | ------------------------------------- |
+| నేరుగా code మొదలుపెట్టడం    | "ముందు requirements clarify చేస్తాను" |
+| "ఇలా చేస్తా" (మౌనంగా)       | Think aloud — ఆలోచనని బయటికి చెప్పు   |
+| ఒకే perfect solution వెతకడం | Trade-offs మాట్లాడు                   |
+| అన్ని patterns కూరడం        | అవసరమైనవి మాత్రమే (YAGNI — §6)        |
+
+### Trade-off ని ఎలా చెప్పాలి
+
+Interviewer perfect design కంటే **నీ reasoning** ని చూస్తాడు. ఒక pattern వాడినప్పుడు ఎప్పుడూ మూడు ముక్కలు చెప్పు — **ఎందుకు వాడాను, దేన్ని తప్పించాను, దీని ఖర్చు ఏమిటి**:
+
+> "ఇక్కడ Strategy వాడాను ఎందుకంటే pricing rules తరచూ మారతాయి. Inheritance వాడితే `CarWeekendPricing`, `BikeHolidayPricing` లాంటి class explosion వచ్చేది. ఖర్చు — classes కొంచెం పెరుగుతాయి, మరియు ఒక చిన్న app కి ఇది over-engineering కావొచ్చు. ఈ scale lo అది acceptable trade-off."
+
 ### Key Points
 
-- ముందు మాట్లాడు (requirements), తర్వాత గీయి (diagram), చివరిలో రాయి (code)
-- Over-engineering వద్దు - అవసరం లేని patterns కూరకు (YAGNI - Topic 6)
-- ఒక్కో class కి ఒకే బాధ్యత (SRP) - ఇది LLD యొక్క గుండె
+- ముందు **మాట్లాడు** (clarify), తర్వాత **గీయి** (diagram), చివరిలో **రాయి** (code).
+- Over-engineering వద్దు — అవసరం లేని patterns కూరకు (YAGNI — §6).
+- ఒక్కో class కి ఒకే బాధ్యత (SRP) — ఇది LLD యొక్క గుండె.
+- ప్రతి pattern ఎంపికకి: **ఎందుకు + దేన్ని తప్పించాను + ఖర్చు**.
 
 ---
 
@@ -435,11 +453,11 @@ User        Controller      Service        Database
 
 ---
 
-## 5. SOLID (LLD దృష్టితో)
+## 5. SOLID Principles
 
 ### వివరణ
 
-SOLID = మంచి LLD కి 5 మూల సూత్రాలు. (వివరమైన Telugu examples కోసం `OOPS_Telugu.md` Topic 32 చూడు.) ఇక్కడ LLD problem లో వీటిని ఎలా _వాడాలో_ చూద్దాం.
+SOLID = మంచి design కి ఐదు మూల సూత్రాలు, Robert C. Martin చెప్పినవి. ఇవి ఏ pattern వాడినా వర్తిస్తాయి — అందుకే patterns కి *ముందు* ఇవి. ప్రతి సూత్రానికీ ఒక తప్పు, ఒక సరైన రూపం చూద్దాం.
 
 | అక్షరం | సూత్రం                | LLD లో అర్థం                                      |
 | ------ | --------------------- | ------------------------------------------------- |
@@ -454,11 +472,160 @@ SOLID = మంచి LLD కి 5 మూల సూత్రాలు. (వివ
 <svg viewBox="0 0 750 302"><rect class="n-acc" x="0" y="8" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="33" style="font-size:17px;font-weight:800">S</text><rect class="n" x="52" y="8" width="698" height="38" rx="4"/><text class="t" x="66" y="25">Single Responsibility</text><text class="t-sm" x="66" y="40">ఒక class కి మారడానికి ఒకే ఒక్క కారణం ఉండాలి</text><rect class="n-acc" x="0" y="54" width="46" height="38" rx="4"/><text class="t-w mid" x="23" y="79" style="font-size:17px;font-weight:800">O</text><rect class="n" x="52" y="54" width="698" height="38" rx="4"/><text class="t" x="66" y="71">Open / Closed</text><text class="t-sm" x="66" y="86">పొడిగించడానికి తెరిచి, మార్చడానికి మూసి</text><rect class="n-info" x="0" y="100" width="46" height="38" rx="4"/><text class="t mid" x="23" y="125" style="font-size:17px;font-weight:800">L</text><rect class="n" x="52" y="100" width="698" height="38" rx="4"/><text class="t" x="66" y="117">Liskov Substitution</text><text class="t-sm" x="66" y="132">Child ని parent స్థానంలో పెడితే ఏమీ విరగకూడదు</text><rect class="n-info" x="0" y="146" width="46" height="38" rx="4"/><text class="t mid" x="23" y="171" style="font-size:17px;font-weight:800">I</text><rect class="n" x="52" y="146" width="698" height="38" rx="4"/><text class="t" x="66" y="163">Interface Segregation</text><text class="t-sm" x="66" y="178">వాడని methods ని implement చేయమని బలవంతం చేయొద్దు</text><rect class="n-good" x="0" y="192" width="46" height="38" rx="4"/><text class="t mid" x="23" y="217" style="font-size:17px;font-weight:800">D</text><rect class="n" x="52" y="192" width="698" height="38" rx="4"/><text class="t" x="66" y="209">Dependency Inversion</text><text class="t-sm" x="66" y="224">Concrete class మీద కాదు, abstraction మీద ఆధారపడు</text><rect class="n-soft" x="0" y="242" width="750" height="52" rx="4"/><text class="t mid" x="375" y="264">ఐదింటిలో <tspan class="t-acc">O</tspan> మరియు <tspan class="t-acc">D</tspan> — ఇవే interview lo అత్యధికంగా test అవుతాయి</text><text class="t-sm mid" x="375" y="284">ఎందుకంటే "కొత్త requirement వస్తే ఏం మారుతుంది?" అనే ప్రశ్నకి జవాబు సరిగ్గా ఈ రెండే</text></svg>
 </div>
 
-### Code - SRP + OCP + DIP కలిసి ఒక ఉదాహరణలో
+### S — Single Responsibility Principle
+
+> ఒక class database work, email work, business logic అన్నీ చేస్తే - ఏదో ఒకటి మారితే మొత్తం class touch చేయాలి. బదులుగా ఒక్కో పని ఒక్కో class కి ఇస్తాం.
 
 ```javascript
-// D - Notification concrete channel మీద కాదు, "send()" contract మీద depend
-class SmsChannel {
+// WRONG: User class database + email అన్నీ చేస్తోంది
+// CORRECT: బాధ్యతలు విడదీయడం
+class User {
+  constructor(name, email) {
+    this.name = name;
+    this.email = email;
+  }
+}
+
+class UserRepository {
+  // ఒకే బాధ్యత: save/load
+  save(user) {
+    console.log(`${user.name} ని database లో save చేశాం.`);
+  }
+}
+
+class EmailService {
+  // ఒకే బాధ్యత: email పంపడం
+  sendWelcome(user) {
+    console.log(`${user.email} కి welcome email పంపాం.`);
+  }
+}
+
+const u = new User("Yaswanth", "y@mail.com");
+new UserRepository().save(u); // Yaswanth ని database లో save చేశాం.
+new EmailService().sendWelcome(u); // y@mail.com కి welcome email పంపాం.
+```
+
+### O — Open/Closed Principle
+
+> కొత్త shape add చేయాలంటే existing code (Shape, totalArea) మార్చకూడదు - కొత్త class రాస్తే చాలు.
+
+```javascript
+class Shape {
+  area() {
+    throw new Error("area() implement చేయాలి!");
+  }
+}
+
+class Circle extends Shape {
+  constructor(r) {
+    super();
+    this.r = r;
+  }
+  area() {
+    return Math.PI * this.r ** 2;
+  }
+}
+
+class Square extends Shape {
+  constructor(s) {
+    super();
+    this.s = s;
+  }
+  area() {
+    return this.s ** 2;
+  }
+}
+
+// కొత్త shape - పాత code ఏమీ మార్చకుండా add చేయవచ్చు (Open for extension)
+class Triangle extends Shape {
+  constructor(b, h) {
+    super();
+    this.b = b;
+    this.h = h;
+  }
+  area() {
+    return 0.5 * this.b * this.h;
+  }
+}
+
+function totalArea(shapes) {
+  return shapes.reduce((sum, s) => sum + s.area(), 0);
+}
+
+console.log(
+  totalArea([new Circle(2), new Square(3), new Triangle(4, 5)]).toFixed(2),
+);
+// 31.57
+```
+
+### L — Liskov Substitution Principle
+
+> Parent (Bird) ని ఆశించే చోట ఏ child (Sparrow, Penguin) పెట్టినా program break అవ్వకూడదు.
+
+```javascript
+class Bird {
+  move() {
+    console.log("Bird కదులుతోంది.");
+  }
+}
+
+class Sparrow extends Bird {
+  move() {
+    console.log("Sparrow ఎగురుతోంది.");
+  }
+}
+
+class Penguin extends Bird {
+  move() {
+    console.log("Penguin నడుస్తోంది.");
+  } // ఎగరదు, కానీ move() contract ని honour చేస్తుంది
+}
+
+function makeItMove(bird) {
+  bird.move(); // ఏ Bird అయినా substitute చేయవచ్చు
+}
+
+makeItMove(new Sparrow()); // Sparrow ఎగురుతోంది.
+makeItMove(new Penguin()); // Penguin నడుస్తోంది.
+```
+
+### I — Interface Segregation Principle
+
+> Robot కి `eat()` అవసరం లేదు. ఒక పెద్ద interface లో అన్నీ కూరకుండా, చిన్న capabilities (Workable, Eatable) విడదీసి కావలసినవి మాత్రమే combine చేస్తాం (mixins వాడి — `OOPS_Telugu.md` §14).
+
+```javascript
+const Workable = (Base) =>
+  class extends Base {
+    work() {
+      console.log(`${this.name} పని చేస్తోంది.`);
+    }
+  };
+const Eatable = (Base) =>
+  class extends Base {
+    eat() {
+      console.log(`${this.name} తింటోంది.`);
+    }
+  };
+
+class Entity {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+class Human extends Workable(Eatable(Entity)) {} // work + eat రెండూ
+class Robot extends Workable(Entity) {} // work మాత్రమే (eat బలవంతం కాదు)
+
+new Human("Ravi").work(); // Ravi పని చేస్తోంది.
+new Robot("R2D2").work(); // R2D2 పని చేస్తోంది.
+```
+
+### D — Dependency Inversion Principle
+
+> `Notification` ఏ specific channel (SMS/Email) మీద కాకుండా, ఒక `send()` contract మీద depend అవుతుంది. Channel ని బయటి నుండి inject చేస్తాం (dependency injection — §33).
+
+```javascript
+class SMSChannel {
   send(msg) {
     console.log(`SMS: ${msg}`);
   }
@@ -469,33 +636,40 @@ class EmailChannel {
   }
 }
 
-// O - కొత్త channel (WhatsApp) add చేయాలంటే ఈ class లు మార్చక్కర్లేదు
-class WhatsAppChannel {
-  send(msg) {
-    console.log(`WhatsApp: ${msg}`);
-  }
-}
-
-// S - Notifier కి ఒకే బాధ్యత: message పంపడం (channel ఎంపిక దాని పని కాదు)
-class Notifier {
+class Notification {
   constructor(channel) {
+    // dependency ని inject చేయడం
     this.channel = channel;
-  } // dependency injection
+  }
   notify(msg) {
     this.channel.send(msg);
   }
 }
 
-new Notifier(new SmsChannel()).notify("OTP 1234"); // SMS: OTP 1234
-new Notifier(new EmailChannel()).notify("Welcome!"); // Email: Welcome!
-new Notifier(new WhatsAppChannel()).notify("Order shipped"); // WhatsApp: Order shipped
+new Notification(new SMSChannel()).notify("Hello via SMS"); // SMS: Hello via SMS
+new Notification(new EmailChannel()).notify("Hello via Email"); // Email: Hello via Email
 ```
+
+### Interview lo SOLID ని ఎలా వాడాలి
+
+సూత్రాల పేర్లు అప్పజెప్పడం కాదు — ఒక **smell** ని చూపించి, ఏ సూత్రం దాన్ని పరిష్కరిస్తుందో చెప్పడం. ఇదే తేడా:
+
+| Code lo కనిపించే smell | ఇది ఉల్లంఘిస్తున్న సూత్రం | పరిష్కారం |
+| --- | --- | --- |
+| ఒక class lo DB + email + validation | **S** | బాధ్యతల వారీగా విడగొట్టు |
+| కొత్త రకం చేర్చాలంటే `switch` కి ఒక `case` కలపాలి | **O** | Polymorphism / Strategy (§29) |
+| Child method "ఇది support చేయదు" అని throw చేస్తుంది | **L** | సరిపోని inheritanceని composition గా మార్చు (§7) |
+| ఒక interface lo సగం methods ని అందరూ ఖాళీగా implement చేస్తారు | **I** | చిన్న, role-based interfaces |
+| Class లోపల `new ConcreteThing()` | **D** | బయట create చేసి inject చెయ్యి (§33) |
 
 ### Key Points
 
-- SRP - "ఈ class ఎన్ని కారణాలకి మారుతుంది?" ఒకటి కంటే ఎక్కువ ఉంటే విడగొట్టు
-- OCP - `if/else`/`switch` పెరుగుతూ ఉంటే అది polymorphism అడుగుతోంది
-- DIP - `new` ని class లోపల కాకుండా బయట చేసి inject చేయి (testable అవుతుంది)
+- **SRP** — "ఈ class ఎన్ని కారణాలకి మారుతుంది?" ఒకటి కంటే ఎక్కువ ఉంటే విడగొట్టు.
+- **OCP** — `if/else` / `switch` పెరుగుతూ ఉంటే అది polymorphism అడుగుతోంది.
+- **LSP** — child, parent యొక్క *వాగ్దానాన్ని* నిలబెట్టాలి; method signature సరిపోతే చాలదు.
+- **ISP** — ఖాళీ implementations కనిపిస్తే interface చాలా పెద్దది.
+- **DIP** — `new` ని class లోపల కాకుండా బయట చేసి inject చెయ్యి (testable అవుతుంది).
+- ఐదింటిలో **O** మరియు **D** interview lo అత్యధికంగా test అవుతాయి.
 
 ---
 
@@ -744,7 +918,7 @@ console.log(new DataProcessor(new QuickSort()).process(data)); // [1,2,5,9]
 
 ### వివరణ
 
-**Singleton** = ఒక class నుండి **ఒకే ఒక్క object** మాత్రమే ఉండాలి, అది అందరికీ share అవ్వాలి. (వివరమైన version కోసం `OOPS_Telugu.md` Topic 25 చూడు.)
+**Singleton** = ఒక class నుండి **ఒకే ఒక్క object** మాత్రమే ఉండాలి, అది అందరికీ share అవ్వాలి.
 
 ### Real-life Scenario
 
@@ -754,7 +928,7 @@ console.log(new DataProcessor(new QuickSort()).process(data)); // [1,2,5,9]
 <div class="fig">
 <div class="cap">Singleton · ఒకే instance, global access</div>
 <svg viewBox="0 0 750 200"><rect class="n" x="275" y="40" width="200" height="76" rx="4"/><rect class="n-acc" x="275" y="40" width="200" height="22" rx="4"/><text class="t-w mid" x="375" y="56">Singleton</text><text class="t-sm mono" x="285" y="78">- static instance</text><text class="t-sm mono" x="285" y="92">- constructor() private</text><text class="t-sm mono" x="285" y="106">+ static getInstance()</text><path class="ln-acc" d="M475 60 Q 545 60 545 95 Q 545 128 480 118" marker-end="url(#aa)"/><text class="t-sm" x="500" y="150">తనని తానే</text><text class="t-sm" x="500" y="164">create చేసుకుంటుంది</text><rect class="n-good" x="0" y="40" width="200" height="52" rx="4"/><text class="t mid" x="100" y="62">Client A</text><text class="t-sm mid" x="100" y="78">getInstance()</text><rect class="n-good" x="0" y="106" width="200" height="52" rx="4"/><text class="t mid" x="100" y="128">Client B</text><text class="t-sm mid" x="100" y="144">getInstance()</text><line class="ln" x1="204" y1="66" x2="271" y2="76" marker-end="url(#a)"/><line class="ln" x1="204" y1="132" x2="271" y2="100" marker-end="url(#a)"/><text class="t-acc mid" x="375" y="185">ఇద్దరికీ ఒకే object తిరిగి వస్తుంది</text></svg>
-<div class="note">ప్రమాదం: ఇది ఒక <b>global variable</b> — hidden dependency, test lo mock చేయడం కష్టం. అందుకే modern code lo <b>Dependency Injection</b> మేలు (§40).</div>
+<div class="note">ప్రమాదం: ఇది ఒక <b>global variable</b> — hidden dependency, test lo mock చేయడం కష్టం. అందుకే modern code lo <b>Dependency Injection</b> మేలు (§33).</div>
 </div>
 
 ### Code
@@ -782,6 +956,33 @@ c1.settings.theme = "light";
 console.log(c2.settings.theme); // light - c1, c2 ఒకటే కాబట్టి
 ```
 
+### Testing కోసం ఒక తప్పనిసరి చేర్పు
+
+Singleton యొక్క అసలు నొప్పి testing lo కనిపిస్తుంది: ఒక test lo state మార్చితే అది తర్వాతి test కి కూడా అంటుకుంటుంది. అందుకే production Singleton lo ఎప్పుడూ ఒక reset తలుపు ఉంచుతారు:
+
+```javascript
+class AppConfig {
+  static #instance = null;
+  constructor() {
+    if (AppConfig.#instance) throw new Error("getInstance() వాడు, new కాదు");
+    this.settings = { theme: "dark", lang: "te" };
+  }
+  static getInstance() {
+    if (!AppConfig.#instance) AppConfig.#instance = new AppConfig();
+    return AppConfig.#instance;
+  }
+  static resetInstance() {
+    AppConfig.#instance = null;   // ← tests మధ్య state లీక్ కాకుండా
+  }
+}
+
+AppConfig.getInstance().settings.theme = "light";
+AppConfig.resetInstance();
+console.log(AppConfig.getInstance().settings.theme); // dark — తాజా instance
+```
+
+> Constructor lo `throw` చేయడం గమనించు — ఇది `new AppConfig()` ని నిశ్శబ్దంగా అనుమతించడం కంటే మెరుగు. నిశ్శబ్ద version ("ఉన్నదాన్నే తిప్పి ఇవ్వడం") పనిచేస్తుంది కానీ వాడేవాడికి తాను నియమం ఉల్లంఘిస్తున్నానని ఎప్పటికీ తెలియదు.
+
 ### ఎప్పుడు వాడాలి / వద్దు
 
 | వాడు                   | వద్దు                                    |
@@ -790,6 +991,8 @@ console.log(c2.settings.theme); // light - c1, c2 ఒకటే కాబట్�
 | ఒకే resource (DB pool) | అనవసరంగా - inject చేయడం మంచిది           |
 
 > **జాగ్రత్త:** Singleton అతిగా వాడితే hidden global state వస్తుంది → testing కష్టం. అవసరమైనప్పుడే.
+>
+> **Interview lo:** "Singleton ఒక anti-pattern అంటారు కదా?" అని అడిగితే — *"Global state ని దాచినప్పుడు అవును. కానీ ఒకే నిజమైన resource (connection pool) ని represent చేసినప్పుడు అది సరైనది. తేడా — singleton ని `getInstance()` తో లోపల పిలుస్తున్నామా, లేక బయట ఒకసారి create చేసి inject చేస్తున్నామా (§33). రెండోది testable."*
 
 ---
 
@@ -1346,7 +1549,7 @@ console.log(`Rs.${order.cost()}`); // Rs.70 (50+10+5+5)
 | Combinations    | పొరలుగా ఎన్నైనా | ప్రతి combo కి కొత్త class |
 | Flexibility     | ఎక్కువ          | తక్కువ                     |
 
-> **గమనిక:** OOP Topic 27 లో `Symbol.iterator`, Topic 22 లో wrappers చూశాం - Decorator అదే "wrap చేసి పెంచడం" ఆలోచన.
+> **గమనిక:** OOP §25 lo `Symbol.iterator`, §21 lo wrappers చూశాం - Decorator అదే "wrap చేసి పెంచడం" ఆలోచన.
 
 ---
 
@@ -1720,7 +1923,7 @@ remote.undoLast(); // ↩️ Undo: → 💡 Light ఆన్ (last command revers
 
 ### వివరణ
 
-**Iterator** = ఒక collection లోని elements ని, లోపలి structure చూపించకుండా, ఒక్కొక్కటిగా traverse చేసే మార్గం. (JS లో `Symbol.iterator` - OOP Topic 27.)
+**Iterator** = ఒక collection లోని elements ని, లోపలి structure చూపించకుండా, ఒక్కొక్కటిగా traverse చేసే మార్గం. (JS లో `Symbol.iterator` - OOP `OOPS_Telugu.md` §25 చూడు.)
 
 ### Real-life Scenario
 
@@ -2306,518 +2509,13 @@ console.log(interpretRPN("10 20 +".split(" "))); // 30
 
 ---
 
-# Part 6 — Real-world Case Studies
-
-> ఇప్పుడు నేర్చుకున్న principles + patterns ని కలిపి, నిజమైన interview problems solve చేద్దాం. ప్రతి case study లో: requirements → entities → patterns → tested code.
-
-<div class="box warn">
-<div class="lab">ఈ Part గురించి ఒక ముఖ్యమైన మాట</div>
-కింది 7 case studies ఇక్కడ <b>సంక్షిప్తంగా</b> ఉన్నాయి — patterns ని నిజమైన problem lo ఎలా కలుపుతారో చూపించడానికి.<br><br>
-కానీ ఇవే problems <b><code>LLD_Design_Problems_Telugu.pdf</code></b> lo చాలా లోతుగా ఉన్నాయి — ఒక్కో దానికి 6–10 పేజీలు: clarifying questions, UML class diagram, పూర్తి runnable code, extensibility test, మరియు <b>interview lo నోటితో చెప్పాల్సిన English script</b>.<br><br>
-<b>ఎలా వాడాలి:</b> ఈ document = <i>పరికరాల పెట్టె</i> (patterns ఎప్పుడు, ఎందుకు). ఆ book = <i>ఆ పరికరాలతో నిజమైన problems ని ఎలా పరిష్కరించాలి</i>. Interview ముందు — ముందు ఇది, తర్వాత అది.
-</div>
-
----
-
-## 33. Parking Lot System
-
-### Requirements
-
-- చాలా floors, ఒక్కో floor కి slots
-- Vehicle types: Bike, Car (వేర్వేరు slot sizes)
-- Park చేస్తే ticket, exit అయితే fee (గంటల ప్రకారం)
-
-### Entities + Patterns
-
-| Entity           | పని            | Pattern                 |
-| ---------------- | -------------- | ----------------------- |
-| `VehicleFactory` | vehicle create | Factory                 |
-| `FeeStrategy`    | fee లెక్క      | Strategy                |
-| `ParkingLot`     | slots manage   | (Singleton-గా వాడవచ్చు) |
-
-### Code
-
-```javascript
-// --- Vehicle types (Factory pattern) ---
-class Vehicle {
-  constructor(number, type, spotSize) {
-    this.number = number;
-    this.type = type;
-    this.spotSize = spotSize;
-  }
-}
-class VehicleFactory {
-  static create(number, type) {
-    if (type === "bike") return new Vehicle(number, "bike", 1);
-    if (type === "car") return new Vehicle(number, "car", 2);
-    throw new Error("Unknown vehicle type");
-  }
-}
-
-// --- Fee strategy (Strategy pattern) ---
-const flatFee = (hours) => hours * 20;
-const rampFee = (hours) => (hours <= 2 ? hours * 30 : 60 + (hours - 2) * 15);
-
-// --- Ticket ---
-class Ticket {
-  constructor(vehicle, spotId, entryHour) {
-    this.vehicle = vehicle;
-    this.spotId = spotId;
-    this.entryHour = entryHour;
-  }
-}
-
-// --- Parking Lot (core) ---
-class ParkingLot {
-  constructor(totalSpots, feeStrategy = flatFee) {
-    this.spots = Array.from({ length: totalSpots }, (_, i) => ({
-      id: i,
-      free: true,
-    }));
-    this.feeStrategy = feeStrategy;
-  }
-  park(vehicle, entryHour) {
-    const spot = this.spots.find((s) => s.free);
-    if (!spot) {
-      console.log("❌ Parking full!");
-      return null;
-    }
-    spot.free = false;
-    console.log(`🅿️ ${vehicle.type} ${vehicle.number} → spot ${spot.id}`);
-    return new Ticket(vehicle, spot.id, entryHour);
-  }
-  unpark(ticket, exitHour) {
-    const spot = this.spots[ticket.spotId];
-    spot.free = true;
-    const hours = exitHour - ticket.entryHour;
-    const fee = this.feeStrategy(hours);
-    console.log(`🚗 ${ticket.vehicle.number} exit. ${hours}h → Rs.${fee}`);
-    return fee;
-  }
-  get availableCount() {
-    return this.spots.filter((s) => s.free).length;
-  }
-}
-
-// --- Simulation ---
-const lot = new ParkingLot(2, rampFee);
-const t1 = lot.park(VehicleFactory.create("AP01AB1234", "car"), 10);
-const t2 = lot.park(VehicleFactory.create("AP02XY9999", "bike"), 11);
-lot.park(VehicleFactory.create("AP03ZZ0000", "car"), 12); // ❌ Parking full!
-console.log(`Available: ${lot.availableCount}`); // 0
-lot.unpark(t1, 15); // 5h → Rs.105 (60 + 3*15)
-console.log(`Available: ${lot.availableCount}`); // 1
-```
-
-### గమనిక
-
-- కొత్త vehicle type → `VehicleFactory` లో మాత్రమే మార్పు (OCP)
-- కొత్త pricing → కొత్త fee strategy, `ParkingLot` touch వద్దు
-- Slot allocation ని Strategy గా చేస్తే "nearest spot" లాంటి logic జోడించవచ్చు
-
----
-
-## 34. LRU Cache
-
-### వివరణ
-
-**LRU (Least Recently Used) Cache** = fixed size cache; నిండినప్పుడు, **చాలా కాలం వాడని** item ని తీసేస్తుంది. Interview favourite.
-
-### ముఖ్య ఆలోచన
-
-> `Map` (JavaScript) insertion order ని గుర్తుంచుకుంటుంది. Access అయిన item ని delete చేసి మళ్ళీ add చేస్తే అది "అత్యంత recent" అవుతుంది. మొదటిది = least recent.
-
-### Code
-
-```javascript
-class LRUCache {
-  constructor(capacity) {
-    this.capacity = capacity;
-    this.map = new Map(); // insertion order = usage order
-  }
-
-  get(key) {
-    if (!this.map.has(key)) return -1;
-    const value = this.map.get(key);
-    this.map.delete(key); // తీసి...
-    this.map.set(key, value); // ...చివర పెట్టు (most recent)
-    return value;
-  }
-
-  put(key, value) {
-    if (this.map.has(key)) this.map.delete(key);
-    else if (this.map.size >= this.capacity) {
-      const lru = this.map.keys().next().value; // మొదటిది = least recent
-      this.map.delete(lru);
-      console.log(`  🗑️ Evicted key: ${lru}`);
-    }
-    this.map.set(key, value);
-  }
-}
-
-const cache = new LRUCache(2);
-cache.put("a", 1);
-cache.put("b", 2);
-console.log(cache.get("a")); // 1 (ఇప్పుడు "a" recent, "b" old)
-cache.put("c", 3); // 🗑️ Evicted key: b (b least recently used)
-console.log(cache.get("b")); // -1 (పోయింది)
-console.log(cache.get("c")); // 3
-```
-
-### Key Points
-
-- `Map` తో O(1) get/put (order preserved) - production లో doubly linked list + hash map
-- Access చేసినప్పుడు item ని "refresh" చేయడం (delete + re-add) కీలకం
-- Redis, browser cache, DB query cache - LRU eviction
-
----
-
-## 35. Vending Machine (State pattern)
-
-### వివరణ
-
-Vending machine states: **NoMoney → HasMoney → Dispensing**. ఒక్కో state లో buttons వేరుగా behave చేస్తాయి. State pattern (Topic 28) కి perfect fit.
-
-### Code
-
-```javascript
-class VendingMachine {
-  constructor(stock) {
-    this.stock = stock;
-    this.balance = 0;
-    this.state = "NO_MONEY";
-  }
-
-  insertMoney(amount) {
-    if (this.state === "NO_MONEY") {
-      this.balance += amount;
-      this.state = "HAS_MONEY";
-      console.log(`💰 Rs.${amount} inserted. Balance: Rs.${this.balance}`);
-    } else {
-      this.balance += amount;
-      console.log(`💰 మరో Rs.${amount}. Balance: Rs.${this.balance}`);
-    }
-  }
-
-  selectItem(price) {
-    if (this.state !== "HAS_MONEY") {
-      console.log("❌ ముందు డబ్బు వేయండి!");
-      return;
-    }
-    if (this.stock <= 0) {
-      console.log("❌ Stock లేదు!");
-      return;
-    }
-    if (this.balance < price) {
-      console.log(`❌ Rs.${price - this.balance} తక్కువ`);
-      return;
-    }
-
-    this.state = "DISPENSING";
-    this.balance -= price;
-    this.stock--;
-    console.log(
-      `🥤 Item dispensed! మిగిలింది: Rs.${this.balance}, Stock: ${this.stock}`,
-    );
-    this.state = this.balance > 0 ? "HAS_MONEY" : "NO_MONEY";
-  }
-}
-
-const machine = new VendingMachine(1);
-machine.selectItem(40); // ❌ ముందు డబ్బు వేయండి!
-machine.insertMoney(50); // 💰 Rs.50 inserted. Balance: Rs.50
-machine.selectItem(40); // 🥤 Item dispensed! మిగిలింది: Rs.10, Stock: 0
-machine.insertMoney(50); // 💰 Rs.50. Balance: Rs.60
-machine.selectItem(40); // ❌ Stock లేదు!
-```
-
-### Key Points
-
-- State machine = valid transitions ని స్పష్టంగా చూపిస్తుంది
-- పెద్ద systems లో ఒక్కో state ని విడి class చేస్తే (Topic 28) if/else తగ్గుతుంది
-- ATM, order lifecycle, game character states - state machines
-
----
-
-## 36. Rate Limiter
-
-### వివరణ
-
-**Rate Limiter** = ఒక user నిర్ణీత సమయంలో ఎన్ని requests చేయవచ్చో పరిమితి. ఇక్కడ **Token Bucket** algorithm - ప్రతి secondకి tokens నిండుతాయి, ప్రతి request ఒక token తింటుంది.
-
-### Code
-
-```javascript
-class TokenBucket {
-  constructor(capacity, refillPerSec) {
-    this.capacity = capacity;
-    this.tokens = capacity;
-    this.refillPerSec = refillPerSec;
-  }
-
-  // elapsedSec = గత call నుండి గడిచిన సమయం (test కోసం parameter గా ఇస్తున్నాం)
-  allow(elapsedSec = 0) {
-    // సమయం గడిచిన కొద్దీ tokens నింపు (capacity దాటకుండా)
-    this.tokens = Math.min(
-      this.capacity,
-      this.tokens + elapsedSec * this.refillPerSec,
-    );
-    if (this.tokens >= 1) {
-      this.tokens -= 1;
-      return true; // request allow
-    }
-    return false; // rate limited
-  }
-}
-
-// 3 tokens capacity, secondకి 1 token refill
-const limiter = new TokenBucket(3, 1);
-console.log(limiter.allow()); // true  (3→2)
-console.log(limiter.allow()); // true  (2→1)
-console.log(limiter.allow()); // true  (1→0)
-console.log(limiter.allow()); // false (0 tokens - rate limited!)
-console.log(limiter.allow(2)); // true  (2 sec గడిచింది → 2 tokens refill → allow)
-```
-
-### Rate Limiting algorithms
-
-| Algorithm          | ఆలోచన                                                |
-| ------------------ | ---------------------------------------------------- |
-| **Token Bucket**   | tokens నిండుతాయి, request token తింటుంది (bursts ok) |
-| **Leaky Bucket**   | requests ఒక rate లో "leak" అవుతాయి                   |
-| **Fixed Window**   | window కి X requests                                 |
-| **Sliding Window** | rolling window లో count                              |
-
-### Key Points
-
-- Token Bucket bursts ని allow చేస్తుంది (tokens పోగుపడితే)
-- API gateways, login attempts, DDoS protection - rate limiting
-- Production: time ని `Date.now()` తో; ఇక్కడ testable గా `elapsedSec` inject చేశాం
-
----
-
-## 37. Notification Service (Observer + Strategy)
-
-### వివరణ
-
-రెండు patterns కలిపి: **Observer** (event వచ్చినప్పుడు subscribers కి notify) + **Strategy** (ఏ channel - SMS/Email/Push - అనేది swappable).
-
-### Code
-
-```javascript
-// --- Strategy: channels (ఒకే send contract) ---
-const smsChannel = (user, msg) => console.log(`📱 SMS → ${user}: ${msg}`);
-const emailChannel = (user, msg) => console.log(`📧 Email → ${user}: ${msg}`);
-const pushChannel = (user, msg) => console.log(`🔔 Push → ${user}: ${msg}`);
-
-// --- Observer: subscribers ఒక్కో channel strategy తో register ---
-class NotificationService {
-  constructor() {
-    this.subscribers = [];
-  }
-  subscribe(user, channel) {
-    this.subscribers.push({ user, channel });
-  }
-  // Event వచ్చినప్పుడు అందరికీ వాళ్ళ channel లో notify
-  notifyAll(message) {
-    this.subscribers.forEach(({ user, channel }) => channel(user, message));
-  }
-}
-
-const service = new NotificationService();
-service.subscribe("Yaswanth", smsChannel);
-service.subscribe("Chaitanya", emailChannel);
-service.subscribe("Priya", pushChannel);
-
-service.notifyAll("మీ order ship అయింది! 📦");
-// 📱 SMS → Yaswanth: మీ order ship అయింది! 📦
-// 📧 Email → Chaitanya: మీ order ship అయింది! 📦
-// 🔔 Push → Priya: మీ order ship అయింది! 📦
-```
-
-### గమనిక
-
-- **Observer** = "ఎవరికి పంపాలి" (subscribers)
-- **Strategy** = "ఎలా పంపాలి" (channel)
-- కొత్త channel (WhatsApp) = కొత్త strategy function, service touch వద్దు
-- Real-world లో patterns ఒంటరిగా కాదు, కలిసి పనిచేస్తాయి
-
----
-
-## 38. Elevator System
-
-### Requirements
-
-- Multiple floors, floor requests
-- ఒక్కో request ని దగ్గరి క్రమంలో serve చేయాలి
-- Direction (UP/DOWN/IDLE) track చేయాలి
-
-### Entities
-
-| Entity      | పని                                       |
-| ----------- | ----------------------------------------- |
-| `Elevator`  | floor, direction, requests manage         |
-| `Request`   | ఏ floor కి కావాలి                         |
-| (Scheduler) | ఏ request ముందు - strategy గా విడదీయవచ్చు |
-
-### Code
-
-```javascript
-class Elevator {
-  constructor() {
-    this.floor = 0;
-    this.direction = "IDLE";
-    this.requests = [];
-  }
-
-  request(floor) {
-    if (!this.requests.includes(floor)) this.requests.push(floor);
-    console.log(`🛗 Floor ${floor} కి request`);
-  }
-
-  step() {
-    if (!this.requests.length) {
-      this.direction = "IDLE";
-      return;
-    }
-    // దగ్గరి floor ని target చేయడం (SCAN algorithm కి simplified)
-    const target = this.requests.sort(
-      (a, b) => Math.abs(a - this.floor) - Math.abs(b - this.floor),
-    )[0];
-    this.direction = target > this.floor ? "UP" : "DOWN";
-    this.floor = target;
-    this.requests = this.requests.filter((f) => f !== target);
-    console.log(`   → Floor ${this.floor} కి చేరింది (${this.direction})`);
-  }
-
-  run() {
-    while (this.requests.length) this.step();
-    this.direction = "IDLE";
-    console.log("   IDLE ✅");
-  }
-}
-
-const lift = new Elevator();
-lift.request(3);
-lift.request(1);
-lift.request(5);
-lift.run();
-// → Floor 1 కి చేరింది (UP)   [0 నుండి దగ్గరిది]
-// → Floor 3 కి చేరింది (UP)
-// → Floor 5 కి చేరింది (UP)
-// IDLE ✅
-```
-
-### గమనిక
-
-- Scheduling logic ని Strategy గా విడదీస్తే - SCAN, LOOK, nearest-first algorithms swap చేయవచ్చు
-- Real system: multiple elevators + central dispatcher (Mediator)
-- State pattern (Topic 28): Moving / Idle / DoorOpen states
-
----
-
-## 39. Tic-Tac-Toe
-
-### Requirements
-
-- 3×3 board, ఇద్దరు players (X, O)
-- Move validate (cell ఖాళీయేనా), win/draw check
-- Turn switching
-
-### Entities
-
-| Entity   | పని                            |
-| -------- | ------------------------------ |
-| `Board`  | cells, place(), win/draw check |
-| `Game`   | turn manage, move orchestrate  |
-| (Player) | symbol (X/O)                   |
-
-### Code
-
-```javascript
-class Board {
-  constructor() {
-    this.cells = Array(9).fill(null);
-  }
-
-  place(pos, symbol) {
-    if (this.cells[pos]) return false; // ఖాళీ కాదు
-    this.cells[pos] = symbol;
-    return true;
-  }
-
-  winner() {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8], // rows
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8], // columns
-      [0, 4, 8],
-      [2, 4, 6], // diagonals
-    ];
-    for (const [a, b, c] of lines) {
-      if (
-        this.cells[a] &&
-        this.cells[a] === this.cells[b] &&
-        this.cells[a] === this.cells[c]
-      )
-        return this.cells[a];
-    }
-    return null;
-  }
-
-  isFull() {
-    return this.cells.every((c) => c !== null);
-  }
-}
-
-class Game {
-  constructor() {
-    this.board = new Board();
-    this.turn = "X";
-  }
-
-  move(pos) {
-    if (!this.board.place(pos, this.turn)) {
-      console.log("❌ Cell నిండింది");
-      return;
-    }
-    const w = this.board.winner();
-    if (w) {
-      console.log(`🏆 ${w} గెలిచింది!`);
-      return;
-    }
-    if (this.board.isFull()) {
-      console.log("🤝 Draw!");
-      return;
-    }
-    this.turn = this.turn === "X" ? "O" : "X"; // turn switch
-  }
-}
-
-const game = new Game();
-// X: 0,1,2 (top row) → X గెలుస్తుంది
-[0, 3, 1, 4, 2].forEach((pos) => game.move(pos));
-// 🏆 X గెలిచింది!
-```
-
-### గమనిక
-
-- `Board` (data + rules) ని `Game` (flow) నుండి విడదీయడం = SRP
-- Win-check ని Strategy గా చేస్తే N×N board లకి scale అవుతుంది
-- AI opponent = Strategy (random / minimax) గా plug చేయవచ్చు
-
----
-
-# Part 7 — Beyond GoF (Practical LLD Patterns)
+# Part 6 — Beyond GoF (Practical LLD Patterns)
 
 > GoF 23 patterns కాకుండా, నిజ projects లో తరచూ కనిపించే మరికొన్ని ముఖ్య patterns + concepts. వీటిని interviews లో అడగడం common.
 
 ---
 
-## 40. Dependency Injection (DI)
+## 33. Dependency Injection (DI)
 
 ### వివరణ
 
@@ -2909,7 +2607,7 @@ container.resolve("car").drive(); // 🔧 Engine started
 </div>
 
 
-## 41. Object Pool
+## 34. Object Pool
 
 ### వివరణ
 
@@ -2976,7 +2674,7 @@ console.log(c3 === c1); // true (same object reused!)
 
 ---
 
-## 42. Null Object
+## 35. Null Object
 
 ### వివరణ
 
@@ -3031,7 +2729,7 @@ console.log(findUser(99).isGuest()); // true
 
 ---
 
-## 43. Concurrency మరియు Thread-Safety
+## 36. Concurrency మరియు Thread-Safety
 
 ### వివరణ
 
@@ -3086,11 +2784,11 @@ await Promise.all([acc.withdraw(70), acc.withdraw(70)]);
 | Java/C++   | Double-checked locking / synchronized అవసరం     |
 | JavaScript | Module caching + single thread → automatic safe |
 
-> **గుర్తుంచుకో:** JS లో "concurrency" = async coordination. Mutex, semaphore, queue తో shared state ని కాపాడు. (Producer-Consumer కి Topic 36 Notification / Observer చూడు.)
+> **గుర్తుంచుకో:** JS లో "concurrency" = async coordination. Mutex, semaphore, queue తో shared state ని కాపాడు. (Producer-Consumer కి §27 Observer చూడు.)
 
 ---
 
-## 44. Architecture Patterns (MVC / Layered / Pub-Sub)
+## 37. Architecture Patterns (MVC / Layered / Pub-Sub)
 
 ### వివరణ
 
@@ -3139,7 +2837,7 @@ bus.emit("order.placed", { item: "Book" });
 
 ---
 
-# Part 8 — Interview & Reference
+# Part 7 — Interview & Reference
 
 ---
 <div class="fig">
@@ -3148,7 +2846,7 @@ bus.emit("order.placed", { item: "Book" });
 </div>
 
 
-## 45. ఏ Pattern ఎప్పుడు వాడాలి? (Cheat Sheet)
+## 38. ఏ Pattern ఎప్పుడు వాడాలి? (Cheat Sheet)
 
 ### సమస్య → Pattern
 
@@ -3201,54 +2899,7 @@ bus.emit("order.placed", { item: "Book" });
 
 ---
 
-## 46. LLD Interview Framework (5 అడుగులు)
-
-### వివరణ
-
-Interview లో "Design X" అడిగినప్పుడు panic అవ్వకుండా, ఈ 5 అడుగులు follow చెయ్యి. మాట్లాడుతూ (think aloud) చెయ్యడం ముఖ్యం.
-
-### 5 అడుగులు
-
-```
-1. CLARIFY (2-3 నిమిషాలు)
-   - Scope ఏమిటి? Users ఎంతమంది? ఏ features తప్పనిసరి?
-   - "Parking lot - bikes కూడానా? Payment ఉందా? Multiple floors?"
-
-2. ENTITIES + APIs (Nouns → classes)
-   - ముఖ్య classes list చెయ్యి
-   - Public methods (APIs) ఏమిటో చెప్పు
-
-3. CLASS DIAGRAM (గీయి)
-   - Classes, attributes, methods
-   - Relationships (has-a / is-a / uses-a) బాణాలతో
-
-4. PATTERNS + DESIGN
-   - ఎక్కడ ఏ pattern? ఎందుకు?
-   - SOLID చెక్: ఈ design extensible నా?
-
-5. CODE + EDGE CASES
-   - ముఖ్య classes code
-   - Edge cases: full, empty, concurrent, invalid input
-```
-
-### చెప్పకూడని / చెప్పాల్సిన మాటలు
-
-| ❌ చెప్పకు                  | ✅ చెప్పు                             |
-| --------------------------- | ------------------------------------- |
-| నేరుగా code మొదలుపెట్టడం    | "ముందు requirements clarify చేస్తాను" |
-| "ఇలా చేస్తా" (silent)       | Think aloud - ఆలోచన చెప్పు            |
-| ఒకే perfect solution వెతకడం | Trade-offs మాట్లాడు                   |
-| అన్ని patterns కూరడం        | అవసరమైనవి మాత్రమే (YAGNI)             |
-
-### Trade-offs మాట్లాడటం (ముఖ్యం)
-
-> "ఇక్కడ Strategy వాడాను ఎందుకంటే pricing rules తరచూ మారతాయి. Inheritance వాడితే class explosion వచ్చేది. కానీ Strategy వల్ల classes కొంచెం పెరుగుతాయి - అది acceptable trade-off."
-
-Interviewer perfect design కంటే **నీ ఆలోచనా విధానం (reasoning)** ని చూస్తాడు.
-
----
-
-## 47. Memory Tips Table - మర్చిపోకూడదంటే
+## 39. Memory Tips Table - మర్చిపోకూడదంటే
 
 ### Design Principles
 
@@ -3322,7 +2973,15 @@ Interviewer perfect design కంటే **నీ ఆలోచనా విధా
 > - Pattern కోసం సమస్య వెతకకు; సమస్యకి సరిపడే pattern వాడు.
 > - ప్రతి pattern కి real-life analogy గుర్తుపెట్టుకో - అప్పుడు మర్చిపోలేవు!
 
-ఈ document + `OOPS_Telugu.md` కలిస్తే - **OOP పునాది నుండి LLD నైపుణ్యం వరకు** పూర్తి తెలుగు reference.
+ఈ మూడు కలిసి ఒక పూర్తి మార్గం:
+
+| | Book | ఇది ఏమి నేర్పుతుంది |
+| --- | --- | --- |
+| **1** | `OOPS_Telugu.pdf` | JavaScript lo objects ఎలా పనిచేస్తాయి — భాషా స్థాయి |
+| **2** | `LLD_Telugu.pdf` *(ఇది)* | ఆ objects ని ఎలా అమర్చాలి — principles + 23 patterns |
+| **3** | `LLD_Design_Problems_Telugu.pdf` | ఆ patterns తో 17 నిజమైన interview problems |
+
+ప్రతి విషయం ఈ మూడింటిలో **ఒకే ఒక్క చోట** ఉంటుంది — అదే ఉద్దేశం. ఒక topic ఇక్కడ కనిపించకపోతే, అది మరో book lo పూర్తిగా ఉంది.
 
 ---
 

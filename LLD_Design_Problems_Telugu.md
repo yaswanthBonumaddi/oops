@@ -2400,7 +2400,33 @@ class Cache {                       // ఇప్పుడు Cache కి LRU/LF
 <p>"For TTL I'd expire <em>lazily</em> on read, plus a background sweeper — without the sweeper, entries that are never read again occupy memory forever. And in a threaded language I'd use striped locks rather than one global lock, since a single lock on a hot cache becomes the bottleneck it was meant to relieve."</p>
 </div>
 
-## 8. Follow-ups
+## 8. Extensibility Test
+
+| Follow-up | మీ design ఏం చేస్తుంది | ఎన్ని classes మారతాయి |
+|-----------|------------------------|------------------------|
+| "LRU కాదు, LFU కావాలి" | `new Cache(cap, new LFUPolicy())` | **0** — §6 lo policy ని బయట పెట్టాం |
+| "Random eviction (test కోసం)" | కొత్త `RandomPolicy` | **+1 కొత్తది, 0 edits** |
+| "ప్రతి entry కి వేరే TTL" | `set(k, v, ttl)` — entry lo `expiresAt` | Entry + `#isAlive()` |
+| "Eviction అయినప్పుడు callback కావాలి" | Constructor lo `onEvict` hook | **+1 parameter** |
+| "Cache statistics (hit rate)" | `#hits` / `#misses` counters — policy ని తాకదు | Cache మాత్రమే |
+| "Thread-safe కావాలి" | JS lo single-threaded; Node worker threads అయితే ఒక mutex (§7) | Wrapper class |
+
+> **ఇక్కడ చెప్పాల్సిన వాక్యం:** *"LRU మరియు LFU మధ్య తేడా eviction policy ఒక్కటే — data structure (Map + doubly linked list) రెండిటికీ ఒకటే. అందుకే policy ని Strategy గా బయట పెట్టాను. కొత్త policy అంటే కొత్త class, ఉన్న Cache lo సున్నా edits."*
+
+## 9. Patterns వాడినవి
+
+| Pattern | ఎక్కడ | ఎందుకు |
+|---------|-------|---------|
+| **Strategy** | `EvictionPolicy` (LRU / LFU / Random) | Eviction నియమం **మారుతుంది** — ఇదే ఈ problem యొక్క గుండె |
+| **Template Method (బీజ రూపం)** | `get` / `set` యొక్క స్థిర అస్థిపంజరం | ప్రవాహం ఒకటే; policy hook మాత్రమే మారుతుంది |
+| **Decorator** *(follow-up)* | TTL, stats, logging ని cache చుట్టూ చుట్టడం | Core cache ని ముట్టుకోకుండా features చేర్చడం |
+
+<div class="box warn">
+<div class="lab">ఇక్కడ pattern వాడకూడని చోటు</div>
+Doubly linked list ని ఒక "Composite" లేదా "Iterator" గా మార్చాలని ప్రయత్నించొద్దు. అది ఒక <b>data structure</b>, ఒక design problem కాదు. Interview lo pattern పేరు చెప్పడం కంటే <b>ఎందుకు O(1) కావాలో</b> చెప్పడం విలువైనది.
+</div>
+
+## 10. Follow-ups
 
 | అడిగేది | జవాబు |
 |---------|--------|
@@ -2886,7 +2912,20 @@ class LoggerFactory {
 Production lo ఒక bug debug చేయాలి. మొత్తం app ని DEBUG కి మార్చితే logs lo మునిగిపోతారు. Hierarchy తో — <code>app.payment</code> ని మాత్రం DEBUG కి, మిగతా అంతా INFO. <b>ఒక్క config line, deploy లేకుండా.</b> ఇది logging framework యొక్క అసలు value.
 </div>
 
-## 6. Patterns వాడినవి
+## 6. Extensibility Test
+
+| Follow-up | మీ design ఏం చేస్తుంది | ఎన్ని classes మారతాయి |
+|-----------|------------------------|------------------------|
+| "Slack కి కూడా పంపాలి" | కొత్త `SlackAppender` | **+1 కొత్తది, 0 edits** |
+| "JSON format lo కావాలి" | కొత్త `JsonFormatter`; appender మారదు | **+1 కొత్తది** |
+| "Production lo DEBUG ఆపాలి" | Runtime lo `logger.setLevel(INFO)` | **0** |
+| "ఒక్క module కే TRACE" | ఆ module logger కి వేరే level — hierarchy (§5) ఇప్పటికే ఉంది | **0** |
+| "Log ని async గా రాయాలి" | `AsyncAppender` — ఉన్న appender ని wrap చేస్తుంది | **+1 కొత్తది** |
+| "PII (password, PAN) mask చెయ్యాలి" | `MaskingFormatter` — formatter chain lo ఒక అడుగు | **+1 కొత్తది** |
+
+> **చివరి వరుస ఒక మంచి సంకేతం.** PII masking ని *formatter* lo పెట్టడం (appender lo కాదు) అంటే — ఏ destination కి పంపినా masking జరుగుతుంది. ఈ రకమైన "ఎక్కడ పెడితే ఒక్కసారే పని చేస్తుంది" ఆలోచనే seniority.
+
+## 7. Patterns వాడినవి
 
 | Pattern | ఎక్కడ | ఎందుకు |
 |---------|-------|---------|
@@ -2907,7 +2946,7 @@ Production lo ఒక bug debug చేయాలి. మొత్తం app ని
 <p>"On failure: a logger must never take down the application. If a file appender's disk is full, it should drop messages and report a metric, not throw into the caller's code path. Logging is observability, not business logic."</p>
 </div>
 
-## 7. Follow-ups
+## 8. Follow-ups
 
 | అడిగేది | జవాబు |
 |---------|--------|
@@ -3508,7 +3547,20 @@ Castling మరియు en passant <b>ఈ design lo సరిగ్గా ఇ�
 <b>రెండూ సరైనవే.</b> Interviewer చూసేది — మీరు రెండూ తెలిసి, <b>ఎందుకు ఒకటి ఎంచుకున్నారో</b> చెప్పగలరా అన్నది.
 </div>
 
-## 2. Command vs Memento
+## 2. Clarifying Questions
+
+| ప్రశ్న | ఎందుకు ముఖ్యం | జవాబు (ఈ design కి) |
+|--------|----------------|----------------------|
+| Document ఎంత పెద్దది? | ఇదే Command vs Memento ని తేలుస్తుంది — పెద్ద document కి పూర్తి snapshot ఖరీదు | పెద్దది (MBs) → **Command** |
+| Undo history ఎంత లోతు? | పరిమితి లేకపోతే memory పెరుగుతూ పోతుంది | 100 operations, తర్వాత పాతవి వదిలేయడం |
+| Typing ప్రతి అక్షరం ఒక undo నా? | "Hello" type చేసి undo నొక్కితే `Hell` రావాలా, ఖాళీ రావాలా — ఇదే **command merging** (§4) | పదం/విరామం వరకు కలపాలి |
+| Undo తర్వాత కొత్తది type చేస్తే redo? | Stack invariant — ఇది చాలా మంది మర్చిపోతారు | **Redo stack ఖాళీ అవుతుంది** |
+| Cursor/selection కూడా undo అవ్వాలా? | User అనుభవం మీద పెద్ద ప్రభావం | అవును — command lo cursor state కూడా |
+| File save అయ్యాక undo పనిచేస్తుందా? | Persistence పరిధి | Session lo మాత్రమే (in-memory) |
+
+> **మొదటి ప్రశ్న అత్యంత ముఖ్యం.** "Document ఎంత పెద్దది?" అని అడిగిన క్షణం, మీరు Command vs Memento ని *పరిమాణం* ఆధారంగా ఎంచుకుంటున్నారని తెలుస్తుంది — అభిరుచి ఆధారంగా కాదు. అదే ఈ problem యొక్క అసలు పరీక్ష.
+
+## 3. Command vs Memento
 
 <div class="fig">
 <div class="cap">ఒకే problem, రెండు దృక్కోణాలు</div>
@@ -3540,7 +3592,7 @@ Castling మరియు en passant <b>ఈ design lo సరిగ్గా ఇ�
 కానీ ఒక సూక్ష్మత — <b>కొన్ని operations కి inverse ని లెక్కించలేం.</b> ఉదాహరణకి 'delete' — తీసేసిన text ఏమిటో తెలియకుండా undo చేయలేం. అందుకే <code>DeleteCommand</code> execute చేసేటప్పుడు తీసేసిన text ని <b>తనలో దాచుకుంటుంది</b>. అంటే అది ఒక చిన్న memento — <b>ఆచరణలో రెండు patterns కలిసిపోతాయి.</b>"
 </div>
 
-## 3. Code
+## 4. Code
 
 ```javascript
 class TextDocument {
@@ -3649,7 +3701,7 @@ User "Hello world" రాశాడు, undo చేసి "Hello" కి వచ�
 ఇది మర్చిపోతే — redo చేసినప్పుడు document విచిత్రమైన, అసాధ్యమైన స్థితికి వెళ్తుంది. <b>ఇది undo/redo lo అత్యంత సాధారణమైన bug</b>, మరియు interview lo దీన్ని ప్రస్తావిస్తే మీరు దీన్ని నిజంగా రాశారని అర్థమవుతుంది.
 </div>
 
-## 4. Command Merging — ఇది ఎందుకు అవసరం
+## 5. Command Merging — ఇది ఎందుకు అవసరం
 
 <div class="box info">
 <div class="lab">Merging లేకపోతే</div>
@@ -3657,7 +3709,7 @@ User "Hello world" రాశాడు, undo చేసి "Hello" కి వచ�
 <b>Merge నియమాలు</b> (నిజమైన editors వాడేవి): (1) వరుస positions అయితేనే, (2) ఒకే రకమైన operation అయితేనే, (3) space/newline దగ్గర ఆపడం, (4) cursor వేరే చోటికి వెళ్తే ఆపడం, (5) కొంత సమయం (~1 సెకను) విరామం వస్తే ఆపడం. ఈ నియమాలు <b>user ఆలోచించే "ఒక పని" ని</b> అనుకరిస్తాయి.
 </div>
 
-## 5. Extensibility Test
+## 6. Extensibility Test
 
 Interviewer: *"Now the editor supports formatting (bold, colour). Does your design hold?"*
 
@@ -3683,7 +3735,7 @@ class MacroCommand extends Command {
 Commands వరుసగా అమలయ్యాయి, ప్రతిదీ తర్వాతిదాని కోసం స్థితిని మార్చింది. Undo చేసేటప్పుడు అదే క్రమంలో వెళ్తే positions తప్పుతాయి. <b>ఎప్పుడూ వ్యతిరేక క్రమంలో undo చేయాలి</b> — ఇది database transaction rollback, saga compensation — అన్నిచోట్లా ఒకే నియమం.
 </div>
 
-## 6. Patterns వాడినవి
+## 7. Patterns వాడినవి
 
 | Pattern | ఎక్కడ | ఎందుకు |
 |---------|-------|---------|
@@ -3704,7 +3756,7 @@ Commands వరుసగా అమలయ్యాయి, ప్రతిదీ �
 <p>"And I'd bound the undo stack, because unbounded history is a memory leak in an application people leave open for weeks."</p>
 </div>
 
-## 7. Follow-ups
+## 8. Follow-ups
 
 | అడిగేది | జవాబు |
 |---------|--------|
@@ -3947,7 +3999,20 @@ console.log(fs.resolve('/home').size);           // 6    ← subtree మొత�
 <b>కానీ ధర ఉంది:</b> కొత్త <i>node type</i> (ఉదా. <code>SymlinkNode</code>) జోడిస్తే — <b>ప్రతి visitor</b> ని edit చేయాలి. అంటే: <b>operations తరచుగా మారితే Visitor; node types తరచుగా మారితే methods.</b> File system lo node types దాదాపు ఎప్పటికీ మారవు, operations పెరుగుతూనే ఉంటాయి — అందుకే ఇక్కడ Visitor సరైనది.
 </div>
 
-## 6. Patterns వాడినవి
+## 6. Extensibility Test
+
+| Follow-up | మీ design ఏం చేస్తుంది | ఎన్ని classes మారతాయి |
+|-----------|------------------------|------------------------|
+| "Symbolic links కావాలి" | కొత్త `SymLink extends FSNode` — resolve lo ఒక hop | **+1 కొత్తది** |
+| "`du` (disk usage) కావాలి" | కొత్త `SizeVisitor` — tree ని ముట్టుకోదు | **+1 కొత్తది, 0 edits** |
+| "File permissions" | `FSNode` కి `permissions`; check ఒక guard lo | Base class |
+| "Search by name pattern" | `FindVisitor(predicate)` — మళ్ళీ ఒక visitor | **+1 కొత్తది** |
+| "Move / rename" | `parent.remove(node)` + `newParent.add(node)` — parent pointer ఉంది | **0** |
+| "Directory కి quota" | Directory lo `maxBytes` + `add()` lo check | Directory మాత్రమే |
+
+> **ఈ పట్టికలో మూడు వరుసలు "కొత్త visitor" అని చెప్పడం యాదృచ్ఛికం కాదు** — అదే Visitor pattern యొక్క మొత్తం ఉద్దేశం (§5): tree structure స్థిరం, దాని మీద చేసే *operations* మారుతాయి. ఇది తిరగబడితే (operations స్థిరం, node types మారుతాయి) — Visitor తప్పు ఎంపిక; అప్పుడు సాధారణ polymorphism సరైనది.
+
+## 7. Patterns వాడినవి
 
 | Pattern | ఎక్కడ | ఎందుకు |
 |---------|-------|---------|
@@ -3966,7 +4031,7 @@ console.log(fs.resolve('/home').size);           // 6    ← subtree మొత�
 <p>"If symlinks came into scope, that would be a third node type and I'd need cycle detection during traversal — a visited set of nodes. That's also where Visitor's cost would show up, since every existing visitor would need a visitSymlink method."</p>
 </div>
 
-## 7. Follow-ups
+## 8. Follow-ups
 
 | అడిగేది | జవాబు |
 |---------|--------|
@@ -4456,7 +4521,33 @@ console.log(scheduler.findRoom(new Interval(t('10:30'), t('11:30')), 20));  // n
 <p>"The traps I'd want to name: daylight saving means 'every day at 9am local' isn't a fixed UTC offset, so recurring meetings must be stored as a local time plus a timezone plus a rule and expanded on read. Infinite recurrence can't be materialised, so expansion is lazy for the requested window. And editing one occurrence of a series needs an exceptions list — which is exactly what the iCalendar spec does."</p>
 </div>
 
-## 7. Follow-ups
+## 7. Extensibility Test
+
+| Follow-up | మీ design ఏం చేస్తుంది | ఎన్ని classes మారతాయి |
+|-----------|------------------------|------------------------|
+| "Recurring meetings" | `RecurrenceRule` ఒక కొత్త class; booking ఒక *expansion* అవుతుంది | **+1 కొత్తది** |
+| "Room capacity ప్రకారం సూచించాలి" | `RoomFilter` — free-slot search కి ముందు ఒక filter | **+1 కొత్తది** |
+| "Priority — CEO meeting కోసం bump" | ఒక `ConflictPolicy` (reject / bump / waitlist) | **+1 కొత్తది** |
+| "Buffer time (meetings మధ్య 10 నిమి)" | Interval ని expand చేసి overlap check | Overlap helper మాత్రమే |
+| "Multiple timezones" | లోపల అంతా UTC; మార్పిడి అంచుల్లో మాత్రమే (§6) | **0** |
+| "10,000 rooms కి scale" | Sorted array → interval tree (§5) | Storage layer మాత్రమే |
+
+> **మూడో వరుస ముఖ్యమైనది.** "Conflict వస్తే ఏం చేయాలి" అనేది ఒక **business నియమం**, సాంకేతిక వివరం కాదు — మరియు అది ఖచ్చితంగా మారుతుంది. అందుకే దాన్ని ఒక policy object గా బయట పెట్టడం సరైనది, `if (conflict) throw` అని hardcode చేయడం కాదు.
+
+## 8. Patterns వాడినవి
+
+| Pattern | ఎక్కడ | ఎందుకు |
+|---------|-------|---------|
+| **Strategy** | `ConflictPolicy`, `RoomFilter` | "Conflict వస్తే ఏం చేయాలి" అనేది మారే business నియమం |
+| **Value object** | `Interval` (start, end) | Half-open range + overlap logic ఒకే చోట; ఎక్కడా నకలు లేదు |
+| **Repository** | Room calendar | Storage ని (array ఇప్పుడు, interval tree తర్వాత) దాచిపెడుతుంది |
+
+<div class="box warn">
+<div class="lab">ఇక్కడ చాలా మంది చేసే తప్పు</div>
+<code>Meeting</code> class lo <code>overlaps()</code> రాయడం. అప్పుడు అదే logic <code>Room</code>, <code>User</code>, <code>Resource</code> — అన్నిటిలోనూ నకలు అవుతుంది. <b>Overlap అనేది intervals యొక్క లక్షణం</b>, meetings యొక్క కాదు. ఒక <code>Interval</code> value object రాసి అందరూ దాన్ని వాడటం — ఇది చిన్న నిర్ణయంలా కనిపిస్తుంది కానీ interviewer దీన్ని గమనిస్తాడు.
+</div>
+
+## 9. Follow-ups
 
 | అడిగేది | జవాబు |
 |---------|--------|
@@ -4733,9 +4824,239 @@ class TieredLoanPolicy extends LoanPolicy {
 <div class="pagebreak"></div>
 
 <div class="opener">
+<div class="ghost">17</div>
+<div class="kicker">Problem 17 · Generalisation</div>
+<div class="title">Design Tic-Tac-Toe<br>(N×N కి scale అయ్యేలా)</div>
+<div class="meta">Difficulty <b>Easy-Medium</b> · Frequency <b>చాలా ఎక్కువ (fresher + lateral screening)</b> · నేర్పే concepts: naive → general refactor, O(1) win check, pluggable rules</div>
+</div>
+
+## 1. The Ask
+
+> "Design a Tic-Tac-Toe game for two players."
+
+<div class="box warn">
+<div class="lab">ఈ problem యొక్క నిజమైన ఉచ్చు</div>
+ఇది సులభంగా కనిపిస్తుంది — అందుకే ఇది ప్రమాదకరం. చాలా మంది 5 నిమిషాల్లో పనిచేసే 3×3 code రాసి ఆగిపోతారు. అప్పుడు interviewer అడుగుతాడు: <b>"ఇప్పుడు దీన్ని 10×10 కి, ఐదు వరుసగా గెలిచేలా మార్చండి."</b><br><br>
+అక్కడే అసలు interview మొదలవుతుంది. 8 winning lines ని hardcode చేసినవాళ్ళు ఇప్పుడు మొత్తం తిరిగి రాయాలి. ఈ problem కొలిచేది Tic-Tac-Toe కాదు — <b>మీరు hardcode చేస్తారా, general గా ఆలోచిస్తారా</b> అనేది.
+</div>
+
+## 2. Clarifying Questions
+
+| ప్రశ్న | ఎందుకు ముఖ్యం | జవాబు (ఈ design కి) |
+|--------|----------------|----------------------|
+| Board size స్థిరమా, N×N నా? | ఇదే మొత్తం design ని నిర్ణయిస్తుంది | **N×N** — 3 ఒక default మాత్రమే |
+| గెలవడానికి ఎన్ని వరుసగా? | N×N lo ఇది N కి సమానం కానక్కర్లేదు (Gomoku: 15×15, K=5) | **K** — configurable |
+| ఇద్దరే players నా? | 3+ players అయితే symbol/turn logic మారుతుంది | ఇద్దరు, కానీ list గా model చేస్తాం |
+| Undo కావాలా? | Command pattern అవసరమా అని తేలుస్తుంది | Follow-up lo |
+| AI opponent? | Strategy gap ఉంచాలా అని | Follow-up lo |
+| Move ఎప్పుడు invalid? | Validation నియమాలు | పరిధి బయట, నిండిన cell, game ముగిశాక |
+
+> **ఈ ప్రశ్నలు అడగడమే సగం విజయం.** "N×N నా?" అని అడిగిన క్షణం, interviewer కి మీరు hardcode చేయబోవట్లేదని తెలిసిపోతుంది.
+
+## 3. Nouns → Classes
+
+| Noun | Class | బాధ్యత |
+|------|-------|---------|
+| Board | `Board` | Grid state, place(), పూర్తిగా నిండిందా |
+| Player | `Player` | పేరు + symbol (ఇది ఒక విలువ, ఒక entity కాదు) |
+| Move | `Move` | (row, col, symbol) — undo కి ఇది object కావాలి |
+| Game | `Game` | Turn క్రమం, move orchestration, స్థితి |
+| Win rule | `WinStrategy` | "ఎవరు గెలిచారు?" — ఇది **మారే భాగం** |
+
+<div class="note"><b>గమనించండి:</b> <code>WinStrategy</code> ఒక noun కాదు — requirement lo ఆ పదం లేదు. కానీ "గెలవడం" అనే <b>నియమం మారుతుంది</b> (3-in-a-row, K-in-a-row, diagonal మాత్రమే…). §5 lo చూసినట్టు — <b>మారేదాన్ని బయట పెట్టడం</b>. Nouns నుంచి classes తీయడం మొదటి అడుగు; <i>ఏది మారుతుందో</i> ఆలోచించడం రెండో అడుగు.</div>
+
+## 4. Deep Dive — Win check: O(N²) నుంచి O(K) కి
+
+ఇదే ఈ problem lo చూపించాల్సిన ఒక్క సాంకేతిక లోతు.
+
+**Naive:** ప్రతి move తర్వాత మొత్తం board ని scan చేయడం — అన్ని rows, columns, రెండు diagonals. అది **O(N²)** ప్రతి move కి.
+
+**మెరుగు 1 — చివరి move చుట్టూ మాత్రమే చూడటం.** ఒక move గెలుపుని సృష్టిస్తే, ఆ గెలుపు వరుస **ఆ move గుండా వెళ్ళాలి**. కాబట్టి నాలుగు దిశల్లో (—, |, \, /) ఆ cell నుంచి రెండు వైపులా లెక్కిస్తే చాలు. అది **O(K)**.
+
+**మెరుగు 2 — counters (3×3 కి over-engineering, పెద్ద board కి సరైనది).** ప్రతి row, column, రెండు diagonals కి ఒక counter: X కి +1, O కి −1. |counter| == N అయితే ఆ వరుస పూర్తయింది. ఇది **O(1)** — కానీ ఇది **K == N అయినప్పుడే** పనిచేస్తుంది.
+
+<div class="box">
+<div class="lab">Interview lo ఏది ఎంచుకోవాలి</div>
+<b>మెరుగు 1 (O(K), directional scan)</b> చెప్పండి. కారణం: ఇది K ≠ N అయినా పనిచేస్తుంది (Gomoku), మరియు counters trick కంటే సాధారణమైనది. Counters trick ని <i>ప్రస్తావించండి</i> — "K == N అయితే O(1) counters తో చేయొచ్చు, కానీ అది K ని general గా ఉంచలేదు" — ఇది రెండూ తెలుసని చూపిస్తుంది, మరియు <b>మీరు trade-off ఆధారంగా ఎంచుకున్నారని</b> చూపిస్తుంది.
+</div>
+
+<div class="fig">
+<div class="cap">Win check · చివరి move నుంచి నాలుగు దిశల్లో లెక్కించడం</div>
+<svg viewBox="0 0 750 300"><text class="t-xs" x="0" y="14">చివరి MOVE (★) గుండా వెళ్ళే వరుసలు మాత్రమే మారగలవు — మొత్తం board scan అనవసరం</text><rect class="n" x="60" y="30" width="54" height="54" rx="3"/><rect class="n" x="117" y="30" width="54" height="54" rx="3"/><rect class="n" x="174" y="30" width="54" height="54" rx="3"/><rect class="n" x="60" y="87" width="54" height="54" rx="3"/><rect class="n-acc" x="117" y="87" width="54" height="54" rx="3"/><text class="t-w mid" x="144" y="121" style="font-size:20px;font-weight:800">★</text><rect class="n" x="174" y="87" width="54" height="54" rx="3"/><rect class="n" x="60" y="144" width="54" height="54" rx="3"/><rect class="n" x="117" y="144" width="54" height="54" rx="3"/><rect class="n" x="174" y="144" width="54" height="54" rx="3"/><line class="ln-acc" x1="70" y1="114" x2="218" y2="114" marker-end="url(#aa)"/><line class="ln-acc" x1="144" y1="40" x2="144" y2="188" marker-end="url(#aa)"/><line class="ln-acc" x1="70" y1="40" x2="218" y2="188" marker-end="url(#aa)"/><line class="ln-acc" x1="218" y1="40" x2="70" y2="188" marker-end="url(#aa)"/><text class="t-sm" x="250" y="60">నాలుగు దిశలు మాత్రమే:</text><text class="t-sm" x="250" y="82">— అడ్డం · | నిలువు · \ · /</text><text class="t-sm" x="250" y="110">ప్రతి దిశలో ★ నుంచి రెండు వైపులా</text><text class="t-sm" x="250" y="132">ఒకే symbol ఎన్ని ఉన్నాయో లెక్కించు.</text><text class="t-acc" x="250" y="160">మొత్తం (★ కలిపి) ≥ K అయితే గెలుపు.</text><rect class="n-good" x="0" y="212" width="366" height="80" rx="4"/><text class="t mid" x="183" y="236">ఖర్చు</text><text class="t-sm mid" x="183" y="258">ప్రతి దిశలో గరిష్ఠంగా 2K cells</text><text class="t-sm mid" x="183" y="274">→ move కి O(K), board size తో సంబంధం లేదు</text><rect class="n-info" x="384" y="212" width="366" height="80" rx="4"/><text class="t mid" x="567" y="236">Naive తో పోలిక</text><text class="t-sm mid" x="567" y="258">15×15 Gomoku, K=5 · naive = 225 cells</text><text class="t-sm mid" x="567" y="274">directional = గరిష్ఠంగా ~36 cells</text></svg>
+</div>
+
+## 5. Code
+
+```javascript
+// ---- Move: ఒక object, ఒక tuple కాదు. Undo కి ఇదే పునాది (§Command) ----
+class Move {
+  constructor(row, col, symbol) {
+    Object.assign(this, { row, col, symbol });
+    Object.freeze(this);            // move ఒకసారి జరిగాక మారకూడదు
+  }
+}
+
+// ---- Board: grid state. గెలుపు నియమం దీనికి తెలియదు — అది Strategy ది ----
+class Board {
+  constructor(size = 3) {
+    this.size = size;
+    this.grid = Array.from({ length: size }, () => Array(size).fill(null));
+    this.filled = 0;
+  }
+  inBounds(r, c) {
+    return r >= 0 && r < this.size && c >= 0 && c < this.size;
+  }
+  isEmpty(r, c) {
+    return this.inBounds(r, c) && this.grid[r][c] === null;
+  }
+  place(move) {
+    if (!this.isEmpty(move.row, move.col)) return false;
+    this.grid[move.row][move.col] = move.symbol;
+    this.filled++;
+    return true;
+  }
+  undo(move) {                       // undo follow-up కి ఉచితం
+    this.grid[move.row][move.col] = null;
+    this.filled--;
+  }
+  at(r, c) {
+    return this.inBounds(r, c) ? this.grid[r][c] : null;
+  }
+  isFull() {
+    return this.filled === this.size * this.size;
+  }
+}
+
+// ---- WinStrategy: మారే భాగం. K-in-a-row, directional scan, O(K) ----
+class KInARow {
+  constructor(k) {
+    this.k = k;
+  }
+  // చివరి move ని మాత్రమే పరిశీలిస్తుంది — మొత్తం board కాదు
+  isWin(board, move) {
+    const dirs = [[0, 1], [1, 0], [1, 1], [1, -1]];   // —  |  \  /
+    return dirs.some(([dr, dc]) => {
+      const run = 1 + this.#count(board, move, dr, dc)
+                    + this.#count(board, move, -dr, -dc);
+      return run >= this.k;
+    });
+  }
+  #count(board, move, dr, dc) {
+    let n = 0, r = move.row + dr, c = move.col + dc;
+    while (board.at(r, c) === move.symbol) { n++; r += dr; c += dc; }
+    return n;
+  }
+}
+
+// ---- Game: turn క్రమం + orchestration. నియమాలు ఇక్కడ లేవు ----
+const Status = Object.freeze({ IN_PROGRESS: "IN_PROGRESS", WON: "WON", DRAW: "DRAW" });
+
+class Game {
+  #history = [];
+  constructor(players, { size = 3, k = 3 } = {}) {
+    if (players.length < 2) throw new Error("కనీసం ఇద్దరు players కావాలి");
+    if (k > size) throw new Error(`K (${k}) board size (${size}) కంటే ఎక్కువ ఉండకూడదు`);
+    this.players = players;
+    this.board = new Board(size);
+    this.rule = new KInARow(k);
+    this.turnIndex = 0;
+    this.status = Status.IN_PROGRESS;
+    this.winner = null;
+  }
+  get currentPlayer() {
+    return this.players[this.turnIndex];
+  }
+  play(row, col) {
+    if (this.status !== Status.IN_PROGRESS)
+      return { ok: false, reason: "game ముగిసింది" };
+
+    const move = new Move(row, col, this.currentPlayer.symbol);
+    if (!this.board.place(move))
+      return { ok: false, reason: "ఆ cell ఖాళీగా లేదు (లేదా పరిధి బయట)" };
+
+    this.#history.push(move);
+
+    if (this.rule.isWin(this.board, move)) {
+      this.status = Status.WON;
+      this.winner = this.currentPlayer;
+    } else if (this.board.isFull()) {
+      this.status = Status.DRAW;
+    } else {
+      this.turnIndex = (this.turnIndex + 1) % this.players.length;
+    }
+    return { ok: true, status: this.status, winner: this.winner?.name ?? null };
+  }
+  undo() {                            // history ఉంది కాబట్టి ఇది తేలిక
+    const last = this.#history.pop();
+    if (!last) return false;
+    this.board.undo(last);
+    this.status = Status.IN_PROGRESS;
+    this.winner = null;
+    this.turnIndex = (this.turnIndex - 1 + this.players.length) % this.players.length;
+    return true;
+  }
+}
+
+// ---------------- నడిపి చూద్దాం ----------------
+const g = new Game([{ name: "Asha", symbol: "X" }, { name: "Ravi", symbol: "O" }]);
+[[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]].forEach(([r, c]) => g.play(r, c));
+console.log(g.status, g.winner.name);        // WON Asha
+
+// అదే code, 10×10 board, ఐదు వరుసగా — ఒక్క class కూడా మారలేదు
+const big = new Game([{ name: "A", symbol: "X" }, { name: "B", symbol: "O" }],
+                     { size: 10, k: 5 });
+[[5, 1], [0, 0], [5, 2], [0, 1], [5, 3], [0, 2], [5, 4], [0, 3], [5, 5]]
+  .forEach(([r, c]) => big.play(r, c));
+console.log(big.status, big.winner.name);    // WON A
+```
+
+<div class="note"><b>చివరి ఆరు lines ఈ problem యొక్క మొత్తం సారాంశం.</b> 3×3 నుంచి 10×10/K=5 కి వెళ్ళడానికి <b>ఒక్క class కూడా మారలేదు</b> — కేవలం రెండు constructor arguments. Interview lo ఇదే demo చేయండి; ఇది "నా design extensible" అని చెప్పడం కంటే వెయ్యి రెట్లు బలమైనది.</div>
+
+## 6. Extensibility Test
+
+| Follow-up | మీ design ఏం చేస్తుంది | ఎన్ని classes మారతాయి |
+|-----------|------------------------|------------------------|
+| "10×10, ఐదు వరుసగా" | `new Game(players, { size: 10, k: 5 })` | **0** |
+| "ముగ్గురు players" | `players` array lo మూడో player; turn `% n` ఇప్పటికే | **0** |
+| "Undo కావాలి" | `#history` + `board.undo()` ఇప్పటికే ఉన్నాయి | **0** |
+| "Diagonal గెలుపు లెక్కించొద్దు" | కొత్త `OrthogonalOnly` strategy, `rule` ని మార్చు | **+1 కొత్తది, 0 edits** |
+| "AI opponent" | `Player` కి `chooseMove(board)` — human vs AI ఒకే interface | **+1 కొత్తది** |
+| "Connect-4 (gravity తో)" | `Board.place()` lo column-drop; win rule అలాగే | Board మాత్రమే |
+
+> **చివరి వరుస ముఖ్యమైనది.** Connect-4 కూడా "K-in-a-row" ఆటే — కేవలం piece ఎక్కడ పడుతుందో అనేది వేరు. మీ `WinStrategy` అలాగే పనిచేస్తుంది. ఇది చెప్తే interviewer కి మీ abstraction సరైన చోట ఉందని తెలుస్తుంది.
+
+## 7. Patterns వాడినవి
+
+| Pattern | ఎక్కడ | ఎందుకు (కారణం లేకుండా pattern వద్దు) |
+|---------|-------|--------------------------------------|
+| **Strategy** | `WinStrategy` / `KInARow` | గెలుపు నియమం **మారుతుంది** — K, diagonals, Connect-4 |
+| **Command (బీజ రూపం)** | `Move` + `#history` | Move ని object చేయడం వల్ల undo, replay, move log ఉచితం |
+| **Value object** | `Move` (frozen) | Move జరిగాక మారకూడదు — history నమ్మదగినది అవుతుంది |
+| **State (తేలికపాటి)** | `Status` enum | `IN_PROGRESS` / `WON` / `DRAW` — boolean flags కంటే స్పష్టం |
+
+<div class="box warn">
+<div class="lab">ఇక్కడ pattern <b>వాడకూడని</b> చోటు</div>
+కొంతమంది <code>Board</code> ని Singleton చేస్తారు ("ఒకే board కదా"). <b>తప్పు</b> — ఒకే process lo రెండు games నడవొచ్చు (tournament, tests). "ఒకటే ఉంది" అనేది Singleton కి కారణం కాదు; "గ్లోబల్‌గా ఒకటే <i>ఉండాలి</i>" అనేది కారణం. ఇక్కడ అది నిజం కాదు.<br><br>
+అలాగే <code>Player</code> కి Factory అనవసరం — రెండు రకాలే ఉన్నాయి, మరియు అవి పెరగవు. <b>YAGNI.</b>
+</div>
+
+## 8. Follow-ups
+
+| ప్రశ్న | సమాధానం |
+|--------|----------|
+| "Board ని ఎలా print చేస్తారు?" | `Board` lo కాదు — ఒక `Renderer` lo. Board కి console గురించి తెలియకూడదు (SRP). CLI, web రెండు renderers |
+| "Move validation Board lo నా Game lo నా?" | Board = *భౌతిక* చెల్లుబాటు (పరిధి, ఖాళీ). Game = *ఆట* నియమాలు (వంతు, game ముగిసిందా). ఈ విభజన చెప్పడం మంచి సంకేతం |
+| "Minimax AI ఎలా?" | `undo()` ఇప్పటికే ఉంది — minimax కి కావలసింది అదే: play → recurse → undo. Design ఇప్పటికే సిద్ధం |
+| "Network multiplayer?" | `Move` serializable కాబట్టి wire మీద పంపొచ్చు. Server authoritative — client `play()` ని నమ్మకూడదు |
+| "Draw ని ముందే గుర్తించడం?" | "ఇక ఎవరూ గెలవలేరు" అని తెలిస్తే ముందే draw. ఇది ఒక కొత్త `DrawDetector` — మళ్ళీ, ఉన్న classes మారవు |
+| "3×3 కి ఈ design over-engineering కాదా?" | **నిజాయితీగా ఒప్పుకోండి:** "3×3 కే అయితే అవును. కానీ మీరు N×N అడిగారు కాబట్టి Strategy సరైనది. కేవలం 3×3 అయితే నేను `KInARow` ని `Board` lo ఒక method గా ఉంచేవాడిని." — ఈ సమాధానం maturity చూపిస్తుంది |
+
+<div class="pagebreak"></div>
+
+<div class="opener">
 <div class="ghost">✓</div>
 <div class="kicker">ముగింపు</div>
-<div class="title">16 problems తర్వాత —<br>మీరు ఏం నేర్చుకున్నారు</div>
+<div class="title">17 problems తర్వాత —<br>మీరు ఏం నేర్చుకున్నారు</div>
 <div class="meta">ఇది revision page · interview ముందు రోజు ఇది ఒక్కటే చదివితే చాలు</div>
 </div>
 

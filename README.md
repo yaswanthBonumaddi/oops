@@ -1,6 +1,6 @@
 # Deep Dives — తెలుగులో System Design
 
-**52 deep dives · 1,103 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
+**53 deep dives · 1,119 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
 
 ఇవి interview గైడ్లు కాదు. ప్రతి doc ఒకే పని చేస్తుంది:
 
@@ -101,7 +101,9 @@
 | 07 | **Backtracking** | 15 | కత్తిరింపు లేకుండా N-Queens **1,741×** ఎక్కువ nodes · నకళ్ళతో 24 ఫలితాలు, **6 ప్రత్యేకమైనవి** · copy చేయకపోతే **100% తప్పు** | [md](DSA_Deep_07_Backtracking_Telugu.md) · [pdf](pdfs/DSA_Deep_07_Backtracking_Telugu.pdf) |
 | 08 | **Greedy** | 14 | అయిదు greedy నియమాల్లో **ఒక్కటే** సరైనది (0% vs **76.5%** తప్పు) · మూడు-నాణెం వ్యవస్థల్లో **62%** విఫలం · నా స్వంత నియమం **వృత్తాకారం** | [md](DSA_Deep_08_Greedy_Telugu.md) · [pdf](pdfs/DSA_Deep_08_Greedy_Telugu.pdf) |
 
-*(ఇంకా వస్తున్నాయి — sorting, trees.)*
+| 09 | **Sorting** | 16 | `.sort()` ఒక-అంకె data మీద **0.0% తప్పు**, నిజమైన data మీద **63.3%** · `? 1 : -1` comparator **21,000 runs lo 0 తప్పులు**, స్థిరత్వం **100% నష్టం** · నకళ్ళ దగ్గర **2,001×** | [md](DSA_Deep_09_Sorting_Telugu.md) · [pdf](pdfs/DSA_Deep_09_Sorting_Telugu.pdf) |
+
+*(ఇంకా వస్తోంది — trees.)*
 
 పైన ఉన్న [12 DSA గైడ్లు](#ఇతర-docs) LeetCode problems ని problem-వారీగా వివరిస్తాయి — అవి **ఏమి రాయాలో** చెబుతాయి. ఈ deep dives **మీరు రాసినది సరైనదేనా, మీకెలా తెలుసు** అని అడుగుతాయి.
 

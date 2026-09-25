@@ -1,6 +1,6 @@
 # Deep Dives — తెలుగులో System Design
 
-**50 deep dives · 1,074 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
+**51 deep dives · 1,089 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
 
 ఇవి interview గైడ్లు కాదు. ప్రతి doc ఒకే పని చేస్తుంది:
 
@@ -98,8 +98,9 @@
 | 04 | **Recursion · Memoization · DP** | 14 | `fib(40)` **33 కోట్ల calls** vs 79 · memo key lo ఒక కొలత మర్చిపోతే **47.5% తప్పు** · n=10,000 దగ్గర **RangeError** | [md](DSA_Deep_04_DynamicProgramming_Telugu.md) · [pdf](pdfs/DSA_Deep_04_DynamicProgramming_Telugu.pdf) |
 | 05 | **Graphs** | 15 | DFS అతి చిన్న దారి ఇచ్చేది **18% సార్లు** · ఒక్క ఋణాత్మక అంచుతో Dijkstra **1.2% తప్పు** · visited ఆలస్యంగా గుర్తుపెడితే queue **59.8×** | [md](DSA_Deep_05_Graphs_Telugu.md) · [pdf](pdfs/DSA_Deep_05_Graphs_Telugu.pdf) |
 | 06 | **Heaps & Top-K** | 15 | 10 లక్షల నుంచి top-100: sort **289 ms** vs heap **4.1 ms** · max-heap వాడితే **65.8% తప్పు** · sorted input మీద quickselect **1,189×** | [md](DSA_Deep_06_HeapsTopK_Telugu.md) · [pdf](pdfs/DSA_Deep_06_HeapsTopK_Telugu.pdf) |
+| 07 | **Backtracking** | 15 | కత్తిరింపు లేకుండా N-Queens **1,741×** ఎక్కువ nodes · నకళ్ళతో 24 ఫలితాలు, **6 ప్రత్యేకమైనవి** · copy చేయకపోతే **100% తప్పు** | [md](DSA_Deep_07_Backtracking_Telugu.md) · [pdf](pdfs/DSA_Deep_07_Backtracking_Telugu.pdf) |
 
-*(ఇంకా వస్తున్నాయి — backtracking, greedy, sorting, trees.)*
+*(ఇంకా వస్తున్నాయి — greedy, sorting, trees.)*
 
 పైన ఉన్న [12 DSA గైడ్లు](#ఇతర-docs) LeetCode problems ని problem-వారీగా వివరిస్తాయి — అవి **ఏమి రాయాలో** చెబుతాయి. ఈ deep dives **మీరు రాసినది సరైనదేనా, మీకెలా తెలుసు** అని అడుగుతాయి.
 

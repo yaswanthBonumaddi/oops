@@ -1,6 +1,6 @@
 # Deep Dives — తెలుగులో System Design
 
-**45 deep dives · 1,002 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
+**46 deep dives · 1,018 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
 
 ఇవి interview గైడ్లు కాదు. ప్రతి doc ఒకే పని చేస్తుంది:
 
@@ -93,8 +93,9 @@
 | # | విషయం | పే. | విరుపు | Links |
 |---|---|---|---|---|
 | 01 | **Binary Search** | 17 | n ≤ 32 అయితే **linear వేగం** · ఎనిమిది రూపాల్లో **నాలుగు విఫలం** · ఏకదిశ కాని predicate → **18 కి బదులు 20** | [md](DSA_Deep_01_BinarySearch_Telugu.md) · [pdf](pdfs/DSA_Deep_01_BinarySearch_Telugu.pdf) |
+| 02 | **Two Pointers & Sliding Window** | 16 | n=20,000 దగ్గర **3,879×** · ఒక్క ఋణాత్మక సంఖ్యతో **14.77% తప్పు** · "సరిగ్గా K" నేరుగా లెక్కపెడితే **47.8% తప్పు** | [md](DSA_Deep_02_SlidingWindow_Telugu.md) · [pdf](pdfs/DSA_Deep_02_SlidingWindow_Telugu.pdf) |
 
-*(ఇంకా వస్తున్నాయి — two pointers, hashing, DP, graphs, heaps, backtracking, greedy.)*
+*(ఇంకా వస్తున్నాయి — hashing, DP, graphs, heaps, backtracking, greedy.)*
 
 పైన ఉన్న [12 DSA గైడ్లు](#ఇతర-docs) LeetCode problems ని problem-వారీగా వివరిస్తాయి — అవి **ఏమి రాయాలో** చెబుతాయి. ఈ deep dives **మీరు రాసినది సరైనదేనా, మీకెలా తెలుసు** అని అడుగుతాయి.
 

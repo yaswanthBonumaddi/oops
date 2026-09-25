@@ -1,6 +1,6 @@
 # Deep Dives — తెలుగులో System Design
 
-**53 deep dives · 1,119 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
+**54 deep dives · 1,135 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
 
 ఇవి interview గైడ్లు కాదు. ప్రతి doc ఒకే పని చేస్తుంది:
 
@@ -86,7 +86,7 @@
 
 ---
 
-## DSA Deep Dives — మొదలైంది
+## DSA Deep Dives — 10 patterns
 
 అదే పద్ధతి, algorithms మీద. తేడా: ఇక్కడ **Big-O ఒక వాదన కాదు, ఒక కొలత** — మరియు "నా code పనిచేస్తుంది" అనేది brute force తో పోల్చిన లక్షల cases మీద నిరూపించబడినది.
 
@@ -100,10 +100,8 @@
 | 06 | **Heaps & Top-K** | 15 | 10 లక్షల నుంచి top-100: sort **289 ms** vs heap **4.1 ms** · max-heap వాడితే **65.8% తప్పు** · sorted input మీద quickselect **1,189×** | [md](DSA_Deep_06_HeapsTopK_Telugu.md) · [pdf](pdfs/DSA_Deep_06_HeapsTopK_Telugu.pdf) |
 | 07 | **Backtracking** | 15 | కత్తిరింపు లేకుండా N-Queens **1,741×** ఎక్కువ nodes · నకళ్ళతో 24 ఫలితాలు, **6 ప్రత్యేకమైనవి** · copy చేయకపోతే **100% తప్పు** | [md](DSA_Deep_07_Backtracking_Telugu.md) · [pdf](pdfs/DSA_Deep_07_Backtracking_Telugu.pdf) |
 | 08 | **Greedy** | 14 | అయిదు greedy నియమాల్లో **ఒక్కటే** సరైనది (0% vs **76.5%** తప్పు) · మూడు-నాణెం వ్యవస్థల్లో **62%** విఫలం · నా స్వంత నియమం **వృత్తాకారం** | [md](DSA_Deep_08_Greedy_Telugu.md) · [pdf](pdfs/DSA_Deep_08_Greedy_Telugu.pdf) |
-
 | 09 | **Sorting** | 16 | `.sort()` ఒక-అంకె data మీద **0.0% తప్పు**, నిజమైన data మీద **63.3%** · `? 1 : -1` comparator **21,000 runs lo 0 తప్పులు**, స్థిరత్వం **100% నష్టం** · నకళ్ళ దగ్గర **2,001×** | [md](DSA_Deep_09_Sorting_Telugu.md) · [pdf](pdfs/DSA_Deep_09_Sorting_Telugu.pdf) |
-
-*(ఇంకా వస్తోంది — trees.)*
+| 10 | **Trees** | 16 | "ఇది BST నా?" అన్ని trees lo **1.38%** తప్పు, *విరిగిన* trees lo **35.4%** · sorted గా చేర్చితే లోతు **సరిగ్గా n**, **328×** · LCA node లేకపోతే **100% తప్పు** | [md](DSA_Deep_10_Trees_Telugu.md) · [pdf](pdfs/DSA_Deep_10_Trees_Telugu.pdf) |
 
 పైన ఉన్న [12 DSA గైడ్లు](#ఇతర-docs) LeetCode problems ని problem-వారీగా వివరిస్తాయి — అవి **ఏమి రాయాలో** చెబుతాయి. ఈ deep dives **మీరు రాసినది సరైనదేనా, మీకెలా తెలుసు** అని అడుగుతాయి.
 

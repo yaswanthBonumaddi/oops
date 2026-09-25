@@ -60,7 +60,7 @@ Sliding window కి కూడా అదే ఆకారపు షరతు ఉ
 
 11. మొత్తం code · 1.2 లక్షల cases · mutation testing
 12. ఒకే bug, రెండు వేర్వేరు ఫలితాలు
-13. Interview lo ఎలా రాయాలి · English script
+13. Interview lo ఎలా రాయాలి
 14. Follow-ups — గరిష్ఠ కిటికీ, అక్షరాలు, prefix sums
 15. ఏమి నేర్చుకున్నాం
 
@@ -391,7 +391,7 @@ const exactlyKDistinct = (a, K) => atMostKDistinct(a, K) - atMostKDistinct(a, K 
 
 ---
 
-## 13. Interview lo ఎలా రాయాలి · English script
+## 13. Interview lo ఎలా రాయాలి
 
 | అడుగు | ఏమి చేయాలి |
 |---|---|
@@ -400,14 +400,6 @@ const exactlyKDistinct = (a, K) => atMostKDistinct(a, K) - atMostKDistinct(a, K 
 | **3** | కుంచించడానికి ఎప్పుడూ **`while`**, `if` కాదు — §12 |
 | **4** | లెక్కపెడుతుంటే **`c += r - l + 1`**, `c++` కాదు |
 | **5** | "సరిగ్గా K" కనిపిస్తే వెంటనే **atMost(K) − atMost(K−1)** |
-
-**English script:**
-
-> "First I'd ask whether the array can contain negatives, because that single answer decides the whole approach. The two-pointer argument is that the left pointer never has to move backwards, and that's only true if moving the right pointer makes the quantity change in one direction. With non-negative numbers the sum only grows, so a left position that's invalid now stays invalid. I fuzzed this against brute force on two hundred thousand cases: with non-negatives, zero errors. Allowing a single minus one gives one point eight percent wrong answers, and a range down to minus five gives fourteen point eight percent. Zeros are fine, because zero doesn't decrease the sum — it's about direction, not magnitude."
-
-> "For counting problems I'd add two things. Count `r minus l plus one` per step rather than one, because every suffix of a valid window is also valid. And if the problem says *exactly* K, don't try to count it directly — I measured that at forty-eight percent wrong. 'At most K' is monotonic and 'exactly K' isn't, so you write at-most twice and subtract."
-
-> "One detail I'd mention because it surprised me: I mutation-tested changing the shrink loop from `while` to `if`. For the longest-subarray query it was correct on five hundred thousand random cases, because the guard before updating the answer covers for a lagging left pointer. On the counting query the same change is wrong twenty-two percent of the time, because there's no guard — the count trusts that the pointer is in the right place. So the same line is optional for one question and load-bearing for another, which is why I'd always write the `while`."
 
 ---
 

@@ -59,9 +59,8 @@ LeetCode గైడ్లు <b>ఇప్పటికే ఉన్నాయి</b
 
 11. మొత్తం code · 2 లక్షల searches · mutation testing
 12. Interview lo off-by-one లేకుండా ఎలా రాయాలి
-13. నోటితో చెప్పాల్సిన English script
-14. Follow-ups — rotated arrays, నకళ్ళు, floats
-15. ఏమి నేర్చుకున్నాం
+13. Follow-ups — rotated arrays, నకళ్ళు, floats
+14. ఏమి నేర్చుకున్నాం
 
 ---
 
@@ -461,27 +460,7 @@ Interview lo మీకు fuzz harness ఉండదు. కాబట్టి �
 
 ---
 
-## 13. నోటితో చెప్పాల్సిన English script
-
-**ఎప్పుడు వాడాలి:**
-
-> "Before I reach for binary search I'd check the size. I benchmarked it: below about thirty-two elements a linear scan is actually faster — eight point eight nanoseconds versus thirteen point six at n equals eight — because the scan is cache-friendly and branch-predictable while binary search jumps around. It's worth knowing because for a small fixed list, a loop is easier to read and impossible to get wrong. At ten million elements binary search is twenty-two thousand times faster, so obviously it wins the moment n is unbounded."
-
-**Template గురించి:**
-
-> "I only ever write one form: a half-open window, lo inclusive and hi exclusive, starting at zero and length. That choice gives me three things for free. The empty array works without a special case, because lo equals hi means the loop never runs. Infinite loops are impossible, because mid always comes from the lower half so the window must shrink every step. And I can never read out of bounds, because mid is always strictly less than length. Then lower-bound gives me first index at least target, upper-bound gives first index greater than target, and everything else — first occurrence, last occurrence, count, insert position — is one line on top of those two."
-
-**Off-by-one గురించి:**
-
-> "I'd flag why this algorithm has a reputation. I wrote the eight combinations people naturally produce and fuzzed all of them on two hundred thousand random cases with duplicates and empty arrays. Four were wrong. One returned the wrong answer thirty-three thousand times — but it was *correct* eighty-three percent of the time, which is exactly what makes it dangerous: your three examples pass and you fail on a hidden test. Two others hit infinite loops, both on inputs of size one or two. So it's not that binary search is hard, it's that it fails on the smallest inputs, which are the ones people don't test."
-
-**Monotonicity గురించి:**
-
-> "The case I'd be most careful about is binary searching on the answer, where there's no array — you're searching a value range against a predicate. The requirement is that the predicate is monotonic: once true, always true. If it isn't, you get a wrong answer with no crash and no loop. I demonstrated it with first-fit bin packing, where increasing the capacity can paradoxically need *more* bins. I fuzzed ten million capacity-item pairs and found it in about zero point zero one percent of item sets — and on one of them binary search returned twenty where the true answer was eighteen. So before I write it I say the sentence out loud: 'if pred of x is true then pred of x plus one is true, because...'. If I can't finish that sentence, I don't use binary search."
-
----
-
-## 14. Follow-ups — rotated arrays, నకళ్ళు, floats
+## 13. Follow-ups — rotated arrays, నకళ్ళు, floats
 
 **"Rotated sorted array lo వెతకాలంటే?"**
 
@@ -501,7 +480,7 @@ JavaScript lo సంఖ్యలు 2⁵³ వరకు ఖచ్చితం, �
 
 ---
 
-## 15. ఏమి నేర్చుకున్నాం
+## 14. ఏమి నేర్చుకున్నాం
 
 **1. Big-O చిన్న n గురించి ఏమీ చెప్పదు.** n ≤ 32 దగ్గర linear scan **వేగం** — మరియు అది స్థిరాంకాల వల్ల కాదు, **cache మరియు branch prediction** వల్ల.
 

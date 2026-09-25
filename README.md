@@ -1,6 +1,6 @@
 # Deep Dives — తెలుగులో System Design
 
-**54 deep dives · 1,135 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
+**57 deep dives · 1,179 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
 
 ఇవి interview గైడ్లు కాదు. ప్రతి doc ఒకే పని చేస్తుంది:
 
@@ -86,7 +86,7 @@
 
 ---
 
-## DSA Deep Dives — 10 patterns
+## DSA Deep Dives — 13 patterns
 
 అదే పద్ధతి, algorithms మీద. తేడా: ఇక్కడ **Big-O ఒక వాదన కాదు, ఒక కొలత** — మరియు "నా code పనిచేస్తుంది" అనేది brute force తో పోల్చిన లక్షల cases మీద నిరూపించబడినది.
 
@@ -102,14 +102,14 @@
 | 08 | **Greedy** | 14 | అయిదు greedy నియమాల్లో **ఒక్కటే** సరైనది (0% vs **76.5%** తప్పు) · మూడు-నాణెం వ్యవస్థల్లో **62%** విఫలం · నా స్వంత నియమం **వృత్తాకారం** | [md](DSA_Deep_08_Greedy_Telugu.md) · [pdf](pdfs/DSA_Deep_08_Greedy_Telugu.pdf) |
 | 09 | **Sorting** | 16 | `.sort()` ఒక-అంకె data మీద **0.0% తప్పు**, నిజమైన data మీద **63.3%** · `? 1 : -1` comparator **21,000 runs lo 0 తప్పులు**, స్థిరత్వం **100% నష్టం** · నకళ్ళ దగ్గర **2,001×** | [md](DSA_Deep_09_Sorting_Telugu.md) · [pdf](pdfs/DSA_Deep_09_Sorting_Telugu.pdf) |
 | 10 | **Trees** | 16 | "ఇది BST నా?" అన్ని trees lo **1.38%** తప్పు, *విరిగిన* trees lo **35.4%** · sorted గా చేర్చితే లోతు **సరిగ్గా n**, **328×** · LCA node లేకపోతే **100% తప్పు** | [md](DSA_Deep_10_Trees_Telugu.md) · [pdf](pdfs/DSA_Deep_10_Trees_Telugu.pdf) |
+| 11 | **Stack & Linked List** | 15 | brackets ని లెక్కపెడితే ఒకే రకం మీద **0.00%** తప్పు, "సరే" అన్నవాటిలో **81.9%** తప్పు · జాబితా తిప్పడంలో ఒక పంక్తి క్రమం → **10,000 lo 1** · monotonic stack **50,000×**, కానీ యాదృచ్ఛిక data **5×** అంటుంది | [md](DSA_Deep_11_StackLinkedList_Telugu.md) · [pdf](pdfs/DSA_Deep_11_StackLinkedList_Telugu.pdf) |
+| 12 | **Tries** | 14 | `end` గుర్తు మర్చిపోతే యాదృచ్ఛిక strings మీద **3.78%**, నిజమైన ఉపసర్గల మీద **100.0%** · ఉపసర్గకి **208×** వేగం, కచ్చితమైన వెతుకులాటకి `Set` **19.9×** వేగం · **30×** memory | [md](DSA_Deep_12_Tries_Telugu.md) · [pdf](pdfs/DSA_Deep_12_Tries_Telugu.pdf) |
+| 13 | **Bits & Math** | 15 | `(lo+hi)>>1` 100 కోట్ల వరకు **0.0%**, ఆపై **87.3%** మరియు *ఋణాత్మక* index · 16 buckets అడిగితే **31** వచ్చాయి, **35.4%** keys కనిపించని చోట · `n(n+1)/2` **13.4 కోట్ల** దగ్గరే అబద్ధం | [md](DSA_Deep_13_BitsAndMath_Telugu.md) · [pdf](pdfs/DSA_Deep_13_BitsAndMath_Telugu.pdf) |
 
-**ఈ పది deep dives DSA మొత్తాన్ని కప్పవు.** ఇవి కప్పనివి — మరియు అవి ఎక్కడ ఉన్నాయో:
+**ఈ పదమూడు deep dives DSA మొత్తాన్ని కప్పవు.** ఇవి కప్పనివి — మరియు అవి ఎక్కడ ఉన్నాయో:
 
 | కప్పని అంశం | ఎక్కడ ఉంది |
 |---|---|
-| **Stack · Linked List** | [DSA_04](dsa/DSA_04_Stack_LinkedList_Telugu.md) — 16 problems (#20, #155, #25, #146…) |
-| **Trie** | [DSA_06](dsa/DSA_06_Graphs_Trie_Telugu.md) — Trie pattern · [LLD Deep 17](lld/LLD_Deep_17_Autocomplete_Telugu.md) — 2,34,428-పదాల నిఘంటువు మీద కొలిచినది |
-| **Bit manipulation · Math** | [DSA_09](dsa/DSA_09_Greedy_Bit_Math_Telugu.md) — Bit మరియు Math patterns |
 | **Divide & Conquer** | [DSA_07](dsa/DSA_07_Backtracking_DivideConquer_Telugu.md) |
 | **Arrays · Strings · Matrix · Intervals** | [DSA_01](dsa/DSA_01_Arrays_Strings_Telugu.md) · [DSA_02](dsa/DSA_02_TwoPtr_SlidingWindow_Matrix_Telugu.md) · [DSA_03](dsa/DSA_03_Hashing_Intervals_Telugu.md) |
 

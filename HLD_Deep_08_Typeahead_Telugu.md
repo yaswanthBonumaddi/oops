@@ -77,7 +77,7 @@
 
 ## 1. అడిగింది ఏమిటి — మరియు ఏవి సమస్యలు *కావు*
 
-వాడుకరి "how t" అని టైప్ చేస్తాడు. 50 మిల్లీసెకన్లలో పది సూచనలు కనిపించాలి. ప్రతి keystroke కీ మళ్ళీ.
+user "how t" అని టైప్ చేస్తాడు. 50 మిల్లీసెకన్లలో పది సూచనలు కనిపించాలి. ప్రతి keystroke కీ మళ్ళీ.
 
 ఇది ఒక **read-heavy, latency-critical** problem. ఆచరణలో ప్రతి search కి 10–20 typeahead requests.
 
@@ -180,7 +180,7 @@ logs (రోజంతా) → queries లెక్కపెట్టు → pref
 <div class="lab">రోజుకి ఒక build → <b>28 గంటలు</b> ఆలస్యం</div>
 కారణం రెండు భాగాలు: తర్వాతి build మొదలవడానికి ఎదురుచూపు (<b>22 గంటలు</b>), ఆ తర్వాత build నడవడానికి (<b>6 గంటలు</b>).<br><br>
 అంటే ఆ సంఘటన <b>ముగిసిపోయిన తర్వాత</b> మీ typeahead దాన్ని సూచించడం మొదలుపెడుతుంది.<br><br>
-మరియు typeahead యొక్క అత్యంత విలువైన క్షణం సరిగ్గా అదే — <b>వాడుకరికి ఏమి వెతకాలో ఇంకా తెలియనప్పుడు</b>.
+మరియు typeahead యొక్క అత్యంత విలువైన క్షణం సరిగ్గా అదే — <b>user కి ఏమి వెతకాలో ఇంకా తెలియనప్పుడు</b>.
 </div>
 
 సహజమైన పరిష్కారం: **తరచుగా rebuild చెయ్యడం.** దాని ఖర్చు?
@@ -271,7 +271,7 @@ Typeahead ప్రతి అక్షరానికీ పిలవబడు�
 
 మరియు cache చేయడం సులభం — `prefix → suggestions`. Prefixes Zipf పంపిణీలో ఉంటాయి ("how t", "wea", "you" చాలా సాధారణం), కాబట్టి hit rate ఎక్కువ.
 
-ఇప్పుడు product team అడుగుతుంది: **"సూచనలు వాడుకరిని బట్టి ఉండొచ్చా?"** — అతని గత searches, అతని ప్రాంతం, అతని భాష.
+ఇప్పుడు product team అడుగుతుంది: **"సూచనలు user ని బట్టి ఉండొచ్చా?"** — అతని గత searches, అతని ప్రాంతం, అతని భాష.
 
 అది సహేతుకమైన కోరిక. దాని ఖర్చు కొలుద్దాం.
 
@@ -308,7 +308,7 @@ Backend కి వెళ్ళేవి <b>4.9% నుంచి 99.8%</b> — �
 <div class="box bad">
 <div class="lab">Cache ని <b>100 రెట్లు</b> పెంచాం. Hit rate <b>ఒక్క దశాంశం కూడా</b> మారలేదు.</div>
 ఎందుకంటే సమస్య cache పరిమాణం కాదు — <b>key space యొక్క ఆకారం</b>.<br><br>
-ఒక్కో (prefix, user) జత ఆ వాడుకరి జీవితంలో <b>ఒకటి రెండు సార్లు</b> మాత్రమే వస్తుంది. Cache lo ఉంచినా అది <b>మళ్ళీ అడగబడదు</b>.<br><br>
+ఒక్కో (prefix, user) జత ఆ user జీవితంలో <b>ఒకటి రెండు సార్లు</b> మాత్రమే వస్తుంది. Cache lo ఉంచినా అది <b>మళ్ళీ అడగబడదు</b>.<br><br>
 <b>ఏదీ పునరావృతం కానప్పుడు cache నిరుపయోగం</b> — అది ఎంత పెద్దదైనా.
 </div>
 
@@ -318,12 +318,12 @@ Backend కి వెళ్ళేవి <b>4.9% నుంచి 99.8%</b> — �
 
 పరిష్కారం personalization ని వదులుకోవడం కాదు. అది **ఎక్కడ జరుగుతుందో** మార్చడం.
 
-**Personalization ఒక వడపోత కాదు, ఒక పునఃక్రమం.** వాడుకరికి కనిపించాల్సిన సూచనలు దాదాపు అందరికీ ఒకటే — మారేది వాటి **క్రమం**.
+**Personalization ఒక వడపోత కాదు, ఒక పునఃక్రమం.** user కి కనిపించాల్సిన సూచనలు దాదాపు అందరికీ ఒకటే — మారేది వాటి **క్రమం**.
 
 కాబట్టి:
 
 1. Backend **global top-20** ఇస్తుంది → cache key ఇంకా `prefix` → **95.1% hit rate**
-2. ఆ 20 ని వాడుకరి చరిత్రతో **తిరిగి క్రమం** పెట్టి top-10 చూపించడం
+2. ఆ 20 ని user చరిత్రతో **తిరిగి క్రమం** పెట్టి top-10 చూపించడం
 3. ఆ పునఃక్రమం **client మీద** (లేదా ఒక చవకైన edge step lo) జరుగుతుంది
 
 ```
@@ -335,11 +335,11 @@ Backend కి వెళ్ళేవి <b>4.9% నుంచి 99.8%</b> — �
 <div class="box good">
 <div class="lab">ఒక సాధారణ నమూనా — <b>ఖరీదైన భాగాన్ని పంచుకోండి, చవకైన భాగాన్ని వ్యక్తిగతం చేయండి</b></div>
 ఖరీదైనది: 50 కోట్ల queries lo ఈ prefix కి ఏవి ప్రజాదరణ పొందాయో కనుక్కోవడం. అది <b>అందరికీ ఒకటే</b>.<br><br>
-చవకైనది: 20 అంశాలని ఒక వాడుకరి చరిత్రతో క్రమం పెట్టడం. అది <b>ఒక్కొక్కరికీ వేరే</b>, కానీ అది <b>మైక్రోసెకన్ల పని</b>.<br><br>
+చవకైనది: 20 అంశాలని ఒక user చరిత్రతో క్రమం పెట్టడం. అది <b>ఒక్కొక్కరికీ వేరే</b>, కానీ అది <b>మైక్రోసెకన్ల పని</b>.<br><br>
 ఈ విభజన లేకపోతే మీరు ఖరీదైన భాగాన్ని కూడా వ్యక్తిగతం చేసి, cache ని పోగొట్టుకుంటారు.
 </div>
 
-<svg viewBox="0 0 750 246"><text class="t-xs" x="0" y="14">ఒకే personalization · రెండు చోట్ల · పూర్తిగా వేరే ఖర్చు</text><rect class="n-bad" x="0" y="26" width="360" height="86" rx="4"/><text class="t mid" x="180" y="48">backend lo personalize</text><text class="t-sm mid" x="180" y="70">cache key: prefix + user</text><text class="t-acc mid" x="180" y="92">hit rate 0.2% · backend 20× పెద్దది</text><rect class="n-good" x="390" y="26" width="360" height="86" rx="4"/><text class="t mid" x="570" y="48">client lo personalize</text><text class="t-sm mid" x="570" y="70">cache key: prefix · top-20 తెచ్చి క్రమం</text><text class="t-sm mid" x="570" y="92">hit rate 95.1% · backend అదే</text><rect class="n-dark" x="0" y="130" width="750" height="112" rx="4"/><text class="t-w-sm mid" x="375" y="154">రెండింటిలోనూ వాడుకరికి <tspan class="t-acc">ఒకే అనుభవం</tspan>.</text><text class="t-w-sm mid" x="375" y="180">తేడా — ఏ పనిని <tspan class="t-acc">పంచుకున్నాం</tspan>, ఏ పనిని <tspan class="t-acc">విడదీశాం</tspan>.</text><text class="t-w-sm mid" x="375" y="210">"ఏవి సంబంధితమైనవి" — అందరికీ ఒకటే · ఖరీదు · <tspan class="t-acc">cache చెయ్యి</tspan></text><text class="t-w-sm mid" x="375" y="232">"ఏది ముందు" — ఒక్కొక్కరికీ వేరే · చవక · <tspan class="t-acc">చివర్లో చెయ్యి</tspan></text></svg>
+<svg viewBox="0 0 750 246"><text class="t-xs" x="0" y="14">ఒకే personalization · రెండు చోట్ల · పూర్తిగా వేరే ఖర్చు</text><rect class="n-bad" x="0" y="26" width="360" height="86" rx="4"/><text class="t mid" x="180" y="48">backend lo personalize</text><text class="t-sm mid" x="180" y="70">cache key: prefix + user</text><text class="t-acc mid" x="180" y="92">hit rate 0.2% · backend 20× పెద్దది</text><rect class="n-good" x="390" y="26" width="360" height="86" rx="4"/><text class="t mid" x="570" y="48">client lo personalize</text><text class="t-sm mid" x="570" y="70">cache key: prefix · top-20 తెచ్చి క్రమం</text><text class="t-sm mid" x="570" y="92">hit rate 95.1% · backend అదే</text><rect class="n-dark" x="0" y="130" width="750" height="112" rx="4"/><text class="t-w-sm mid" x="375" y="154">రెండింటిలోనూ user కి <tspan class="t-acc">ఒకే అనుభవం</tspan>.</text><text class="t-w-sm mid" x="375" y="180">తేడా — ఏ పనిని <tspan class="t-acc">పంచుకున్నాం</tspan>, ఏ పనిని <tspan class="t-acc">విడదీశాం</tspan>.</text><text class="t-w-sm mid" x="375" y="210">"ఏవి సంబంధితమైనవి" — అందరికీ ఒకటే · ఖరీదు · <tspan class="t-acc">cache చెయ్యి</tspan></text><text class="t-w-sm mid" x="375" y="232">"ఏది ముందు" — ఒక్కొక్కరికీ వేరే · చవక · <tspan class="t-acc">చివర్లో చెయ్యి</tspan></text></svg>
 
 ---
 
@@ -374,7 +374,7 @@ Backend కి వెళ్ళేవి <b>4.9% నుంచి 99.8%</b> — �
 <div class="box bad">
 <div class="lab">రోజుకి 15 queries ఉన్న prefix కి — పదింటిలో <b>ఆరు</b> రోజూ మారతాయి</div>
 అంటే ఆ "top-10" ఒక ప్రజాదరణ కొలత కాదు — అది ఒక <b>యాదృచ్ఛిక నమూనా</b>.<br><br>
-వాడుకరి ఈరోజు చూసినది రేపు ఉండదు. అతనికి typeahead <b>చంచలంగా, నమ్మదగనిదిగా</b> కనిపిస్తుంది.<br><br>
+user ఈరోజు చూసినది రేపు ఉండదు. అతనికి typeahead <b>చంచలంగా, నమ్మదగనిదిగా</b> కనిపిస్తుంది.<br><br>
 మరియు మొదటి వరుస చూడండి — లక్షల queries ఉన్న prefix కి churn <b>సున్నా</b>. కాబట్టి ఇది ఒక algorithm లోపం కాదు; ఇది <b>సాక్ష్యం లేకపోవడం</b>.
 </div>
 
@@ -404,7 +404,7 @@ if (!out.length) this.stats.suppressed++;
 <div class="box good">
 <div class="lab">చివరి రెండు వరుసలు — <b>ఏమీ చూపించలేదు</b>, మరియు అదే సరైన పని</div>
 ఖాళీ typeahead ఒక వైఫల్యం లాగా కనిపిస్తుంది. కానీ ప్రత్యామ్నాయం — <b>రోజూ మారే యాదృచ్ఛిక పది</b> — ఇంకా ఘోరం.<br><br>
-వాడుకరి ఖాళీ typeahead చూస్తే అతను <b>టైప్ చేయడం కొనసాగిస్తాడు</b>. చంచలమైన సూచనలు చూస్తే అతను <b>వాటిని నమ్మడం మానేస్తాడు</b> — మరియు అది మీ ప్రజాదరణ పొందిన prefixes ని కూడా దెబ్బతీస్తుంది.<br><br>
+user ఖాళీ typeahead చూస్తే అతను <b>టైప్ చేయడం కొనసాగిస్తాడు</b>. చంచలమైన సూచనలు చూస్తే అతను <b>వాటిని నమ్మడం మానేస్తాడు</b> — మరియు అది మీ ప్రజాదరణ పొందిన prefixes ని కూడా దెబ్బతీస్తుంది.<br><br>
 <b>ఒక నమ్మదగని సమాధానం, సమాధానం లేకపోవడం కంటే ఖరీదైనది.</b>
 </div>
 
@@ -552,13 +552,13 @@ for (const q of this.#prefix.get(lookup) || []) {
 
 ## 15. Follow-ups — అక్షర దోషాలు, భాషలు, చెడు queries
 
-**"వాడుకరి 'wheather' అని టైప్ చేస్తే?"**
+**"user 'wheather' అని టైప్ చేస్తే?"**
 
 Prefix trie ఇది పట్టుకోదు — దానికి edit distance కావాలి. ఆచరణలో రెండు దారులు: (1) **query logs నుంచే** నేర్చుకోవడం — చాలామంది "wheather" అని టైప్ చేసి తర్వాత "weather" ని click చేస్తే, ఆ జతని ఒక మార్పుగా నిల్వ చేయడం (ఇది model అవసరం లేని, చాలా బలమైన సంకేతం), లేదా (2) **BK-tree / trie మీద fuzzy walk** — కానీ అది ఖరీదు, మరియు 50 ms బడ్జెట్ lo కష్టం. మొదటిది దాదాపు ఎప్పుడూ మెరుగు, ఎందుకంటే అది **నిజమైన మానవ ప్రవర్తన** నుంచి వస్తుంది.
 
 **"చాలా భాషలు, చాలా లిపులు ఉంటే?"**
 
-ఒక్కో లిపికీ **వేరే index**. కారణం §11 — తెలుగు queries మరియు English queries ఒకే prefix ని పంచుకోవు, కాబట్టి ఒకే index lo ఉంచడం వల్ల లాభం లేదు, మరియు ప్రతి lookup పెద్ద candidate set ని తాకుతుంది. మరియు ఒక ఆచరణాత్మక సమస్య: **transliteration** — వాడుకరి "vaatavaranam" అని రాసి తెలుగు ఫలితాలు ఆశిస్తాడు. అది ఒక ప్రత్యేక mapping పొర, index కాదు.
+ఒక్కో లిపికీ **వేరే index**. కారణం §11 — తెలుగు queries మరియు English queries ఒకే prefix ని పంచుకోవు, కాబట్టి ఒకే index lo ఉంచడం వల్ల లాభం లేదు, మరియు ప్రతి lookup పెద్ద candidate set ని తాకుతుంది. మరియు ఒక ఆచరణాత్మక సమస్య: **transliteration** — user "vaatavaranam" అని రాసి తెలుగు ఫలితాలు ఆశిస్తాడు. అది ఒక ప్రత్యేక mapping పొర, index కాదు.
 
 **"ఒక query ని అత్యవసరంగా తీసేయాలంటే?"**
 
@@ -566,7 +566,7 @@ Prefix trie ఇది పట్టుకోదు — దానికి edit di
 
 **"ఒకే prefix కి వేర్వేరు ప్రాంతాల్లో వేర్వేరు సూచనలు?"**
 
-ఇది §7 యొక్క మృదువైన రూపం — cache key `prefix + region`. Regions కొన్ని వందలు మాత్రమే (users కోట్లు కాదు), కాబట్టి hit rate పెద్దగా పడదు. **ఇదే personalization కి సరైన మధ్య దారి**: వాడుకరి స్థాయిలో కాకుండా, ఒక **చిన్న సమూహ** స్థాయిలో.
+ఇది §7 యొక్క మృదువైన రూపం — cache key `prefix + region`. Regions కొన్ని వందలు మాత్రమే (users కోట్లు కాదు), కాబట్టి hit rate పెద్దగా పడదు. **ఇదే personalization కి సరైన మధ్య దారి**: user స్థాయిలో కాకుండా, ఒక **చిన్న సమూహ** స్థాయిలో.
 
 **"Typeahead index ని serving machines కి ఎలా పంపాలి?"**
 

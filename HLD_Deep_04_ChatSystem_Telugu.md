@@ -80,7 +80,7 @@ A, B కి ఒక సందేశం పంపుతాడు. అది B క�
 
 దీనికి WebSocket కావాలి (server నుంచి client కి *push* చేయాలి కాబట్టి, HTTP polling కాదు), ఒక message store కావాలి, ఒక delivery పొర కావాలి. అదంతా సూటిగా ఉంది.
 
-కానీ ఒక లెక్క వేద్దాం. **10 లక్షల వాడుకరులు, ఒక్కొక్కరు రోజుకి 40 messages:**
+కానీ ఒక లెక్క వేద్దాం. **10 లక్షల users, ఒక్కొక్కరు రోజుకి 40 messages:**
 
 ```
   నిజమైన chat messages : 463 / సెకను
@@ -91,7 +91,7 @@ A, B కి ఒక సందేశం పంపుతాడు. అది B క�
 అయితే WhatsApp కి వేల servers ఎందుకు? ఎందుకంటే ఆ 463 **మొత్తం traffic lo ఒక భిన్నం** మాత్రమే.
 
 <div class="box bad">
-<div class="lab">అదే 10 లక్షల వాడుకరులు · మిగతా traffic</div>
+<div class="lab">అదే 10 లక్షల users · మిగతా traffic</div>
 <b>presence</b> (పచ్చ చుక్క) — సెకనుకి <b>11,11,111</b> notifications (§7)<br>
 <b>receipts</b> (✓✓ మరియు నీలం) — ఒక్కో గుంపు message కి <b>511 రెట్లు</b> (§9)<br><br>
 <b>చాట్ system యొక్క 99.9% పని chat కాదు.</b>
@@ -111,7 +111,7 @@ A, B కి ఒక సందేశం పంపుతాడు. అది B క�
 | గుంపు గరిష్ఠ పరిమాణం ఎంత? | **ఈ సంఖ్య మీ receipt design ని నిర్ణయిస్తుంది.** 10 vs 256 అంటే 19× vs 511× |
 | Messages శాశ్వతంగా నిల్వ చేయాలా? | చేయకపోతే (Signal వంటివి) storage problem దాదాపు పోతుంది |
 | End-to-end encryption ఉందా? | ఉంటే server content చూడలేదు — search, spam filter అన్నీ client మీదికి వెళ్తాయి |
-| ఒక వాడుకరికి ఎన్ని పరికరాలు? | ఒకటి కంటే ఎక్కువ అయితే delivery ఒక fan-out — §14 |
+| ఒక user కి ఎన్ని పరికరాలు? | ఒకటి కంటే ఎక్కువ అయితే delivery ఒక fan-out — §14 |
 
 <div class="box warn">
 <div class="lab">ఒక ప్రశ్న interviewer ని ఆశ్చర్యపరుస్తుంది</div>
@@ -172,7 +172,7 @@ messages.sort((a, b) => a.at - b.at);
 <div class="box bad">
 <div class="lab">ఫోన్ గడియారం — <b>అర్ధభాగం</b> జవాబులు ప్రశ్నకి ముందు</div>
 కేవలం అర ​సెకను గడియారం తేడాతో <b>28%</b>. 30 సెకన్లతో <b>49.9%</b> — అంటే నాణెం విసిరినట్టు.<br><br>
-మరియు ఫోన్ గడియారాలు నిజంగా తప్పుగా ఉంటాయి. వాడుకరి manual గా మార్చొచ్చు, timezone మారొచ్చు, NTP విఫలం కావొచ్చు.<br><br>
+మరియు ఫోన్ గడియారాలు నిజంగా తప్పుగా ఉంటాయి. user manual గా మార్చొచ్చు, timezone మారొచ్చు, NTP విఫలం కావొచ్చు.<br><br>
 <b>"పంపినవాడి timestamp" అనేది ఒక design ఎంపిక కాదు — అది ఒక bug.</b>
 </div>
 
@@ -229,7 +229,7 @@ append(from, text, at) {
 ఆ చివరి దాన్ని timestamp ఎప్పటికీ ఇవ్వలేదు. <b>Timestamp తో "ఒకటి పోయింది" అని మీకు ఎప్పటికీ తెలియదు.</b>
 </div>
 
-<svg viewBox="0 0 750 246"><text class="t-xs" x="0" y="14">ఒకే message, మూడు వేర్వేరు "సత్యాలు"</text><rect class="n-bad" x="0" y="26" width="240" height="70" rx="4"/><text class="t-sm mid" x="120" y="48">ఫోన్ గడియారం</text><text class="t-xs mid" x="120" y="68">వాడుకరి మార్చగలడు</text><text class="t-acc mid" x="120" y="86">49.9% తప్పు</text><rect class="n-soft" x="255" y="26" width="240" height="70" rx="4"/><text class="t-sm mid" x="375" y="48">server గడియారం</text><text class="t-xs mid" x="375" y="68">NTP మీద ఆధారపడుతుంది</text><text class="t-acc mid" x="375" y="86">12.9% తప్పు (250ms drift)</text><rect class="n-good" x="510" y="26" width="240" height="70" rx="4"/><text class="t-sm mid" x="630" y="48">వరుస సంఖ్య</text><text class="t-xs mid" x="630" y="68">ఏ గడియారం మీదా ఆధారపడదు</text><text class="t-xs mid" x="630" y="86">0% తప్పు</text><rect class="n-dark" x="0" y="114" width="750" height="126" rx="4"/><text class="t-w-sm mid" x="375" y="138">Timestamp ఒక <tspan class="t-acc">కొలత</tspan> — అది ఎప్పుడూ ఉజ్జాయింపు.</text><text class="t-w-sm mid" x="375" y="162">వరుస సంఖ్య ఒక <tspan class="t-acc">నిర్ణయం</tspan> — అది ఖచ్చితంగా సరైనది, ఎందుకంటే అదే సత్యాన్ని నిర్వచిస్తుంది.</text><text class="t-w-sm mid" x="375" y="192">సమయాన్ని <tspan class="t-acc">చూపించడానికి</tspan> వాడండి.</text><text class="t-w-sm mid" x="375" y="214">వరుస సంఖ్యని <tspan class="t-acc">క్రమం పెట్టడానికి</tspan> వాడండి.</text><text class="t-w-sm mid" x="375" y="234">ఆ రెండూ ఒకటే అనుకోవడమే §4 యొక్క తప్పు.</text></svg>
+<svg viewBox="0 0 750 246"><text class="t-xs" x="0" y="14">ఒకే message, మూడు వేర్వేరు "సత్యాలు"</text><rect class="n-bad" x="0" y="26" width="240" height="70" rx="4"/><text class="t-sm mid" x="120" y="48">ఫోన్ గడియారం</text><text class="t-xs mid" x="120" y="68">user మార్చగలడు</text><text class="t-acc mid" x="120" y="86">49.9% తప్పు</text><rect class="n-soft" x="255" y="26" width="240" height="70" rx="4"/><text class="t-sm mid" x="375" y="48">server గడియారం</text><text class="t-xs mid" x="375" y="68">NTP మీద ఆధారపడుతుంది</text><text class="t-acc mid" x="375" y="86">12.9% తప్పు (250ms drift)</text><rect class="n-good" x="510" y="26" width="240" height="70" rx="4"/><text class="t-sm mid" x="630" y="48">వరుస సంఖ్య</text><text class="t-xs mid" x="630" y="68">ఏ గడియారం మీదా ఆధారపడదు</text><text class="t-xs mid" x="630" y="86">0% తప్పు</text><rect class="n-dark" x="0" y="114" width="750" height="126" rx="4"/><text class="t-w-sm mid" x="375" y="138">Timestamp ఒక <tspan class="t-acc">కొలత</tspan> — అది ఎప్పుడూ ఉజ్జాయింపు.</text><text class="t-w-sm mid" x="375" y="162">వరుస సంఖ్య ఒక <tspan class="t-acc">నిర్ణయం</tspan> — అది ఖచ్చితంగా సరైనది, ఎందుకంటే అదే సత్యాన్ని నిర్వచిస్తుంది.</text><text class="t-w-sm mid" x="375" y="192">సమయాన్ని <tspan class="t-acc">చూపించడానికి</tspan> వాడండి.</text><text class="t-w-sm mid" x="375" y="214">వరుస సంఖ్యని <tspan class="t-acc">క్రమం పెట్టడానికి</tspan> వాడండి.</text><text class="t-w-sm mid" x="375" y="234">ఆ రెండూ ఒకటే అనుకోవడమే §4 యొక్క తప్పు.</text></svg>
 
 ---
 
@@ -239,7 +239,7 @@ append(from, text, at) {
 
 ## 6. Step — స్థితి మారితే contacts అందరికీ చెప్పడం
 
-Presence సులభంగా అనిపిస్తుంది: వాడుకరి online అయితే అతని contacts అందరికీ చెప్పాలి, offline అయినా అంతే.
+Presence సులభంగా అనిపిస్తుంది: user online అయితే అతని contacts అందరికీ చెప్పాలి, offline అయినా అంతే.
 
 ```javascript
 function onStatusChange(user, status) {
@@ -279,12 +279,12 @@ Post ఒక ఉద్దేశపూర్వక చర్య — రోజు�
 మీ system యొక్క అసలు పని — messages — సెకనుకి <b>463</b>.<br>
 ఆ పచ్చ చుక్క — సెకనుకి <b>11,11,111</b>.<br><br>
 అంటే మీ servers, మీ network, మీ bill lo <b>99.96%</b> ఒక చుక్క కోసం.<br><br>
-మరియు గమనించండి: ఇది <b>N² సమస్య</b>. వాడుకరులు రెట్టింపు అయితే, ఒక్కొక్కరి contacts కూడా పెరుగుతాయి — కాబట్టి traffic నాలుగు రెట్లు.
+మరియు గమనించండి: ఇది <b>N² సమస్య</b>. users రెట్టింపు అయితే, ఒక్కొక్కరి contacts కూడా పెరుగుతాయి — కాబట్టి traffic నాలుగు రెట్లు.
 </div>
 
 ### పరిష్కారం — ఎవరు నిజంగా చూస్తున్నారు?
 
-ఇక్కడ ఒక సాధారణ జ్ఞానం ఉంది: **ఒక వాడుకరి తన 200 contacts యొక్క పచ్చ చుక్కని ఒకేసారి చూడడు.** అతని తెరమీద ఒకేసారి 8 మంది ఉంటారు.
+ఇక్కడ ఒక సాధారణ జ్ఞానం ఉంది: **ఒక user తన 200 contacts యొక్క పచ్చ చుక్కని ఒకేసారి చూడడు.** అతని తెరమీద ఒకేసారి 8 మంది ఉంటారు.
 
 కాబట్టి push ని **చూస్తున్నవాళ్ళకి మాత్రమే** పరిమితం చేద్దాం:
 
@@ -303,7 +303,7 @@ onStatusChange(user, contacts) {
 ```
 
 ```
-పరిష్కారం: చూస్తున్న వాళ్ళకి మాత్రమే · ఒక్కో వాడుకరి తెరమీద సగటున 8 మంది
+పరిష్కారం: చూస్తున్న వాళ్ళకి మాత్రమే · ఒక్కో user    తెరమీద సగటున 8 మంది
 
   విధానం                       | notifications/సెకను | తగ్గింపు
   -----------------------------+--------------------+---------
@@ -386,7 +386,7 @@ queueAck(convId, user, upTo, kind) {
 }
 ```
 
-ఆ `cur >= upTo` పంక్తి ముఖ్యం: ఒక కిటికీలో ఒకే వాడుకరి నుంచి 20 receipts వస్తే, **అత్యధిక సంఖ్య ఒక్కటే** మిగులుతుంది.
+ఆ `cur >= upTo` పంక్తి ముఖ్యం: ఒక కిటికీలో ఒకే user నుంచి 20 receipts వస్తే, **అత్యధిక సంఖ్య ఒక్కటే** మిగులుతుంది.
 
 ```
 పరిష్కారాలు · 256 మంది గుంపు · 500 messages
@@ -400,7 +400,7 @@ queueAck(convId, user, upTo, kind) {
 ```
 
 <div class="box good">
-<div class="lab">2 సెకన్ల కిటికీ — <b>97%</b> తగ్గింపు, మరియు వాడుకరికి ఏమీ తెలియదు</div>
+<div class="lab">2 సెకన్ల కిటికీ — <b>97%</b> తగ్గింపు, మరియు user కి ఏమీ తెలియదు</div>
 Tick 2 సెకన్ల ఆలస్యంగా నీలం అవడం ఎవరూ గమనించరు. కానీ మీ system <b>2,55,500 నుంచి 6,875</b> సందేశాలకి దిగుతుంది.<br><br>
 నీలం ticks పూర్తిగా తీసేయడం (50%) కంటే <b>కలపడం</b> (97%) చాలా మెరుగు — మరియు అది ఒక feature ని కూడా తీసేయదు.<br><br>
 <b>ఒక feature ని చంపడం కంటే దాని తరచుదనాన్ని తగ్గించడం దాదాపు ఎప్పుడూ మంచిది.</b>
@@ -534,9 +534,9 @@ LLD Deep 25 lo backoff కి ఇదే జరిగింది. <b>రెం�
 
 Server కి **content కనిపించదు** — కాబట్టి server-side search, spam filtering, media transcoding అన్నీ అసాధ్యం. కానీ §4, §7, §9 lo ఏదీ మారదు: **వరుస సంఖ్య, presence, receipts అన్నీ మెటాడేటా**, మరియు అవి encrypt కావు. అదే E2E encryption యొక్క పరిమితి — **ఎవరు ఎవరికి ఎప్పుడు రాశారో server కి తెలుసు**, ఏమి రాశారో తెలియదు. గుంపు keys పంపిణీ ఒక ప్రత్యేక problem (Signal యొక్క Sender Keys).
 
-**"ఒక వాడుకరికి 4 పరికరాలు ఉంటే?"**
+**"ఒక user కి 4 పరికరాలు ఉంటే?"**
 
-Delivery ఒక fan-out అవుతుంది: ఒక message → 4 sockets. మరియు **receipts ఒక కొత్త ప్రశ్న అడుగుతాయి** — నాలుగు పరికరాల్లో ఒకటి చదివితే "చదివారు" అనాలా? సాధారణ జవాబు అవును, కానీ అప్పుడు `read` ఒక్కో *వాడుకరికి*, ఒక్కో *పరికరానికి* కాదు — నా code lo `read` Map వాడుకరి కీతో ఉంది, అదే కారణం. Sync కోసం ప్రతి పరికరం తన సొంత `delivered` watermark ఉంచుకోవాలి.
+Delivery ఒక fan-out అవుతుంది: ఒక message → 4 sockets. మరియు **receipts ఒక కొత్త ప్రశ్న అడుగుతాయి** — నాలుగు పరికరాల్లో ఒకటి చదివితే "చదివారు" అనాలా? సాధారణ జవాబు అవును, కానీ అప్పుడు `read` ఒక్కో *user కి*, ఒక్కో *పరికరానికి* కాదు — నా code lo `read` Map user కీతో ఉంది, అదే కారణం. Sync కోసం ప్రతి పరికరం తన సొంత `delivered` watermark ఉంచుకోవాలి.
 
 **"గ్రాహకుడు offline ఉంటే?"**
 

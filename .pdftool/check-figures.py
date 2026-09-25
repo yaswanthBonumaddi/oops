@@ -16,7 +16,7 @@ at some point, and that reading the page did not reliably catch:
   side       text running past the left/right edge of the viewBox
   overlap    two box-like rects partially overlapping (nested ones are normal)
 
-Usage:  python3 .pdftool/check-figures.py [file.md ...]     (default: *_Telugu.md)
+Usage:  python3 .pdftool/check-figures.py [file.md ...]   (default: */*_Telugu.md)
 """
 import glob
 import re
@@ -205,7 +205,8 @@ def check(path):
 
 
 def main(argv):
-    files = argv[1:] or sorted(glob.glob('*_Telugu.md'))
+    # Docs live in section folders (lld/ hld/ dsa/ go/ web/ cs/ interview/).
+    files = argv[1:] or sorted(glob.glob('*/*_Telugu.md'))
     found = []
     for f in files:
         found += check(f)

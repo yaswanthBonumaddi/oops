@@ -11,6 +11,7 @@
 //                              cream paper, orange rules, inline SVG diagrams,
 //                              running footer with page numbers.
 import fs from 'node:fs';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import MarkdownIt from 'markdown-it';
 import hljs from 'markdown-it-highlightjs';
@@ -48,8 +49,15 @@ const md = new MarkdownIt({ html: true, linkify: true, typographer: false })
   .use(hljs, { inline: true, auto: true, ignoreIllegals: true })
   .use(anchor, { permalink: false });
 
-const OUT_DIR = 'pdfs';                 // all PDFs live here (keeps repo root clean)
-fs.mkdirSync(OUT_DIR, { recursive: true });
+// All PDFs live under pdfs/, mirroring the source tree: lld/x.md -> pdfs/lld/x.pdf.
+// A doc outside the repo (or above it) falls back to the flat pdfs/ root.
+const OUT_DIR = 'pdfs';
+const outPathFor = (f) => {
+  const rel = path.relative(process.cwd(), path.resolve(f));
+  const dir = path.dirname(rel);
+  const sub = dir === '.' || dir.startsWith('..') || path.isAbsolute(dir) ? '' : dir;
+  return path.join(OUT_DIR, sub, path.basename(rel, '.md') + '.pdf');
+};
 
 const footerTemplate = (label) => `
 <div style="width:100%;font-family:'Avenir Next',Helvetica,Arial,sans-serif;
@@ -69,7 +77,8 @@ try {
   for (const f of files) {
     if (!fs.existsSync(f)) { console.error(`  skip (missing): ${f}`); continue; }
     const base = f.replace(/.*\//, '').replace(/\.md$/, '');
-    const out = `${OUT_DIR}/${base}.pdf`;
+    const out = outPathFor(f);
+    fs.mkdirSync(path.dirname(out), { recursive: true });
     const src = fs.readFileSync(f, 'utf8');
 
     // A doc can opt into the editorial look itself with `<!-- style: editorial -->`,

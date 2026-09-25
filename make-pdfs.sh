@@ -4,10 +4,14 @@
 #   markdown -> HTML (markdown-it, code highlighted) -> PDF (installed Chrome
 #   via puppeteer-core). Telugu renders correctly using macOS Telugu fonts.
 #
+# Docs live in section folders (lld/ hld/ dsa/ go/ web/ cs/ interview/) and the
+# PDFs mirror that layout: lld/X_Telugu.md -> pdfs/lld/X_Telugu.pdf.
+#
 # Usage:
-#   ./make-pdfs.sh                 # builds the 4 Go docs (default)
-#   ./make-pdfs.sh all             # builds every *_Telugu.md in the folder
-#   ./make-pdfs.sh FILE.md ...     # builds the given files
+#   ./make-pdfs.sh                 # builds the go/ section (default)
+#   ./make-pdfs.sh all             # builds every *_Telugu.md in every section
+#   ./make-pdfs.sh lld hld         # builds whole sections
+#   ./make-pdfs.sh lld/FILE.md ... # builds the given files
 # ---------------------------------------------------------------------------
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -26,13 +30,34 @@ if [ ! -d "$TOOL/node_modules/puppeteer-core" ]; then
   ( cd "$TOOL" && npm install --silent --no-audit --no-fund )
 fi
 
-# Resolve target list.
+SECTIONS=(lld hld dsa go web cs interview)
+
+# Every *_Telugu.md inside the named section folders, sorted.
+docs_in() {
+  find "$@" -maxdepth 1 -name '*_Telugu.md' | sort
+}
+
+# Resolve target list: a bare section name expands to that folder's docs,
+# anything else is taken as a path.
+DOCS=()
 if [ "$#" -eq 0 ]; then
-  DOCS=(GO_Telugu.md LLD_Go_Telugu.md HLD_Go_Telugu.md SystemDesign_Go_Telugu.md)
-elif [ "$1" = "all" ]; then
-  DOCS=( *_Telugu.md )
+  set -- go
+fi
+if [ "$1" = "all" ]; then
+  while IFS= read -r d; do DOCS+=("$d"); done < <(docs_in "${SECTIONS[@]}")
 else
-  DOCS=( "$@" )
+  for arg in "$@"; do
+    if [ -d "$arg" ]; then
+      while IFS= read -r d; do DOCS+=("$d"); done < <(docs_in "${arg%/}")
+    else
+      DOCS+=("$arg")
+    fi
+  done
+fi
+
+if [ "${#DOCS[@]}" -eq 0 ]; then
+  echo "ERROR: no matching docs." >&2
+  exit 1
 fi
 
 echo "Building ${#DOCS[@]} PDF(s)…"

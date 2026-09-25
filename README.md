@@ -1,6 +1,6 @@
 # Deep Dives — తెలుగులో System Design
 
-**44 deep dives · 985 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
+**45 deep dives · 1,002 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
 
 ఇవి interview గైడ్లు కాదు. ప్రతి doc ఒకే పని చేస్తుంది:
 
@@ -24,7 +24,7 @@
 
 <br>
 
-**ఒక నియమం ఈ 44 docs నీ కలిపి ఉంచుతుంది:** ప్రతి "0 ఉల్లంఘనలు" తర్వాత ఒక mutation test ఉంటుంది — ఒక load-bearing పంక్తిని తీసేసి, fuzz *నిజంగా* విఫలమవుతుందా అని చూడటం. బతికిన ప్రతి mutation కీ ఒక వివరణ ఉంది, దాచడం లేదు.
+**ఒక నియమం ఈ docs అన్నిటినీ కలిపి ఉంచుతుంది:** ప్రతి "0 ఉల్లంఘనలు" తర్వాత ఒక mutation test ఉంటుంది — ఒక load-bearing పంక్తిని తీసేసి, fuzz *నిజంగా* విఫలమవుతుందా అని చూడటం. బతికిన ప్రతి mutation కీ ఒక వివరణ ఉంది, దాచడం లేదు.
 
 ---
 
@@ -32,32 +32,32 @@
 
 | # | విషయం | పే. | విరుపు | Links |
 |---|---|---|---|---|
-| 01 | **Parking Lot** | 27 | ఐదు lines తో మొదలు · ఒకే సీటు ఇద్దరికి ఇచ్చే race | [md](LLD_Deep_01_ParkingLot_Telugu.md) · [pdf](pdfs/LLD_Deep_01_ParkingLot_Telugu.pdf) |
-| 02 | **LRU & LFU Cache** | 26 | ఒక్క read **183 ms → 1 ms** · LRU మరియు LFU వేర్వేరు trade-offs | [md](LLD_Deep_02_Cache_Telugu.md) · [pdf](pdfs/LLD_Deep_02_Cache_Telugu.pdf) |
-| 03 | **Rate Limiter** | 22 | నాలుగు algorithms, ఒకే దాడి, నాలుగు వేర్వేరు జవాబులు | [md](LLD_Deep_03_RateLimiter_Telugu.md) · [pdf](pdfs/LLD_Deep_03_RateLimiter_Telugu.pdf) |
-| 04 | **Movie Ticket Booking** | 22 | ఒక modelling తప్పు, ఒక race, మరియు **payment ఖాళీ** | [md](LLD_Deep_04_BookMyShow_Telugu.md) · [pdf](pdfs/LLD_Deep_04_BookMyShow_Telugu.pdf) |
-| 05 | **Splitwise** | 20 | తప్పు data ఆకారం ఎంచుకుంటే వలయాలని చేతితో విడదీస్తారు | [md](LLD_Deep_05_Splitwise_Telugu.md) · [pdf](pdfs/LLD_Deep_05_Splitwise_Telugu.pdf) |
-| 06 | **Elevator System** | 34 | Design రెండుసార్లు విరుగుతుంది — విరిగిన output తో సహా | [md](LLD_Deep_06_Elevator_Telugu.md) · [pdf](pdfs/LLD_Deep_06_Elevator_Telugu.pdf) |
-| 07 | **Pub-Sub System** | 20 | ఒక subscriber విఫలమైతే **మిగతా అందరూ** కోల్పోతారు | [md](LLD_Deep_07_PubSub_Telugu.md) · [pdf](pdfs/LLD_Deep_07_PubSub_Telugu.pdf) |
-| 08 | **HashMap** | 22 | ఒక విలువ ఇంకొకదాన్ని మింగేస్తుంది — **మొదటి ఉదాహరణలోనే** | [md](LLD_Deep_08_HashMap_Telugu.md) · [pdf](pdfs/LLD_Deep_08_HashMap_Telugu.pdf) |
-| 09 | **Chess** | 24 | ఒక bishop కి **తొమ్మిది కదలికలు, సున్నా చెల్లుబాటు** | [md](LLD_Deep_09_Chess_Telugu.md) · [pdf](pdfs/LLD_Deep_09_Chess_Telugu.pdf) |
-| 10 | **Meeting Scheduler** | 22 | ఒక standup **52 rows** అవుతుంది | [md](LLD_Deep_10_MeetingScheduler_Telugu.md) · [pdf](pdfs/LLD_Deep_10_MeetingScheduler_Telugu.pdf) |
-| 11 | **Swiggy / Zomato** | 29 | ₹250 → ₹300 · 2,000 searches కి **8.5 సెకన్లు** | [md](LLD_Deep_11_FoodDelivery_Telugu.md) · [pdf](pdfs/LLD_Deep_11_FoodDelivery_Telugu.pdf) |
-| 12 | **In-Memory File System** | 27 | `ls` **4,620 ms** — ఎప్పుడూ 20 పేర్లే ఇచ్చినా | [md](LLD_Deep_12_FileSystem_Telugu.md) · [pdf](pdfs/LLD_Deep_12_FileSystem_Telugu.pdf) |
-| 13 | **Leaderboard** | 24 | ఒక్క read **51 ms** · ఒక update **2,00,560 మూలకాలు** కదిలిస్తుంది | [md](LLD_Deep_13_Leaderboard_Telugu.md) · [pdf](pdfs/LLD_Deep_13_Leaderboard_Telugu.pdf) |
-| 14 | **Text Editor with Undo** | 26 | ఒక్క keystroke **20 లక్షల అక్షరాలు** కాపీ · history **4.8 GB** | [md](LLD_Deep_14_TextEditor_Telugu.md) · [pdf](pdfs/LLD_Deep_14_TextEditor_Telugu.pdf) |
-| 15 | **Library Management System** | 23 | ఒక కొత్త ప్రతి కొంటే ఒకరి loan **మాయం** | [md](LLD_Deep_15_Library_Telugu.md) · [pdf](pdfs/LLD_Deep_15_Library_Telugu.pdf) |
-| 16 | **Tic-Tac-Toe** | 24 | ఒక ఎత్తుకి **1.8 లక్షల గడులు** · ఆపై N×N, ఆపై Connect-4 | [md](LLD_Deep_16_TicTacToe_Telugu.md) · [pdf](pdfs/LLD_Deep_16_TicTacToe_Telugu.pdf) |
-| 17 | **Autocomplete** | 23 | నిజమైన **2,34,428-పదాల** నిఘంటువు · "hel" → helbeh, helcoid | [md](LLD_Deep_17_Autocomplete_Telugu.md) · [pdf](pdfs/LLD_Deep_17_Autocomplete_Telugu.pdf) |
-| 18 | **Snake & Ladder** | 21 | ఆటగాడు పాము నోట్లో · ఆపై **103వ గడి** · ఆపై అనంత వలయం | [md](LLD_Deep_18_SnakeLadder_Telugu.md) · [pdf](pdfs/LLD_Deep_18_SnakeLadder_Telugu.pdf) |
-| 19 | **Hit Counter** | 22 | 10,000 keys కి **447 GB** · పాఠ్యపుస్తక జవాబు ఒకే window కే | [md](LLD_Deep_19_HitCounter_Telugu.md) · [pdf](pdfs/LLD_Deep_19_HitCounter_Telugu.pdf) |
-| 20 | **Vending Machine** | 23 | చెల్లుబాటు అయ్యే అమ్మకాన్ని **2.14%** సార్లు తిరస్కరిస్తుంది | [md](LLD_Deep_20_VendingMachine_Telugu.md) · [pdf](pdfs/LLD_Deep_20_VendingMachine_Telugu.pdf) |
-| 21 | **ATM** | 25 | ₹3,000 తీసేసి **నోట్లు ఇవ్వదు** · ఆపై ₹3,000 కి ₹9,000 | [md](LLD_Deep_21_ATM_Telugu.md) · [pdf](pdfs/LLD_Deep_21_ATM_Telugu.pdf) |
-| 22 | **Logging Framework** | 23 | p99 **1 ms → 21 ms** · ఒక ఘటనలో **47% ERROR logs** మాయం | [md](LLD_Deep_22_Logging_Telugu.md) · [pdf](pdfs/LLD_Deep_22_Logging_Telugu.pdf) |
-| 23 | **Shopping Cart** | 23 | తీసేసిన వస్తువు login అప్పుడు **తిరిగి వస్తుంది** · ₹850 → ₹920 | [md](LLD_Deep_23_ShoppingCart_Telugu.md) · [pdf](pdfs/LLD_Deep_23_ShoppingCart_Telugu.pdf) |
-| 24 | **Connection Pool** | 33 | కేవలం **9 లీక్‌లు 52% requests** ని చంపుతాయి | [md](LLD_Deep_24_ConnectionPool_Telugu.md) · [pdf](pdfs/LLD_Deep_24_ConnectionPool_Telugu.pdf) |
-| 25 | **Job Scheduler** | 29 | **16.4% jobs రెండుసార్లు** · సరైన ఒక్క catch-up విధానం లేదు | [md](LLD_Deep_25_JobScheduler_Telugu.md) · [pdf](pdfs/LLD_Deep_25_JobScheduler_Telugu.pdf) |
-| 26 | **Thread Pool** | 27 | మీరు max 50 రాస్తారు, **మీకు 2 వస్తాయి**, p99 **19.9 సె** | [md](LLD_Deep_26_ThreadPool_Telugu.md) · [pdf](pdfs/LLD_Deep_26_ThreadPool_Telugu.pdf) |
+| 01 | **Parking Lot** | 27 | ఐదు lines తో మొదలు · ఒకే సీటు ఇద్దరికి ఇచ్చే race | [md](lld/LLD_Deep_01_ParkingLot_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_01_ParkingLot_Telugu.pdf) |
+| 02 | **LRU & LFU Cache** | 26 | ఒక్క read **183 ms → 1 ms** · LRU మరియు LFU వేర్వేరు trade-offs | [md](lld/LLD_Deep_02_Cache_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_02_Cache_Telugu.pdf) |
+| 03 | **Rate Limiter** | 22 | నాలుగు algorithms, ఒకే దాడి, నాలుగు వేర్వేరు జవాబులు | [md](lld/LLD_Deep_03_RateLimiter_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_03_RateLimiter_Telugu.pdf) |
+| 04 | **Movie Ticket Booking** | 22 | ఒక modelling తప్పు, ఒక race, మరియు **payment ఖాళీ** | [md](lld/LLD_Deep_04_BookMyShow_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_04_BookMyShow_Telugu.pdf) |
+| 05 | **Splitwise** | 20 | తప్పు data ఆకారం ఎంచుకుంటే వలయాలని చేతితో విడదీస్తారు | [md](lld/LLD_Deep_05_Splitwise_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_05_Splitwise_Telugu.pdf) |
+| 06 | **Elevator System** | 34 | Design రెండుసార్లు విరుగుతుంది — విరిగిన output తో సహా | [md](lld/LLD_Deep_06_Elevator_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_06_Elevator_Telugu.pdf) |
+| 07 | **Pub-Sub System** | 20 | ఒక subscriber విఫలమైతే **మిగతా అందరూ** కోల్పోతారు | [md](lld/LLD_Deep_07_PubSub_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_07_PubSub_Telugu.pdf) |
+| 08 | **HashMap** | 22 | ఒక విలువ ఇంకొకదాన్ని మింగేస్తుంది — **మొదటి ఉదాహరణలోనే** | [md](lld/LLD_Deep_08_HashMap_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_08_HashMap_Telugu.pdf) |
+| 09 | **Chess** | 24 | ఒక bishop కి **తొమ్మిది కదలికలు, సున్నా చెల్లుబాటు** | [md](lld/LLD_Deep_09_Chess_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_09_Chess_Telugu.pdf) |
+| 10 | **Meeting Scheduler** | 22 | ఒక standup **52 rows** అవుతుంది | [md](lld/LLD_Deep_10_MeetingScheduler_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_10_MeetingScheduler_Telugu.pdf) |
+| 11 | **Swiggy / Zomato** | 29 | ₹250 → ₹300 · 2,000 searches కి **8.5 సెకన్లు** | [md](lld/LLD_Deep_11_FoodDelivery_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_11_FoodDelivery_Telugu.pdf) |
+| 12 | **In-Memory File System** | 27 | `ls` **4,620 ms** — ఎప్పుడూ 20 పేర్లే ఇచ్చినా | [md](lld/LLD_Deep_12_FileSystem_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_12_FileSystem_Telugu.pdf) |
+| 13 | **Leaderboard** | 24 | ఒక్క read **51 ms** · ఒక update **2,00,560 మూలకాలు** కదిలిస్తుంది | [md](lld/LLD_Deep_13_Leaderboard_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_13_Leaderboard_Telugu.pdf) |
+| 14 | **Text Editor with Undo** | 26 | ఒక్క keystroke **20 లక్షల అక్షరాలు** కాపీ · history **4.8 GB** | [md](lld/LLD_Deep_14_TextEditor_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_14_TextEditor_Telugu.pdf) |
+| 15 | **Library Management System** | 23 | ఒక కొత్త ప్రతి కొంటే ఒకరి loan **మాయం** | [md](lld/LLD_Deep_15_Library_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_15_Library_Telugu.pdf) |
+| 16 | **Tic-Tac-Toe** | 24 | ఒక ఎత్తుకి **1.8 లక్షల గడులు** · ఆపై N×N, ఆపై Connect-4 | [md](lld/LLD_Deep_16_TicTacToe_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_16_TicTacToe_Telugu.pdf) |
+| 17 | **Autocomplete** | 23 | నిజమైన **2,34,428-పదాల** నిఘంటువు · "hel" → helbeh, helcoid | [md](lld/LLD_Deep_17_Autocomplete_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_17_Autocomplete_Telugu.pdf) |
+| 18 | **Snake & Ladder** | 21 | ఆటగాడు పాము నోట్లో · ఆపై **103వ గడి** · ఆపై అనంత వలయం | [md](lld/LLD_Deep_18_SnakeLadder_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_18_SnakeLadder_Telugu.pdf) |
+| 19 | **Hit Counter** | 22 | 10,000 keys కి **447 GB** · పాఠ్యపుస్తక జవాబు ఒకే window కే | [md](lld/LLD_Deep_19_HitCounter_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_19_HitCounter_Telugu.pdf) |
+| 20 | **Vending Machine** | 23 | చెల్లుబాటు అయ్యే అమ్మకాన్ని **2.14%** సార్లు తిరస్కరిస్తుంది | [md](lld/LLD_Deep_20_VendingMachine_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_20_VendingMachine_Telugu.pdf) |
+| 21 | **ATM** | 25 | ₹3,000 తీసేసి **నోట్లు ఇవ్వదు** · ఆపై ₹3,000 కి ₹9,000 | [md](lld/LLD_Deep_21_ATM_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_21_ATM_Telugu.pdf) |
+| 22 | **Logging Framework** | 23 | p99 **1 ms → 21 ms** · ఒక ఘటనలో **47% ERROR logs** మాయం | [md](lld/LLD_Deep_22_Logging_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_22_Logging_Telugu.pdf) |
+| 23 | **Shopping Cart** | 23 | తీసేసిన వస్తువు login అప్పుడు **తిరిగి వస్తుంది** · ₹850 → ₹920 | [md](lld/LLD_Deep_23_ShoppingCart_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_23_ShoppingCart_Telugu.pdf) |
+| 24 | **Connection Pool** | 33 | కేవలం **9 లీక్‌లు 52% requests** ని చంపుతాయి | [md](lld/LLD_Deep_24_ConnectionPool_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_24_ConnectionPool_Telugu.pdf) |
+| 25 | **Job Scheduler** | 29 | **16.4% jobs రెండుసార్లు** · సరైన ఒక్క catch-up విధానం లేదు | [md](lld/LLD_Deep_25_JobScheduler_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_25_JobScheduler_Telugu.pdf) |
+| 26 | **Thread Pool** | 27 | మీరు max 50 రాస్తారు, **మీకు 2 వస్తాయి**, p99 **19.9 సె** | [md](lld/LLD_Deep_26_ThreadPool_Telugu.md) · [pdf](pdfs/lld/LLD_Deep_26_ThreadPool_Telugu.pdf) |
 
 ---
 
@@ -65,24 +65,38 @@
 
 | # | విషయం | పే. | విరుపు | Links |
 |---|---|---|---|---|
-| 01 | **URL Shortener** | 27 | Collision సమస్యే కాదు — **keys 100% ఊహించగలగడం** సమస్య | [md](HLD_Deep_01_URLShortener_Telugu.md) · [pdf](pdfs/HLD_Deep_01_URLShortener_Telugu.pdf) |
-| 02 | **Distributed Rate Limiter** | 23 | GET-ఆపై-INCR మీ పరిమితి 100 ని **1,058** చేస్తుంది | [md](HLD_Deep_02_RateLimiter_Telugu.md) · [pdf](pdfs/HLD_Deep_02_RateLimiter_Telugu.pdf) |
-| 03 | **News Feed** | 20 | ఒక celebrity post మిగతా అందరినీ **3.3 నిమిషాలు** ఆపుతుంది | [md](HLD_Deep_03_NewsFeed_Telugu.md) · [pdf](pdfs/HLD_Deep_03_NewsFeed_Telugu.pdf) |
-| 04 | **Chat System** | 19 | ఆ పచ్చ చుక్క నిజమైన messages కంటే **2,400 రెట్లు** traffic | [md](HLD_Deep_04_ChatSystem_Telugu.md) · [pdf](pdfs/HLD_Deep_04_ChatSystem_Telugu.pdf) |
-| 05 | **Notification System** | 16 | పరిమితి లేకపోతే **78.4% users** notifications ఆపేస్తారు | [md](HLD_Deep_05_Notifications_Telugu.md) · [pdf](pdfs/HLD_Deep_05_Notifications_Telugu.pdf) |
-| 06 | **Video Streaming** | 17 | 2-గంటల video కి **5.6 రోజులు** · workers 128× పెంచినా మారదు | [md](HLD_Deep_06_VideoStreaming_Telugu.md) · [pdf](pdfs/HLD_Deep_06_VideoStreaming_Telugu.pdf) |
-| 07 | **Ride Sharing** | 17 | సెకనుకి **2.5 లక్షల writes**, అందులో **99.97% అనవసరం** | [md](HLD_Deep_07_RideSharing_Telugu.md) · [pdf](pdfs/HLD_Deep_07_RideSharing_Telugu.pdf) |
-| 08 | **Typeahead** | 17 | Personalization cache hit rate **95.1% → 0.2%** | [md](HLD_Deep_08_Typeahead_Telugu.md) · [pdf](pdfs/HLD_Deep_08_Typeahead_Telugu.pdf) |
-| 09 | **Payment System & Ledger** | 20 | ఆరు అడుగుల చెల్లింపులో **1,135 చిక్కుకుపోతాయి** | [md](HLD_Deep_09_Payments_Telugu.md) · [pdf](pdfs/HLD_Deep_09_Payments_Telugu.pdf) |
-| 10 | **Distributed Job Scheduler** | 18 | **23.5% jobs అర్ధరాత్రి** · కాలం ప్రకారం shard = **2 కోట్ల రెట్లు** | [md](HLD_Deep_10_JobScheduler_Telugu.md) · [pdf](pdfs/HLD_Deep_10_JobScheduler_Telugu.pdf) |
-| 11 | **Web Crawler** | 19 | బడ్జెట్‌లో **99.6%** మూడు trap domains మీద | [md](HLD_Deep_11_WebCrawler_Telugu.md) · [pdf](pdfs/HLD_Deep_11_WebCrawler_Telugu.pdf) |
-| 12 | **Google Docs** | 20 | **60 lo 0 sessions** ఒకేలా ముగిశాయి — 0 ms ఆలస్యంతో కూడా | [md](HLD_Deep_12_GoogleDocs_Telugu.md) · [pdf](pdfs/HLD_Deep_12_GoogleDocs_Telugu.pdf) |
-| 13 | **Kafka** | 21 | Sequential disk కేవలం **1.62×** · batching **945×** | [md](HLD_Deep_13_Kafka_Telugu.md) · [pdf](pdfs/HLD_Deep_13_Kafka_Telugu.pdf) |
-| 14 | **Dynamo** | 19 | Consistent hashing → **34 రెట్ల** అసమతుల్యత · LWW 3 lo 2 పోగొడుతుంది | [md](HLD_Deep_14_Dynamo_Telugu.md) · [pdf](pdfs/HLD_Deep_14_Dynamo_Telugu.pdf) |
-| 15 | **Dropbox** | 19 | మొదట్లో **ఒక్క byte** చేర్చితే **100%** మళ్ళీ upload | [md](HLD_Deep_15_Dropbox_Telugu.md) · [pdf](pdfs/HLD_Deep_15_Dropbox_Telugu.pdf) |
-| 16 | **Ticket Booking** | 16 | 20,000 సీట్లకి **60,000 టికెట్లు** · retry storm **99.1% వృథా** | [md](HLD_Deep_16_TicketBooking_Telugu.md) · [pdf](pdfs/HLD_Deep_16_TicketBooking_Telugu.pdf) |
-| 17 | **Ad Click Aggregation** | 17 | 0.5% retry = **0.5% అదనపు బిల్లు** · ప్రత్యేక సంఖ్యలు **405% ఉబ్బు** | [md](HLD_Deep_17_AdClickAggregation_Telugu.md) · [pdf](pdfs/HLD_Deep_17_AdClickAggregation_Telugu.pdf) |
-| 18 | **Metrics** | 19 | ఒక్క label: **6 machines → 567** · p99 ల సగటు **85% తక్కువ** | [md](HLD_Deep_18_Metrics_Telugu.md) · [pdf](pdfs/HLD_Deep_18_Metrics_Telugu.pdf) |
+| 01 | **URL Shortener** | 27 | Collision సమస్యే కాదు — **keys 100% ఊహించగలగడం** సమస్య | [md](hld/HLD_Deep_01_URLShortener_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_01_URLShortener_Telugu.pdf) |
+| 02 | **Distributed Rate Limiter** | 23 | GET-ఆపై-INCR మీ పరిమితి 100 ని **1,058** చేస్తుంది | [md](hld/HLD_Deep_02_RateLimiter_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_02_RateLimiter_Telugu.pdf) |
+| 03 | **News Feed** | 20 | ఒక celebrity post మిగతా అందరినీ **3.3 నిమిషాలు** ఆపుతుంది | [md](hld/HLD_Deep_03_NewsFeed_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_03_NewsFeed_Telugu.pdf) |
+| 04 | **Chat System** | 19 | ఆ పచ్చ చుక్క నిజమైన messages కంటే **2,400 రెట్లు** traffic | [md](hld/HLD_Deep_04_ChatSystem_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_04_ChatSystem_Telugu.pdf) |
+| 05 | **Notification System** | 16 | పరిమితి లేకపోతే **78.4% users** notifications ఆపేస్తారు | [md](hld/HLD_Deep_05_Notifications_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_05_Notifications_Telugu.pdf) |
+| 06 | **Video Streaming** | 17 | 2-గంటల video కి **5.6 రోజులు** · workers 128× పెంచినా మారదు | [md](hld/HLD_Deep_06_VideoStreaming_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_06_VideoStreaming_Telugu.pdf) |
+| 07 | **Ride Sharing** | 17 | సెకనుకి **2.5 లక్షల writes**, అందులో **99.97% అనవసరం** | [md](hld/HLD_Deep_07_RideSharing_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_07_RideSharing_Telugu.pdf) |
+| 08 | **Typeahead** | 17 | Personalization cache hit rate **95.1% → 0.2%** | [md](hld/HLD_Deep_08_Typeahead_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_08_Typeahead_Telugu.pdf) |
+| 09 | **Payment System & Ledger** | 20 | ఆరు అడుగుల చెల్లింపులో **1,135 చిక్కుకుపోతాయి** | [md](hld/HLD_Deep_09_Payments_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_09_Payments_Telugu.pdf) |
+| 10 | **Distributed Job Scheduler** | 18 | **23.5% jobs అర్ధరాత్రి** · కాలం ప్రకారం shard = **2 కోట్ల రెట్లు** | [md](hld/HLD_Deep_10_JobScheduler_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_10_JobScheduler_Telugu.pdf) |
+| 11 | **Web Crawler** | 19 | బడ్జెట్‌లో **99.6%** మూడు trap domains మీద | [md](hld/HLD_Deep_11_WebCrawler_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_11_WebCrawler_Telugu.pdf) |
+| 12 | **Google Docs** | 20 | **60 lo 0 sessions** ఒకేలా ముగిశాయి — 0 ms ఆలస్యంతో కూడా | [md](hld/HLD_Deep_12_GoogleDocs_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_12_GoogleDocs_Telugu.pdf) |
+| 13 | **Kafka** | 21 | Sequential disk కేవలం **1.62×** · batching **945×** | [md](hld/HLD_Deep_13_Kafka_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_13_Kafka_Telugu.pdf) |
+| 14 | **Dynamo** | 19 | Consistent hashing → **34 రెట్ల** అసమతుల్యత · LWW 3 lo 2 పోగొడుతుంది | [md](hld/HLD_Deep_14_Dynamo_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_14_Dynamo_Telugu.pdf) |
+| 15 | **Dropbox** | 19 | మొదట్లో **ఒక్క byte** చేర్చితే **100%** మళ్ళీ upload | [md](hld/HLD_Deep_15_Dropbox_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_15_Dropbox_Telugu.pdf) |
+| 16 | **Ticket Booking** | 16 | 20,000 సీట్లకి **60,000 టికెట్లు** · retry storm **99.1% వృథా** | [md](hld/HLD_Deep_16_TicketBooking_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_16_TicketBooking_Telugu.pdf) |
+| 17 | **Ad Click Aggregation** | 17 | 0.5% retry = **0.5% అదనపు బిల్లు** · ప్రత్యేక సంఖ్యలు **405% ఉబ్బు** | [md](hld/HLD_Deep_17_AdClickAggregation_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_17_AdClickAggregation_Telugu.pdf) |
+| 18 | **Metrics** | 19 | ఒక్క label: **6 machines → 567** · p99 ల సగటు **85% తక్కువ** | [md](hld/HLD_Deep_18_Metrics_Telugu.md) · [pdf](pdfs/hld/HLD_Deep_18_Metrics_Telugu.pdf) |
+
+---
+
+## DSA Deep Dives — మొదలైంది
+
+అదే పద్ధతి, algorithms మీద. తేడా: ఇక్కడ **Big-O ఒక వాదన కాదు, ఒక కొలత** — మరియు "నా code పనిచేస్తుంది" అనేది brute force తో పోల్చిన లక్షల cases మీద నిరూపించబడినది.
+
+| # | విషయం | పే. | విరుపు | Links |
+|---|---|---|---|---|
+| 01 | **Binary Search** | 17 | n ≤ 32 అయితే **linear వేగం** · ఎనిమిది రూపాల్లో **నాలుగు విఫలం** · ఏకదిశ కాని predicate → **18 కి బదులు 20** | [md](DSA_Deep_01_BinarySearch_Telugu.md) · [pdf](pdfs/DSA_Deep_01_BinarySearch_Telugu.pdf) |
+
+*(ఇంకా వస్తున్నాయి — two pointers, hashing, DP, graphs, heaps, backtracking, greedy.)*
+
+పైన ఉన్న [12 DSA గైడ్లు](#ఇతర-docs) LeetCode problems ని problem-వారీగా వివరిస్తాయి — అవి **ఏమి రాయాలో** చెబుతాయి. ఈ deep dives **మీరు రాసినది సరైనదేనా, మీకెలా తెలుసు** అని అడుగుతాయి.
 
 ---
 
@@ -90,30 +104,48 @@
 
 Deep dives కాకుండా, ఈ repo lo అంశాల వారీగా గైడ్లు ఉన్నాయి:
 
-**Core CS** — [DBMS](DBMS_Telugu.md) · [OS](OS_Telugu.md) · [CN](CN_Telugu.md) · [COA](COA_Telugu.md) · [OOPS](OOPS_Telugu.md) · [Security](Security_Telugu.md) · [Software Engineering](SoftwareEngineering_Telugu.md)
+**Core CS** — [DBMS](cs/DBMS_Telugu.md) · [OS](cs/OS_Telugu.md) · [CN](cs/CN_Telugu.md) · [COA](cs/COA_Telugu.md) · [OOPS](lld/OOPS_Telugu.md) · [Security](cs/Security_Telugu.md) · [Software Engineering](cs/SoftwareEngineering_Telugu.md)
 
-**DSA** — [Foundations](DSA_00_Foundations_Telugu.md) · [Patterns](DSA_Patterns_Telugu.md) · [Arrays & Strings](DSA_01_Arrays_Strings_Telugu.md) · [Two Pointers & Sliding Window](DSA_02_TwoPtr_SlidingWindow_Matrix_Telugu.md) · [Hashing & Intervals](DSA_03_Hashing_Intervals_Telugu.md) · [Stack & Linked List](DSA_04_Stack_LinkedList_Telugu.md) · [Trees](DSA_05_Trees_Telugu.md) · [Graphs & Trie](DSA_06_Graphs_Trie_Telugu.md) · [Backtracking](DSA_07_Backtracking_DivideConquer_Telugu.md) · [Binary Search & Heap](DSA_08_BinarySearch_Heap_Telugu.md) · [Greedy, Bit, Math](DSA_09_Greedy_Bit_Math_Telugu.md) · [DP](DSA_10_DynamicProgramming_Telugu.md)
+**DSA** — [Foundations](dsa/DSA_00_Foundations_Telugu.md) · [Patterns](dsa/DSA_Patterns_Telugu.md) · [Arrays & Strings](dsa/DSA_01_Arrays_Strings_Telugu.md) · [Two Pointers & Sliding Window](dsa/DSA_02_TwoPtr_SlidingWindow_Matrix_Telugu.md) · [Hashing & Intervals](dsa/DSA_03_Hashing_Intervals_Telugu.md) · [Stack & Linked List](dsa/DSA_04_Stack_LinkedList_Telugu.md) · [Trees](dsa/DSA_05_Trees_Telugu.md) · [Graphs & Trie](dsa/DSA_06_Graphs_Trie_Telugu.md) · [Backtracking](dsa/DSA_07_Backtracking_DivideConquer_Telugu.md) · [Binary Search & Heap](dsa/DSA_08_BinarySearch_Heap_Telugu.md) · [Greedy, Bit, Math](dsa/DSA_09_Greedy_Bit_Math_Telugu.md) · [DP](dsa/DSA_10_DynamicProgramming_Telugu.md)
 
-**Languages & Frameworks** — [JavaScript](JavaScript_Telugu.md) · [TypeScript](TypeScript_Telugu.md) · [React](React_Telugu.md) · [Next.js](NextJS_Telugu.md) · [Go](GO_Telugu.md) · [Linux & Git](Linux_Git_Telugu.md)
+**Languages & Frameworks** — [JavaScript](web/JavaScript_Telugu.md) · [TypeScript](web/TypeScript_Telugu.md) · [React](web/React_Telugu.md) · [Next.js](web/NextJS_Telugu.md) · [Go](go/GO_Telugu.md) · [Linux & Git](cs/Linux_Git_Telugu.md)
 
-**System Design (సంక్షిప్తం)** — [LLD](LLD_Telugu.md) · [HLD](HLD_Telugu.md) · [LLD problems](LLD_Design_Problems_Telugu.md) · [HLD problems](HLD_Design_Problems_Telugu.md) · [LLD in Go](LLD_Go_Telugu.md) · [HLD in Go](HLD_Go_Telugu.md) · [System Design in Go](SystemDesign_Go_Telugu.md)
+**System Design (సంక్షిప్తం)** — [LLD](lld/LLD_Telugu.md) · [HLD](hld/HLD_Telugu.md) · [LLD problems](lld/LLD_Design_Problems_Telugu.md) · [HLD problems](hld/HLD_Design_Problems_Telugu.md) · [LLD in Go](go/LLD_Go_Telugu.md) · [HLD in Go](go/HLD_Go_Telugu.md) · [System Design in Go](go/SystemDesign_Go_Telugu.md)
 
-**Interview prep** — [Infosys](Infosys_Interview_Prep_Telugu.md) · [Frontend MNC](Frontend_Engineer_MNC_Telugu.md)
+**Interview prep** — [Infosys](interview/Infosys_Interview_Prep_Telugu.md) · [Frontend MNC](web/Frontend_Engineer_MNC_Telugu.md)
+
+---
+
+## Folder నిర్మాణం
+
+Docs విషయం ప్రకారం folders lo ఉన్నాయి, మరియు **PDF లు అదే నిర్మాణాన్ని అనుసరిస్తాయి**:
+
+```
+lld/        26 LLD deep dives + LLD, LLD problems, OOPS      →  pdfs/lld/
+hld/        18 HLD deep dives + HLD, HLD problems            →  pdfs/hld/
+dsa/        DSA foundations, patterns, 11 topic docs         →  pdfs/dsa/
+go/         Go, LLD in Go, HLD in Go, System Design in Go    →  pdfs/go/
+web/        JavaScript, TypeScript, React, Next.js, Frontend →  pdfs/web/
+cs/         DBMS, OS, CN, COA, Security, SE, Linux & Git     →  pdfs/cs/
+interview/  Infosys prep                                     →  pdfs/interview/
+```
+
+`lld/X_Telugu.md` ఎప్పుడూ `pdfs/lld/X_Telugu.pdf` అవుతుంది — build script source path నే mirror చేస్తుంది.
 
 ---
 
 ## PDF లు ఎలా తయారవుతాయి
 
-అన్ని PDF లు [`pdfs/`](pdfs/) lo ఉన్నాయి. ఒక doc ని మళ్ళీ build చేయాలంటే:
-
 ```bash
-node .pdftool/build.mjs HLD_Deep_13_Kafka_Telugu.md
+./make-pdfs.sh all            # అన్ని sections
+./make-pdfs.sh lld hld        # ఒక్కో section మొత్తం
+./make-pdfs.sh hld/HLD_Deep_13_Kafka_Telugu.md    # ఒక్క doc
 ```
 
 బొమ్మలని (inline SVG) ధృవీకరించడానికి:
 
 ```bash
-python3 .pdftool/check-figures.py HLD_Deep_13_Kafka_Telugu.md
+python3 .pdftool/check-figures.py hld/HLD_Deep_13_Kafka_Telugu.md
 ```
 
 ---

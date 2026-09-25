@@ -103,7 +103,17 @@
 | 09 | **Sorting** | 16 | `.sort()` ఒక-అంకె data మీద **0.0% తప్పు**, నిజమైన data మీద **63.3%** · `? 1 : -1` comparator **21,000 runs lo 0 తప్పులు**, స్థిరత్వం **100% నష్టం** · నకళ్ళ దగ్గర **2,001×** | [md](DSA_Deep_09_Sorting_Telugu.md) · [pdf](pdfs/DSA_Deep_09_Sorting_Telugu.pdf) |
 | 10 | **Trees** | 16 | "ఇది BST నా?" అన్ని trees lo **1.38%** తప్పు, *విరిగిన* trees lo **35.4%** · sorted గా చేర్చితే లోతు **సరిగ్గా n**, **328×** · LCA node లేకపోతే **100% తప్పు** | [md](DSA_Deep_10_Trees_Telugu.md) · [pdf](pdfs/DSA_Deep_10_Trees_Telugu.pdf) |
 
-పైన ఉన్న [12 DSA గైడ్లు](#ఇతర-docs) LeetCode problems ని problem-వారీగా వివరిస్తాయి — అవి **ఏమి రాయాలో** చెబుతాయి. ఈ deep dives **మీరు రాసినది సరైనదేనా, మీకెలా తెలుసు** అని అడుగుతాయి.
+**ఈ పది deep dives DSA మొత్తాన్ని కప్పవు.** ఇవి కప్పనివి — మరియు అవి ఎక్కడ ఉన్నాయో:
+
+| కప్పని అంశం | ఎక్కడ ఉంది |
+|---|---|
+| **Stack · Linked List** | [DSA_04](dsa/DSA_04_Stack_LinkedList_Telugu.md) — 16 problems (#20, #155, #25, #146…) |
+| **Trie** | [DSA_06](dsa/DSA_06_Graphs_Trie_Telugu.md) — Trie pattern · [LLD Deep 17](lld/LLD_Deep_17_Autocomplete_Telugu.md) — 2,34,428-పదాల నిఘంటువు మీద కొలిచినది |
+| **Bit manipulation · Math** | [DSA_09](dsa/DSA_09_Greedy_Bit_Math_Telugu.md) — Bit మరియు Math patterns |
+| **Divide & Conquer** | [DSA_07](dsa/DSA_07_Backtracking_DivideConquer_Telugu.md) |
+| **Arrays · Strings · Matrix · Intervals** | [DSA_01](dsa/DSA_01_Arrays_Strings_Telugu.md) · [DSA_02](dsa/DSA_02_TwoPtr_SlidingWindow_Matrix_Telugu.md) · [DSA_03](dsa/DSA_03_Hashing_Intervals_Telugu.md) |
+
+ఆ [12 DSA గైడ్లు](#ఇతర-docs) LeetCode problems ని problem-వారీగా వివరిస్తాయి — అవి **ఏమి రాయాలో** చెబుతాయి. ఈ deep dives **మీరు రాసినది సరైనదేనా, మీకెలా తెలుసు** అని అడుగుతాయి. **రెండూ కావాలి; ఒకటి ఇంకొకదాన్ని భర్తీ చేయదు.**
 
 ---
 

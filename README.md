@@ -1,6 +1,6 @@
 # Deep Dives — తెలుగులో System Design
 
-**47 deep dives · 1,030 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
+**48 deep dives · 1,044 పేజీలు · ప్రతి సంఖ్యా నిజంగా `node` lo run చేసినది.**
 
 ఇవి interview గైడ్లు కాదు. ప్రతి doc ఒకే పని చేస్తుంది:
 
@@ -95,8 +95,9 @@
 | 01 | **Binary Search** | 16 | n ≤ 32 అయితే **linear వేగం** · ఎనిమిది రూపాల్లో **నాలుగు విఫలం** · ఏకదిశ కాని predicate → **18 కి బదులు 20** | [md](DSA_Deep_01_BinarySearch_Telugu.md) · [pdf](pdfs/DSA_Deep_01_BinarySearch_Telugu.pdf) |
 | 02 | **Two Pointers & Sliding Window** | 13 | n=20,000 దగ్గర **3,879×** · ఒక్క ఋణాత్మక సంఖ్యతో **14.77% తప్పు** · "సరిగ్గా K" నేరుగా లెక్కపెడితే **47.8% తప్పు** | [md](DSA_Deep_02_SlidingWindow_Telugu.md) · [pdf](pdfs/DSA_Deep_02_SlidingWindow_Telugu.pdf) |
 | 03 | **Hashing** | 16 | n=10 లక్షల దగ్గర **Set, sort కంటే 2.5× నెమ్మది** · "99.3% సరైన" key → **737 తప్పు జతలు** · `{}` వాడితే **54.4% తప్పు** | [md](DSA_Deep_03_Hashing_Telugu.md) · [pdf](pdfs/DSA_Deep_03_Hashing_Telugu.pdf) |
+| 04 | **Recursion · Memoization · DP** | 14 | `fib(40)` **33 కోట్ల calls** vs 79 · memo key lo ఒక కొలత మర్చిపోతే **47.5% తప్పు** · n=10,000 దగ్గర **RangeError** | [md](DSA_Deep_04_DynamicProgramming_Telugu.md) · [pdf](pdfs/DSA_Deep_04_DynamicProgramming_Telugu.pdf) |
 
-*(ఇంకా వస్తున్నాయి — DP, graphs, heaps, backtracking, greedy, sorting, trees.)*
+*(ఇంకా వస్తున్నాయి — graphs, heaps, backtracking, greedy, sorting, trees.)*
 
 పైన ఉన్న [12 DSA గైడ్లు](#ఇతర-docs) LeetCode problems ని problem-వారీగా వివరిస్తాయి — అవి **ఏమి రాయాలో** చెబుతాయి. ఈ deep dives **మీరు రాసినది సరైనదేనా, మీకెలా తెలుసు** అని అడుగుతాయి.
 
